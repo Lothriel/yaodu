@@ -16,3 +16,7 @@ docker:
   pkg.installed:
     - name: {{ docker.pkgname }}
     - refresh: True
+
+docker-py:
+  pip.installed:
+    - use_wheel: True
