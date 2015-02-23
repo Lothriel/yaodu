@@ -1,9 +1,6 @@
-{% from "pip/map.jinja" import pip with context %}
-
 pip:
   pkg.installed:
-    - name: {{ pip.pkgname }}
+    - name: {{ pillar['pkgs']['pip'] }}
 
 wheel:
-  pip.installed:
-    - name: wheel
+  pip.installed
