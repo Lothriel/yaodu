@@ -1,0 +1,72 @@
+#!/usr/bin/python
+
+DOCUMENTATION = '''
+---
+module: docker_image_check
+version_added: "1.8.2"
+short_description: check docker image properties
+description:
+  - Check the existance of images and specific tags in docker repositories
+options:
+  image:
+    description:
+      - Name of the image to check
+    required: True
+  registry:
+    description:
+      - Location of repository (including port number if needed)
+    required: True
+  protocol:
+    description:
+      - Transport protocol to use
+    required: False
+    default: https
+    choices: ['http', 'https']
+  tag:
+    description:
+      - Name of tag to check for
+    required: False
+'''
+
+EXAMPLES = '''
+Check if the image "ubuntu" exists in the registry 192.168.0.1:5000:
+
+- hosts: docker
+  tasks:
+    - name: Check if image exists
+      docker: image=ubuntu registry=192.168.0.1:5000
+'''
+
+import requests
+
+def main():
+    module = AnsibleModule(
+        argument_spec = dict(
+            image = dict(required=True),
+            registry = dict(required=True),
+            protocol = dict(default='https', choices=['http', 'https']),
+            tag = dict(),
+        )
+    )
+
+    image_exists=False
+
+    resp = requests.get(module.params.get('protocol') + '://' + \
+                        module.params.get('registry') + '/v1/repositories/' + \
+                        module.params.get('image') + '/tags')
+
+    if resp.status_code == 200 and module.params.get('tag'):
+        for tag, _hash in resp.json().items():
+            if tag == module.params.get('tag'):
+                image_exists=True
+                break
+    elif resp.status_code == 200:
+        image_exists=True
+
+    module.exit_json(changed=False, ansible_facts={'image_exists': image_exists})
+
+# import module snippets
+from ansible.module_utils.basic import *
+
+if __name__ == '__main__':
+    main()

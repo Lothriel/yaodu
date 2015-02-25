@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -o nounset
+set -o errexit
+
+main() {
+    files = ( "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring" \
+              "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring" \
+              "/etc/ceph/monmap" )
+
+    if [ ! -e /etc/ceph/{{ ceph_cluster_name }}.conf ]; then
+        file = "/etc/ceph/{{ ceph_cluster_name }}.conf"
+        missing_file
+    fi
+
+    if [[ -n "${INITIAL_CLUSTER}" ]]; then
+        fsid = "$(awk '{print $3}' /etc/ceph/{{ ceph_cluster_name }}.conf)"
+
+        ceph-authtool "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring" --create-keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow'
+        ceph-authtool "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring" --create-keyring --gen-key -n mon. --cap mon 'allow *'
+        monmaptool --create --add "${MON_NAME}" "${MON_IP}" --fsid "${fsid}" /etc/ceph/monmap
+    fi
+
+    for file in "${files[@]}"; do
+        [[ -e file ]] || missing_file
+    done
+
+    if [[ ! -e "/var/lib/ceph/mon/{{ ceph_cluster_name }}-${MON_NAME}/keyring" ]]; then
+         ceph-authtool "/tmp/{{ ceph_cluster_name }}.mon.keyring" --create-keyring --import-keyring "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
+	 ceph-authtool "/tmp/{{ ceph_cluster_name }}.mon.keyring" --import-keyring "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring"
+
+	 mkdir -p "/var/lib/ceph/mon/{{ ceph_cluster_name }}-${MON_NAME}"
+
+	 ceph-mon --mkfs -i "${MON_NAME}" --monmap /etc/ceph/monmap --keyring "/tmp/{{ ceph_cluster_name }}.mon.keyring"
+
+	 rm "/tmp/{{ ceph_cluster_name }}.mon.keyring"
+    fi
+}
+
+missing_file() {
+    echo "ERROR: ${file} does not exist"
+    exit 2
+}
+
+main
+
+exec /usr/bin/ceph-mon -d -i "${MON_NAME}" --public-addr "${MON_IP}:6789"

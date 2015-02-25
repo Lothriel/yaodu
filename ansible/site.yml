@@ -1,0 +1,34 @@
+---
+- hosts: all
+  roles:
+    - common
+
+#- hosts: docker-registry
+#  tasks:
+#  - name: Removing temporary Docker registry
+#    docker:
+#      image: registry
+#      name: tmp_registry
+#      state: absent
+#    tags: purge
+#  - name: Starting temporary Docker registry
+#    docker:
+#      image: registry
+#      ports: "{{ docker_tmp_registry_port | default('4001') }}:5000"
+#      name: tmp_registry
+#      env: "{{ docker_registry_env_vars | default('GUNICORN_OPTS=[--preload]') }}"
+#    run_once: true
+
+- hosts: build_host
+  roles:
+    - { role: docker_build/common }
+    - { role: docker_build/openstack_common }
+    - { role: docker_build/ceph }
+
+- hosts: ceph-all
+  roles:
+    - ceph-common
+
+- hosts: ceph-mon
+  roles:
+    - ceph-mon

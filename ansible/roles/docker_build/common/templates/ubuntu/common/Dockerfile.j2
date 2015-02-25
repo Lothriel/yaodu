@@ -1,0 +1,12 @@
+FROM		ubuntu:trusty
+MAINTAINER	Sam Yaple <sam@yaple.net>
+
+ENV		DEBIAN_FRONTEND	noninteractive
+
+# Recommend apt-cacher-ng for bandwidth savings. Not required.
+ADD		apt.conf /etc/apt/apt.conf
+ADD		sources.list /etc/apt/sources.list
+
+RUN		apt-get update && apt-get dist-upgrade -y
+RUN		apt-get install -y --no-install-recommends curl ca-certificates
+RUN		apt-get clean -y

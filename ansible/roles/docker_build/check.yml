@@ -1,0 +1,10 @@
+---
+- name: Ensuring Docker image yaodu/{{ container }} exists
+  docker_image_check:
+    image: "yaodu/{{ container }}"
+    registry: "{{ docker_registry }}"
+    protocol: "http"
+  run_once: True
+
+- include: build.yml
+  when: not image_exists

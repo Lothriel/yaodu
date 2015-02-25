@@ -1,0 +1,10 @@
+FROM		{{ docker_registry }}/yaodu/common
+MAINTAINER	Sam Yaple <sam@yaple.net>
+
+RUN		apt-get install -y --no-install-recommends build-essential python-dev libssl-dev libffi-dev libyaml-dev libxml2-dev libxslt-dev git
+RUN		curl https://bootstrap.pypa.io/get-pip.py | python 
+RUN		pip install wheel
+
+RUN		pip install python-memcached
+
+RUN		mkdir -p /opt/ && cd /opt/ && git clone --depth 1 --branch stable/juno https://github.com/openstack/requirements.git

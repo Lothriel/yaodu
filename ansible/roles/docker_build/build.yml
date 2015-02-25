@@ -1,0 +1,30 @@
+---
+- name: Ensuring directory exists for building yaodu/{{ container }}
+  file:
+    path: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/"
+    state: directory
+  run_once: True
+
+- name: Copying over Docker files for yaodu/{{ container }} container
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  with_items: files
+  when: files is defined
+  run_once: True
+
+- name: Copying over Docker templates for yaodu/{{ container }} container
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items: templates
+  when: templates is defined
+  run_once: True
+
+- name: Building yaodu/{{ container }}
+  command: /usr/bin/docker build --no-cache=true -t "{{ docker_registry }}/yaodu/{{ container }}" "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/"
+  run_once: True
+
+- name: Pushing yaodu/{{ container }} to registry
+  command: /usr/bin/docker push "{{ docker_registry }}/yaodu/{{ container }}"
+  run_once: True
