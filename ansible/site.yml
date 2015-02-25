@@ -21,14 +21,14 @@
 
 - hosts: build_host
   roles:
-    - { role: docker_build/common }
-    - { role: docker_build/openstack_common }
-    - { role: docker_build/ceph }
+    - docker_build/common
+    - docker_build/openstack_common
+    - docker_build/ceph
 
 - hosts: ceph-all
   roles:
-    - ceph-common
+    - ceph/ceph-common
 
 - hosts: ceph-mon
   roles:
-    - ceph-mon
+    - ceph/ceph-mon

@@ -23,8 +23,12 @@
 
 - name: Building yaodu/{{ container }}
   command: /usr/bin/docker build --no-cache=true -t "{{ docker_registry }}/yaodu/{{ container }}" "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/"
+  async: 600
+  poll: 15
   run_once: True
 
 - name: Pushing yaodu/{{ container }} to registry
   command: /usr/bin/docker push "{{ docker_registry }}/yaodu/{{ container }}"
+  async: 600
+  poll: 5
   run_once: True

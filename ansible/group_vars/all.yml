@@ -1,7 +1,6 @@
+run: false
 yaodu_directory: "/opt/yaodu"
 yaodu_distro: "ubuntu"
-support_swift_password: swift
-swift_source_tarball: http://172.16.0.1/openstack/archives/swift-2.2.1.tar.gz
 ceph_release: giant
 ceph_cluster_name: ceph
 ceph_cluster_fsid: "3cc8d825-cfbf-4a14-836a-186bcf333b06"
