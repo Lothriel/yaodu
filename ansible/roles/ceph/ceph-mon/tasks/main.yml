@@ -1,6 +1,7 @@
 ---
 - name: Checking if a previous cluster exists
-  stat: path=/etc/ceph/monmap
+  stat:
+    path: "/etc/ceph/{{ ceph_cluster_name }}-monmap"
   register: existing_cluster
 
 - name: Bootstraping Ceph Mon
