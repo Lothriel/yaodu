@@ -1,4 +1,4 @@
-run: false
+forced: false
 yaodu_directory: "/opt/yaodu"
 yaodu_distro: "ubuntu"
 ceph_release: giant

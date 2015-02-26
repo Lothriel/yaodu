@@ -6,6 +6,7 @@
     protocol: "http"
     insecure_registry: True
   run_once: True
+  when: not forced
 
 - include: build.yml
-  when: not docker.image_exists
+  when: forced or not docker.image_exists
