@@ -181,7 +181,10 @@ def main():
         repository = module.params.get('image') + ':' + \
                      module.params.get('tag')
 
-        remote_images = json.loads(c.remote_images(module.params.get('registry') + '/' + module.params.get('image'), insecure_registry=module.params.get('insecure_registry')))
+        remote_images = json.loads(c.remote_images(
+              module.params.get('registry') + '/' + module.params.get('image'),
+              insecure_registry=module.params.get('insecure_registry')
+              ))
 
         for image in remote_images['results']:
             if image['name'] == module.params.get('image'):
@@ -189,7 +192,11 @@ def main():
             else:
                 continue
 
-            image_tags = json.loads(c.remote_image_info(module.params.get('registry') + '/' + module.params.get('image'), insecure_registry=module.params.get('insecure_registry')))
+            image_tags = json.loads(c.remote_image_info(
+                module.params.get('registry') + '/' + \
+                        module.params.get('image'),
+                insecure_registry=module.params.get('insecure_registry')
+                ))
 
             for tag, _hash in image_tags.items():
                 if tag == module.params.get('tag'):
