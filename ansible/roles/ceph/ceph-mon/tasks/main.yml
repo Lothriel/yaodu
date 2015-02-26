@@ -1,10 +1,7 @@
 ---
-- name: Ensuring we have the latest container
-  docker_image_check:
-    image: "yaodu/{{ container }}"
-    registry: "{{ docker_registry  }}"
-    tag: "{{ tag }}"
-  when: run
+- name: Checking if a previous cluster exists
+  stat: path=/etc/ceph/monmap
+  register: existing_cluster
 
 - name: Bootstraping Ceph Mon
   docker:
@@ -16,6 +13,7 @@
     command: "/opt/ceph/mon.sh"
     name: "ceph_mon"
   run_once: true
+  when: not existing_cluster.stat.exists
 
 - name: Reloading Ceph Mons
   docker:
@@ -26,3 +24,4 @@
     env: "MON_NAME={{ ansible_hostname }},MON_IP={{ ansible_br_stor['ipv4']['address'] }}"
     command: "/opt/ceph/mon.sh"
     name: "ceph_mon"
+  when: ceph_conf.changed

@@ -215,7 +215,7 @@ def main():
     except Exception as e:
         module.exit_json(failed=True, changed=False, msg=repr(e))
 
-    module.exit_json(changed=False, docker_image_info=docker_facts)
+    module.exit_json(changed=False, image=docker_facts)
 
 # import module snippets
 from ansible.module_utils.basic import *

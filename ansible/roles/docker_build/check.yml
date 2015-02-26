@@ -7,7 +7,6 @@
     insecure_registry: True
   register: docker_image_info
   run_once: True
-  when: not forced
 
 - include: build.yml
-  when: forced or not docker_image_info.image_exists
+  when: forced or not docker_image_info.image.image_exists

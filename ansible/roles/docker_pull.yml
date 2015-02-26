@@ -8,10 +8,9 @@
     compare: True
   register: docker_image_info
   run_once: True
-  when: not forced
 
 - name: Pulling latest image
   command: docker pull "{{ docker_registry }}/yaodu/{{ container }}"
   async: 600
   poll: 5
-  when: forced or not docker_image_info.local_up_to_date
+  when: forced or not docker_image_info.image.local_up_to_date

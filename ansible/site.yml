@@ -24,6 +24,7 @@
     - docker_build/common
     - docker_build/openstack_common
     - docker_build/ceph
+  tags: current
 
 - hosts: ceph-all
   roles:
