@@ -4,7 +4,8 @@
     image: "yaodu/{{ container }}"
     registry: "{{ docker_registry }}"
     protocol: "http"
+    insecure_registry: True
   run_once: True
 
 - include: build.yml
-  when: not image_exists
+  when: not docker.image_exists

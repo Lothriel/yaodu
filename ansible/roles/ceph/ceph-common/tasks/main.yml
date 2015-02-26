@@ -1,0 +1,11 @@
+---
+- name: Ensure /etc/ceph/ exists
+  file:
+    path: /etc/ceph/
+    state: directory
+
+- name: Installing Ceph cluster conf
+  template:
+    src: ceph.conf.j2
+    dest: "/etc/ceph/{{ ceph_cluster_name }}.conf"
+    mode: 0644

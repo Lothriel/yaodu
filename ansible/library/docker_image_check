@@ -1,12 +1,34 @@
 #!/usr/bin/python
 
+#The MIT License (MIT)
+#
+#Copyright (c) 2015 Sam Yaple
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
+
 DOCUMENTATION = '''
 ---
 module: docker_image_check
 version_added: "1.8.2"
 short_description: check docker image properties
 description:
-  - Check the existance of images and specific tags in docker repositories
+  - Check the existance of images and tags in docker registries
 options:
   image:
     description:
@@ -19,13 +41,25 @@ options:
   protocol:
     description:
       - Transport protocol to use
-    required: False
     default: https
     choices: ['http', 'https']
   tag:
     description:
-      - Name of tag to check for
-    required: False
+      - Name of tag to check
+    default='latest'
+  compare:
+    description:
+      - Compare registry to local images
+    default: False
+    choices: bool
+  compare_to:
+    description:
+      - Docker to compare images to
+    default: 'unix:///var/run/docker.sock'
+  insecure_registry:
+    description:
+      - Allow checking HTTP and self-signed HTTPS registries
+    default=False
 '''
 
 EXAMPLES = '''
@@ -35,9 +69,87 @@ Check if the image "ubuntu" exists in the registry 192.168.0.1:5000:
   tasks:
     - name: Check if image exists
       docker: image=ubuntu registry=192.168.0.1:5000
+
+Check if local image exists and matches external image:
+- hosts: docker
+  tasks:
+    - name: Check if image is up to date
+      docker: image=ubuntu tag=14.04 registry=192.168.0.1:5000 compare=True
 '''
 
-import requests
+
+try:
+    import sys
+    import json
+    from docker.client import *
+except ImportError, e:
+    print "failed=True msg='failed to import python module: %s'" % e
+    sys.exit(1)
+
+class Client(Client):
+    def _url(self, path, version=None):
+        version = version if version else self._version
+        return '{0}/v{1}{2}'.format(self.base_url, version, path)
+
+    def remote_images(self, repository, stream=False, insecure_registry=False,
+                      version='1'):
+        registry, repo_name = auth.resolve_repository_name(
+            repository, insecure=insecure_registry
+        )
+
+        headers = {}
+
+        # If we don't have any auth data so far, try reloading the config
+        # file one more time in case anything showed up in there.
+        if not self._auth_configs:
+            self._auth_configs = auth.load_config()
+            authcfg = auth.resolve_authconfig(self._auth_configs, registry)
+
+        # Do not fail here if no authentication exists for this specific
+        # registry as we can have a readonly pull. Just put the header if
+        # we can.
+        if authcfg:
+            headers['X-Registry-Auth'] = auth.encode_header(authcfg)
+
+        response = self._get(self._url('/search', version), headers=headers,
+                             stream=stream, timeout=None)
+
+        if stream:
+            return self._stream_helper(response)
+        else:
+            return self._result(response)
+
+    def remote_image_info(self, repository, stream=False,
+                          insecure_registry=False, version='1'):
+        registry, repo_name = auth.resolve_repository_name(
+            repository, insecure=insecure_registry
+        )
+
+        if repo_name.count(":") == 1:
+            repository, tag = repository.rsplit(":", 1)
+
+        headers = {}
+
+        # If we don't have any auth data so far, try reloading the config
+        # file one more time in case anything showed up in there.
+        if not self._auth_configs:
+            self._auth_configs = auth.load_config()
+            authcfg = auth.resolve_authconfig(self._auth_configs, registry)
+
+        # Do not fail here if no authentication exists for this specific
+        # registry as we can have a readonly pull. Just put the header if
+        # we can.
+        if authcfg:
+            headers['X-Registry-Auth'] = auth.encode_header(authcfg)
+
+        response = self._get(self._url('/repositories/' + repo_name + '/tags',
+                                       version),
+                             headers=headers, stream=stream, timeout=None)
+
+        if stream:
+            return self._stream_helper(response)
+        else:
+            return self._result(response)
 
 def main():
     module = AnsibleModule(
@@ -45,25 +157,59 @@ def main():
             image = dict(required=True),
             registry = dict(required=True),
             protocol = dict(default='https', choices=['http', 'https']),
-            tag = dict(),
+            tag = dict(default='latest'),
+            compare = dict(default=False),
+            compare_to = dict(default='unix:///var/run/docker.sock'),
+            insecure_registry = dict(default=False),
         )
     )
 
-    image_exists=False
 
-    resp = requests.get(module.params.get('protocol') + '://' + \
-                        module.params.get('registry') + '/v1/repositories/' + \
-                        module.params.get('image') + '/tags')
+    try:
+        _ansible_facts={'docker': {}}
 
-    if resp.status_code == 200 and module.params.get('tag'):
-        for tag, _hash in resp.json().items():
-            if tag == module.params.get('tag'):
-                image_exists=True
-                break
-    elif resp.status_code == 200:
-        image_exists=True
+        docker_facts = _ansible_facts['docker']
+        docker_facts['image_exists'] = False
+        docker_facts['tag_exists'] = False
+        if module.params.get('compare'):
+            docker_facts['local_exists'] = False
+            docker_facts['local_up_to_date'] = False
 
-    module.exit_json(changed=False, ansible_facts={'image_exists': image_exists})
+        c = Client(module.params.get('protocol') + '://' + \
+                   module.params.get('registry'))
+
+        repository = module.params.get('image') + ':' + \
+                     module.params.get('tag')
+
+        remote_images = json.loads(c.remote_images(module.params.get('registry') + '/' + module.params.get('image'), insecure_registry=module.params.get('insecure_registry')))
+
+        for image in remote_images['results']:
+            if image['name'] == module.params.get('image'):
+                docker_facts['image_exists'] = True
+            else:
+                continue
+
+            image_tags = json.loads(c.remote_image_info(module.params.get('registry') + '/' + module.params.get('image'), insecure_registry=module.params.get('insecure_registry')))
+
+            for tag, _hash in image_tags.items():
+                if tag == module.params.get('tag'):
+                    docker_facts['tag_exists'] = True
+                    _id = _hash
+                    break
+
+        if module.params.get('compare'):
+            l = Client(module.params.get('compare_to'))
+            for image in l.images():
+                for tag in image['RepoTags']:
+                    if tag == module.params.get('registry') + '/' + repository:
+                        docker_facts['local_exists'] = True
+                        if _id == image['Id']:
+                            docker_facts['local_up_to_date'] = True
+                        break
+    except Exception as e:
+        module.exit_json(failed=True, changed=False, msg=repr(e))
+
+    module.exit_json(changed=False, ansible_facts=_ansible_facts)
 
 # import module snippets
 from ansible.module_utils.basic import *
