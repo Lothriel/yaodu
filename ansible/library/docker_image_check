@@ -166,9 +166,8 @@ def main():
 
 
     try:
-        _ansible_facts={'docker': {}}
+        docker_facts = {}
 
-        docker_facts = _ansible_facts['docker']
         docker_facts['image_exists'] = False
         docker_facts['tag_exists'] = False
         if module.params.get('compare'):
@@ -216,7 +215,7 @@ def main():
     except Exception as e:
         module.exit_json(failed=True, changed=False, msg=repr(e))
 
-    module.exit_json(changed=False, ansible_facts=_ansible_facts)
+    module.exit_json(changed=False, docker_image_info=docker_facts)
 
 # import module snippets
 from ansible.module_utils.basic import *
