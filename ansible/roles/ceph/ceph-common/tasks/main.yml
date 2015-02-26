@@ -1,4 +1,8 @@
 ---
+- include: pull.yml
+  vars:
+    container: ceph
+
 - name: Ensure /etc/ceph/ exists
   file:
     path: /etc/ceph/

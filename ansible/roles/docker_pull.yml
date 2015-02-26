@@ -1,0 +1,16 @@
+---
+- name: Ensuring Docker image yaodu/{{ container }} exists locally
+  docker_image_check:
+    image: "yaodu/{{ container }}"
+    registry: "{{ docker_registry }}"
+    protocol: "http"
+    insecure_registry: True
+    compare: True
+  run_once: True
+  when: not forced
+
+- name: Pulling latest image
+  command: docker pull "{{ docker_registry }}/yaodu/{{ container }}"
+  async: 600
+  poll: 5
+  when: forced or not docker.local_up_to_date
