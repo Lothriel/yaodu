@@ -28,11 +28,11 @@
 
 - hosts: ceph-all
   roles:
-    - ceph/ceph-common
+    - ceph/common
   handlers:
     - name: restart ceph
       command: /bin/ls
 
 - hosts: ceph-mon
   roles:
-    - ceph/ceph-mon
+    - ceph/mon
