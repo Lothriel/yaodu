@@ -1,28 +1,27 @@
 ---
 - name: Checking if a previous cluster exists
   stat:
-    path: "/etc/ceph/{{ ceph_cluster_name }}-monmap"
-  register: existing_cluster
+    path: "/etc/ceph/{{ ceph_cluster_name }}.monmap"
+  register: monmap
 
-- name: Bootstraping Ceph Mon
-  docker:
-    net: host
-    volumes: /etc/ceph:/etc/ceph
-    state: running
-    image: "{{ docker_registry  }}/yaodu/ceph"
-    env: "INITIAL_CLUSTER=true,MON_NAME={{ ansible_hostname }},MON_IP={{ ansible_br_stor['ipv4']['address'] }}"
-    command: "/opt/ceph/mon.sh"
-    name: "ceph_mon"
-  run_once: true
-  when: not existing_cluster.stat.exists
+- name: Bootstraping Ceph cluster
+  command: /usr/bin/env docker run --rm=True -e "INITIAL_CLUSTER=true" -e "MON_NAME={{ ansible_hostname }}" -e "MON_IP={{ ansible_br_stor['ipv4']['address'] }}" -v /etc/ceph:/etc/ceph -t 172.16.0.1:5000/yaodu/ceph /opt/ceph/mon.sh
+  run_once: True
+  when: not monmap.stat.exists
 
-- name: Reloading Ceph Mons
-  docker:
-    net: host
-    volumes: /etc/ceph:/etc/ceph
-    state: running
-    image: "{{ docker_registry  }}/yaodu/ceph"
-    env: "MON_NAME={{ ansible_hostname }},MON_IP={{ ansible_br_stor['ipv4']['address'] }}"
-    command: "/opt/ceph/mon.sh"
-    name: "ceph_mon"
-  tags: this
+- name: Pulling keyrings from monitor
+  _slurp:
+     src: "{{ item }}"
+  with_items:
+     - "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
+     - "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring"
+     - "/etc/ceph/{{ ceph_cluster_name }}.monmap"
+  register: ceph_files
+  run_once: True
+
+- name: Pushing keyrings to monitors
+  copy:
+    dest: "{{ item.item }}"
+    content: "{{ item.content | b64decode }}"
+    mode: "{{ item.mode }}"
+  with_items: ceph_files.results

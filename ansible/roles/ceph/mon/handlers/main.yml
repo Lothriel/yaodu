@@ -1,0 +1,15 @@
+---
+- name: mon stop
+  docker:
+    state: absent
+    name: "ceph_mon"
+
+- name: mon start
+  docker:
+    net: host
+    volumes: /etc/ceph:/etc/ceph
+    state: running
+    image: "{{ docker_registry  }}/yaodu/ceph"
+    env: "MON_NAME={{ ansible_hostname }},MON_IP={{ ansible_br_stor['ipv4']['address'] }}"
+    command: "/opt/ceph/mon.sh"
+    name: "ceph_mon"

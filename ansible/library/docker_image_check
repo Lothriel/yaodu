@@ -26,6 +26,7 @@ DOCUMENTATION = '''
 ---
 module: docker_image_check
 version_added: "1.8.2"
+author: Sam Yaple
 short_description: check docker image properties
 description:
   - Check the existance of images and tags in docker registries

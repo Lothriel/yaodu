@@ -3,15 +3,14 @@
   vars:
     container: ceph
 
-- name: Ensure /etc/ceph/ exists
+- name: Ensuring /etc/ceph/ exists
   file:
     path: /etc/ceph/
     state: directory
 
-- name: Installing Ceph cluster conf
+- name: Copying Ceph cluster conf
   template:
     src: ceph.conf.j2
     dest: "/etc/ceph/{{ ceph_cluster_name }}.conf"
     mode: 0644
   register: ceph_conf
-  notify: restart ceph
