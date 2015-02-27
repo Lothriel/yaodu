@@ -6,11 +6,7 @@ main() {
     initial_setup
 
     if [[ -n "${INITIAL_CLUSTER}" ]]; then
-        fsid="$(awk '/^fsid/ {print $3; exit}' ${cepf_conf})"
-
-        # Remove reference to other initial members to properly start the qurom
-        sed -i "s/^mon initial members.*$/mon initial members = ${MON_NAME}/; \
-                s/^mon host.*$/mon host = ${MON_IP}/" "${ceph_conf}"
+        fsid="$(awk '/^fsid/ {print $3; exit}' ${ceph_conf})"
 
         ceph-authtool --create-keyring "${keyring_mon}" \
                 --gen-key -n mon. \

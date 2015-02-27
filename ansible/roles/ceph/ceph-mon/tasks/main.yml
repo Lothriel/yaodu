@@ -25,4 +25,4 @@
     env: "MON_NAME={{ ansible_hostname }},MON_IP={{ ansible_br_stor['ipv4']['address'] }}"
     command: "/opt/ceph/mon.sh"
     name: "ceph_mon"
-  when: ceph_conf.changed
+  tags: this

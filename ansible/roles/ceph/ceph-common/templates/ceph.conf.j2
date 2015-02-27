@@ -1,4 +1,4 @@
-[DEFAULT]
+[global]
 fsid = {{ ceph_cluster_fsid }}
 mon initial members = {% for host in groups['ceph-mon'] %}{{ hostvars[host]['ansible_hostname'] }}{% if not loop.last %}, {% endif %}{% endfor %}
 

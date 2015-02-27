@@ -21,14 +21,17 @@
 
 - hosts: build_host
   roles:
+    - docker_build/base
     - docker_build/common
     - docker_build/openstack_common
     - docker_build/ceph
-  tags: current
 
 - hosts: ceph-all
   roles:
     - ceph/ceph-common
+  handlers:
+    - name: restart ceph
+      command: /bin/ls
 
 - hosts: ceph-mon
   roles:
