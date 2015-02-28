@@ -20,7 +20,8 @@
 - name: Installing common packages
   apt:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
-    - lxc-docker
     - python-pip
+    - lxc-docker
+    - ceph-common
