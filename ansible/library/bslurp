@@ -60,6 +60,56 @@ author: Sam Yaple
 '''
 
 EXAMPLES = '''
+Distribute a file from single to many host:
+
+- hosts: web_servers
+  tasks:
+    - name: Pull in web config
+      bslurp: src="/path/to/file"
+      register: file_data
+      run_once: True
+    - name: Push if changed
+      bslurp:
+        src: "{{ file_data.content }}"
+        dest: "{{ file_data.source }}"
+        mode: "{{ file_data.mode }}"
+        sha_hash: "{{ file_data.sha_hash }}"
+
+Distribute multiple files from single to many host:
+
+- hosts: web_servers
+  tasks:
+    - name: Pull in web config
+      bslurp: src="{{ item }}"
+      with_items:
+        - "/path/to/file1"
+        - "/path/to/file2"
+        - "/path/to/file3"
+      register: file_data
+      run_once: True
+    - name: Push if changed
+      bslurp:
+        src: "{{ item.content }}"
+        dest: "{{ item.source }}"
+        mode: "{{ item.mode }}"
+        sha_hash: "{{ item.sha_hash }}"
+      with_items: file_data.results
+
+Distribute a file many host without compression; Change permissions on dest:
+
+- hosts: web_servers
+  tasks:
+    - name: Pull in web config
+      bslurp: src="/path/to/file"
+      register: file_data
+      run_once: True
+    - name: Push if changed
+      bslurp:
+        src: "{{ file_data.content }}"
+        dest: "/new/path/to/file"
+        mode: "0777"
+        compress: False
+        sha_hash: "{{ file_data.sha_hash }}"
 '''
 
 try:
