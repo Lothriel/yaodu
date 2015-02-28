@@ -10,7 +10,7 @@
   when: not monmap.stat.exists
 
 - name: Pulling keyrings from monitor
-  _slurp:
+  bslurp:
      src: "{{ item }}"
   with_items:
      - "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
@@ -20,8 +20,9 @@
   run_once: True
 
 - name: Pushing keyrings to monitors
-  copy:
-    dest: "{{ item.item }}"
-    content: "{{ item.content | b64decode }}"
+  bslurp:
+    src: "{{ item.content }}"
+    dest: "{{ item.source }}"
     mode: "{{ item.mode }}"
+    sha_hash: "{{ item.sha_hash }}"
   with_items: ceph_files.results
