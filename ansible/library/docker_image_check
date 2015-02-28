@@ -162,7 +162,8 @@ def main():
             compare = dict(default=False),
             compare_to = dict(default='unix:///var/run/docker.sock'),
             insecure_registry = dict(default=False)
-        )
+        ),
+        supports_check_mode = True
     )
 
     try:

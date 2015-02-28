@@ -129,7 +129,8 @@ def main():
             dest = dict(type='str'),
             mode = dict(default='0644', type='str'),
             sha_hash = dict(default=None, type='str')
-        )
+        ),
+        supports_check_mode = True
     )
 
     src = module.params.get('src')
