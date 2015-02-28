@@ -35,18 +35,27 @@ options:
     description:
       - File to fetch. When dest is used, src is expected to be a str with data
     required: True
+    type: str
   compress:
     description:
       - Compress file with zlib
     default: True
+    type: bool
   dest:
     description:
       - Where to write out binary blob
     required: False
+    type: str
   mode:
     description:
       - Destination file permissions
     default: '0644'
+    type: str
+  sha_hash:
+    description:
+      - sha1 hash of the underlying data
+    default: None
+    type: bool
 author: Sam Yaple
 '''
 
@@ -57,6 +66,7 @@ try:
     import sys
     import zlib
     import base64
+    from hashlib import sha1
 except ImportError, e:
     print "failed=True msg='failed to import python module: %s'" % e
     sys.exit(1)
@@ -65,48 +75,65 @@ def main():
     module = AnsibleModule(
         argument_spec = dict(
             src = dict(required=True, type='str'),
-            gzip = dict(default=True, type='bool'),
+            compress = dict(default=True, type='bool'),
             dest = dict(type='str'),
             mode = dict(default='0644', type='str'),
-            sha1sum = dict(type='str')
+            sha_hash = dict(default=None, type='str')
         )
     )
 
+    src = module.params.get('src')
+    dest = module.params.get('dest')
+
     try:
-        if not module.params.get('dest'):
-            if not os.path.exists(module.params.get('src')):
-                module.fail_json(msg="file not found: %s" % module.params.get('src'))
-            if not os.access(module.params.get('src'), os.R_OK):
-                module.fail_json(msg="file is not readable: %s" % module.params.get('src'))
+        if not dest:
+            if not os.path.exists(src):
+                module.fail_json(msg="file not found: %s" % src)
+            if not os.access(src, os.R_OK):
+                module.fail_json(msg="file is not readable: %s" % src)
 
-            mode = oct(os.stat(module.params.get('src')).st_mode & 0777)
+            mode = oct(os.stat(src).st_mode & 0777)
 
-            with open(module.params.get('src'), 'rb') as f:
+            with open(src, 'rb') as f:
                 if module.params.get('gzip'):
                     data = zlib.compress(f.read())
                 else:
                     data = f.read()
 
+            sha_hash = base64.b64encode(sha1(data).hexdigest())
             data = base64.b64encode(data)
 
-            module.exit_json(content=data, source=module.params.get('src'), mode=mode)
+            module.exit_json(content=data, source=src, mode=mode, \
+                                                             sha_hash=sha_hash)
         else:
-            with os.fdopen(os.open(module.params.get('dest'),
-                           os.O_WRONLY | os.O_CREAT,
-                           int(module.params.get('mode'), 0)), 'wb') as f:
-                try:
-                    data = base64.b64decode(module.params.get('src'))
+            sha_hash = base64.b64decode(module.params.get('sha_hash'))
+            mode = int(module.params.get('mode'), 0)
 
-                    if module.params.get('gzip'):
-                        f.write(zlib.decompress(data))
-                    else:
-                        f.write(data)
-                except Exception as e:
-                    module.exit_json(failed=True, changed=True, msg=repr(e))
+            data = base64.b64decode(src)
+
+            if module.params.get('gzip'):
+                data = zlib.decompress(data)
+
+            if sha1:
+                if os.path.exists(dest) and os.access(dest, os.R_OK):
+                    with open(dest, 'rb') as f:
+                        if sha1(f.read()).hexdigest() == sha_hash:
+                            module.exit_json()
+
+                if sha_hash != sha1(data).hexdigest():
+                    module.exit_json(failed=True, changed=False, \
+                        msg='sha1 sum does not match decompressed data')
+
+            try:
+                with os.fdopen(os.open(dest, os.O_WRONLY | os.O_CREAT, \
+                                                             mode), 'wb') as f:
+                    f.write(data)
+            except Exception as e:
+                module.exit_json(failed=True, changed=True, msg=repr(e))
 
             module.exit_json(changed=True)
     except Exception as e:
-        module.exit_json(failed=True, changed=False, msg=repr(e))
+        module.exit_json(failed=True, msg=repr(e))
 
 # import module snippets
 from ansible.module_utils.basic import *
