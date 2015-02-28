@@ -161,10 +161,9 @@ def main():
             tag = dict(default='latest'),
             compare = dict(default=False),
             compare_to = dict(default='unix:///var/run/docker.sock'),
-            insecure_registry = dict(default=False),
+            insecure_registry = dict(default=False)
         )
     )
-
 
     try:
         docker_facts = {}

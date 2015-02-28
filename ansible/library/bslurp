@@ -1,0 +1,115 @@
+#!/usr/bin/python
+
+#The MIT License (MIT)
+#
+#Copyright (c) 2015 Sam Yaple
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
+
+DOCUMENTATION = '''
+---
+module: bslurp
+version_added: 1.8.2
+short_description: Slurps a file from a remote node
+description:
+     - Used for fetching a binary blob containing the file, then push that file
+       to other hosts.
+options:
+  src:
+    description:
+      - File to fetch. When dest is used, src is expected to be a str with data
+    required: True
+  compress:
+    description:
+      - Compress file with zlib
+    default: True
+  dest:
+    description:
+      - Where to write out binary blob
+    required: False
+  mode:
+    description:
+      - Destination file permissions
+    default: '0644'
+author: Sam Yaple
+'''
+
+EXAMPLES = '''
+'''
+
+try:
+    import sys
+    import zlib
+    import base64
+except ImportError, e:
+    print "failed=True msg='failed to import python module: %s'" % e
+    sys.exit(1)
+
+def main():
+    module = AnsibleModule(
+        argument_spec = dict(
+            src = dict(required=True, type='str'),
+            gzip = dict(default=True, type='bool'),
+            dest = dict(type='str'),
+            mode = dict(default='0644', type='str'),
+            sha1sum = dict(type='str')
+        )
+    )
+
+    try:
+        if not module.params.get('dest'):
+            if not os.path.exists(module.params.get('src')):
+                module.fail_json(msg="file not found: %s" % module.params.get('src'))
+            if not os.access(module.params.get('src'), os.R_OK):
+                module.fail_json(msg="file is not readable: %s" % module.params.get('src'))
+
+            mode = oct(os.stat(module.params.get('src')).st_mode & 0777)
+
+            with open(module.params.get('src'), 'rb') as f:
+                if module.params.get('gzip'):
+                    data = zlib.compress(f.read())
+                else:
+                    data = f.read()
+
+            data = base64.b64encode(data)
+
+            module.exit_json(content=data, source=module.params.get('src'), mode=mode)
+        else:
+            with os.fdopen(os.open(module.params.get('dest'),
+                           os.O_WRONLY | os.O_CREAT,
+                           int(module.params.get('mode'), 0)), 'wb') as f:
+                try:
+                    data = base64.b64decode(module.params.get('src'))
+
+                    if module.params.get('gzip'):
+                        f.write(zlib.decompress(data))
+                    else:
+                        f.write(data)
+                except Exception as e:
+                    module.exit_json(failed=True, changed=True, msg=repr(e))
+
+            module.exit_json(changed=True)
+    except Exception as e:
+        module.exit_json(failed=True, changed=False, msg=repr(e))
+
+# import module snippets
+from ansible.module_utils.basic import *
+
+if __name__ == '__main__':
+    main()
