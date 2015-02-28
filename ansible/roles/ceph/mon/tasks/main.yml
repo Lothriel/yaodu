@@ -3,11 +3,22 @@
   stat:
     path: "/etc/ceph/{{ ceph_cluster_name }}.monmap"
   register: monmap
+  tags: test
+
+- set_fact:
+        existing_cluster: "{{ ansible_hostname }}"
+  when: monmap.stat.exists
+  tags: test
 
 - name: Bootstraping Ceph cluster
   command: /usr/bin/env docker run --rm=True -e "INITIAL_CLUSTER=true" -e "MON_NAME={{ ansible_hostname }}" -e "MON_IP={{ ansible_br_stor['ipv4']['address'] }}" -v /etc/ceph:/etc/ceph -t 172.16.0.1:5000/yaodu/ceph /opt/ceph/mon.sh
-  run_once: True
-  when: not monmap.stat.exists
+  when: existing_cluster is not defined
+  tags: test
+
+- set_fact:
+        bootstrap_cluster: "{{ ansible_hostname }}"
+  when: existing_cluster is not defined
+  tags: test
 
 - name: Pulling keyrings from monitor
   bslurp:
@@ -17,7 +28,23 @@
      - "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring"
      - "/etc/ceph/{{ ceph_cluster_name }}.monmap"
   register: ceph_files
+  delegate_to: "{{ bootstrap_cluster }}"
   run_once: True
+  when: bootstrap_cluster is defined
+  tags: test
+
+- name: Pulling keyrings from monitor
+  bslurp:
+     src: "{{ item }}"
+  with_items:
+     - "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
+     - "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring"
+     - "/etc/ceph/{{ ceph_cluster_name }}.monmap"
+  register: ceph_files
+  delegate_to: "{{ existing_cluster }}"
+  run_once: True
+  when: existing_cluster is defined
+  tags: test
 
 - name: Pushing keyrings to monitors
   bslurp:
@@ -26,3 +53,7 @@
     mode: "{{ item.mode }}"
     sha_hash: "{{ item.sha_hash }}"
   with_items: ceph_files.results
+  tags: test
+
+- include: stop_start.yml
+  serial: 1

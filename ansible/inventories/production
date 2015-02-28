@@ -1,20 +1,20 @@
 [support]
-172.16.1.11
-172.16.1.12
-172.16.1.13
+support01
+support02
+support03
 
 [network]
-172.16.1.21
-172.16.1.22
+network01
+network02
 
 [storage]
-172.16.1.31
-172.16.1.32
-172.16.1.33
+storage01
+storage02
+storage03
 
 [compute]
-172.16.1.51
-172.16.1.52
+compute01
+compute02
 
 [build_host:children]
 support

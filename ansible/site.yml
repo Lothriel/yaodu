@@ -29,9 +29,7 @@
 - hosts: ceph-all
   roles:
     - ceph/common
-  handlers:
-    - name: restart ceph
-      command: /bin/ls
+  tags: test
 
 - hosts: ceph-mon
   roles:
