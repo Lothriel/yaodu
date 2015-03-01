@@ -6,5 +6,7 @@ ADD		ceph.list /etc/apt/sources.list.d/ceph.list
 
 RUN		apt-get update && apt-get install -y ceph
 ADD		mon.sh /opt/ceph/
+ADD		osd.sh /opt/ceph/
 
 RUN		chmod +x /opt/ceph/mon.sh
+RUN		chmod +x /opt/ceph/osd.sh

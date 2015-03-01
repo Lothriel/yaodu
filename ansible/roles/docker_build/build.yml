@@ -6,8 +6,8 @@
   run_once: True
 
 - name: Copying over Docker files for yaodu/{{ container }} container
-  get_url:
-    url: "{{ item.url }}"
+  copy:
+    src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items: files
   when: files is defined
