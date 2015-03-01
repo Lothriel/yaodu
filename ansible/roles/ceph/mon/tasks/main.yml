@@ -3,37 +3,37 @@
   local_action: shell echo 'None' > /tmp/yaodu_ceph_cluster
   always_run: True
   changed_when: False
-  tags: test
 
 - name: Checking if a previous cluster exists
   stat:
     path: "/etc/ceph/{{ ceph_cluster_name }}.monmap"
   register: monmap
-  tags: test
 
 - name: Writing hostname of host with existing cluster files to temp file
   local_action: shell echo "{{ ansible_hostname }}" > /tmp/yaodu_ceph_cluster
   always_run: True
   changed_when: False
   when: monmap.stat.exists
-  tags: test
 
 - name: Registering host from tempfile
   set_fact:
     delegate_host: "{{ lookup('file', '/tmp/yaodu_ceph_cluster') }}"
-  tags: test
 
 - name: Bootstraping Ceph cluster
-  command: /usr/bin/env docker run --rm=True -e "INITIAL_CLUSTER=true" -e "MON_NAME={{ ansible_hostname }}" -e "MON_IP={{ ansible_br_stor['ipv4']['address'] }}" -v /etc/ceph:/etc/ceph -t 172.16.0.1:5000/yaodu/ceph /opt/ceph/mon.sh
+  command: /usr/bin/env docker run \
+                        --rm=True -v /etc/ceph:/etc/ceph \
+                        -e "CEPH_CLUSTER_NAME={{ ceph_cluster_name}}" \
+                        -e "INITIAL_CLUSTER=true" \
+                        -e "MON_NAME={{ ansible_hostname }}" \
+                        -e "MON_IP={{ ansible_br_stor['ipv4']['address'] }}" \
+                        -t "{{ docker_registry }}/yaodu/ceph" /opt/ceph/mon.sh
   when: delegate_host == 'None'
   run_once: True
-  tags: test
 
 - name: Setting host if no existing cluster was found
   set_fact:
     delegate_host: "{{ ansible_hostname }}"
   when: delegate_host == 'None'
-  tags: test
 
 - name: Pulling keyrings from monitor
   bslurp:
@@ -45,7 +45,6 @@
   register: ceph_files
   delegate_to: "{{ delegate_host }}"
   run_once: True
-  tags: test
 
 - name: Pushing keyrings to monitors
   bslurp:
@@ -54,7 +53,6 @@
     mode: "{{ item.mode }}"
     sha_hash: "{{ item.sha_hash }}"
   with_items: ceph_files.results
-  tags: test
 
 - include: stop_start.yml
   serial: 1
