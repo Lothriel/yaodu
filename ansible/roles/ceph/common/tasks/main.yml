@@ -2,7 +2,8 @@
 - include: install_packages-ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
 
-- include: pull.yml
+- include: container_pull.yml
+  hosts: ceph-all
   vars:
     container: ceph
 
@@ -16,3 +17,8 @@
     src: ceph.conf.j2
     dest: "/etc/ceph/{{ ceph_cluster_name }}.conf"
     mode: 0644
+
+- include: check_for_existing_cluster.yml
+  hosts: ceph-mon
+
+- include: configs_sync.yml

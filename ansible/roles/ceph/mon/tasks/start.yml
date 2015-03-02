@@ -1,12 +1,5 @@
 ---
-- name: mon stop
-  docker:
-    image: "{{ docker_registry }}/yaodu/ceph"
-    state: absent
-    name: "ceph_mon"
-  when: ceph_changed is defined
-
-- name: mon start
+- name: Starting Ceph mon
   docker:
     net: host
     volumes: /etc/ceph:/etc/ceph

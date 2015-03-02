@@ -1,0 +1,31 @@
+---
+- name: Pulling admin keyring
+  bslurp:
+     src: "{{ item }}"
+  with_items:
+     - "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
+  register: ceph_files
+  delegate_to: "{{ delegate_host }}"
+  run_once: True
+
+- name: Pushing admin keyring
+  include: configs_push.yml
+  hosts:
+    - management
+    - ceph-all
+
+- name: Pulling monitor map and keyring
+  bslurp:
+     src: "{{ item }}"
+  with_items:
+     - "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring"
+     - "/etc/ceph/{{ ceph_cluster_name }}.monmap"
+  register: ceph_files
+  delegate_to: "{{ delegate_host }}"
+  run_once: True
+
+- name: Pushing monitor map and keyring
+  include: configs_push.yml
+  hosts:
+    - ceph-mon
+
