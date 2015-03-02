@@ -19,17 +19,19 @@
 #      env: "{{ docker_registry_env_vars | default('GUNICORN_OPTS=[--preload]') }}"
 #    run_once: true
 
-- hosts: build_host
+- hosts: build_hosts
   roles:
     - docker_build/base
     - docker_build/common
     - docker_build/openstack_common
     - docker_build/ceph
 
-- hosts: ceph-all
+- hosts:
+    - management
+    - ceph-all
+    - compute
   roles:
     - ceph/common
-  tags: test
 
 - hosts: ceph-mon
   roles:

@@ -16,7 +16,10 @@ storage03
 compute01
 compute02
 
-[build_host:children]
+[management:children]
+support
+
+[build_hosts:children]
 support
 
 [ceph-all:children]

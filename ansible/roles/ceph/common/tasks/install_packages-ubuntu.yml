@@ -1,0 +1,16 @@
+---
+- name: Adding Ceph key to keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 7F6C9F236D170493FCF404F27EBFDD5D17ED316D
+
+- name: Adding Ceph repository to apt sources
+  apt_repository:
+    repo: 'deb http://ceph.com/debian-{{ ceph_release }}/ trusty main'
+
+- name: Installing common packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - ceph-common
