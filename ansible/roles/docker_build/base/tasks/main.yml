@@ -1,7 +1,0 @@
----
-- name: Ensuring the latest version of base image exists locally
-  command: "docker pull {{ yaodu_distro }}:{{ yaodu_distro_tag }}"
-  async: 600
-  poll: 5
-  run_once: True
-  when: forced
