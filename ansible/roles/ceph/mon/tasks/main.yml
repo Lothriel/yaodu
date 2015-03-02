@@ -1,5 +1,0 @@
----
-- include: start.yml
-
-- include: stop.yml
-  serial: 1

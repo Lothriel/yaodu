@@ -10,9 +10,8 @@
 
 - name: Pushing admin keyring
   include: configs_push.yml
-  hosts:
-    - management
-    - ceph-all
+  when: inventory_hostname in groups['management'] or
+        inventory_hostname in groups['ceph-all']
 
 - name: Pulling monitor map and keyring
   bslurp:
@@ -26,6 +25,5 @@
 
 - name: Pushing monitor map and keyring
   include: configs_push.yml
-  hosts:
-    - ceph-mon
+  when: inventory_hostname in groups['ceph-mon']
 

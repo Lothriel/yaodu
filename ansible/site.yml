@@ -30,8 +30,4 @@
     - ceph-all
     - compute
   roles:
-    - ceph/common
-
-- hosts: ceph-mon
-  roles:
-    - ceph/mon
+    - ceph

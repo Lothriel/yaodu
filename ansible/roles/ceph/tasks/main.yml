@@ -3,7 +3,7 @@
   when: ansible_distribution == 'Ubuntu'
 
 - include: container_pull.yml
-  hosts: ceph-all
+  when: inventory_hostname in groups['ceph-all']
   vars:
     container: ceph
 
@@ -19,6 +19,13 @@
     mode: 0644
 
 - include: check_for_existing_cluster.yml
-  hosts: ceph-mon
+  when: inventory_hostname in groups['ceph-mon']
 
 - include: configs_sync.yml
+
+- include: mon_start.yml
+  when: inventory_hostname in groups['ceph-mon']
+
+- include: mon_restart.yml
+  when: inventory_hostname in groups['ceph-mon']
+  serial: 1

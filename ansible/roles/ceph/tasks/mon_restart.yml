@@ -6,4 +6,4 @@
     name: "ceph_mon"
   when: ceph_changed is defined
 
-- include: start.yml
+- include: mon_start.yml
