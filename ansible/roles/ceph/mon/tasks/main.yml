@@ -1,8 +1,9 @@
 ---
-- name: Creating temp file on local_host
+- name: Creating temp file on localhost
   local_action: shell echo 'None' > /tmp/yaodu_ceph_cluster
   always_run: True
   changed_when: False
+  run_once: True
 
 - name: Checking if a previous cluster exists
   stat:
@@ -19,21 +20,15 @@
   set_fact:
     delegate_host: "{{ lookup('file', '/tmp/yaodu_ceph_cluster') }}"
 
-- name: Bootstraping Ceph cluster
-  command: /usr/bin/env docker run \
-                        --rm=True -v /etc/ceph:/etc/ceph \
-                        -e "CEPH_CLUSTER_NAME={{ ceph_cluster_name}}" \
-                        -e "INITIAL_CLUSTER=true" \
-                        -e "MON_NAME={{ ansible_hostname }}" \
-                        -e "MON_IP={{ ansible_br_stor['ipv4']['address'] }}" \
-                        -t "{{ docker_registry }}/yaodu/ceph" /opt/ceph/mon.sh
-  when: delegate_host == 'None'
+- name: Cleaning up temp file on localhost
+  local_action: shell rm /tmp/yaodu_ceph_cluster
+  always_run: True
+  changed_when: False
   run_once: True
 
-- name: Setting host if no existing cluster was found
-  set_fact:
-    delegate_host: "{{ ansible_hostname }}"
+- include: bootstrap.yml
   when: delegate_host == 'None'
+  run_once: True
 
 - name: Pulling keyrings from monitor
   bslurp:
