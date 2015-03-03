@@ -2,7 +2,8 @@
 - name: Creating temp file on localhost
   local_action: shell echo 'None' > /tmp/yaodu_ceph_cluster
   register: status
-  changed_when: status.rc != 0
+  changed_when: False
+  failed_when: status.rc != 0
   always_run: True
   run_once: True
 
@@ -14,7 +15,8 @@
 - name: Writing hostname of host with existing cluster files to temp file
   local_action: shell echo "{{ ansible_hostname }}" > /tmp/yaodu_ceph_cluster
   register: status
-  changed_when: status.rc != 0
+  changed_when: False
+  failed_when: status.rc != 0
   always_run: True
   when: monmap.stat.exists
 
@@ -25,7 +27,8 @@
 - name: Cleaning up temp file on localhost
   local_action: shell rm /tmp/yaodu_ceph_cluster
   register: status
-  changed_when: status.rc != 0
+  changed_when: False
+  failed_when: status.rc != 0
   always_run: True
   run_once: True
 
