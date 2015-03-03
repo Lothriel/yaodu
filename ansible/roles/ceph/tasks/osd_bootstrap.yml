@@ -1,0 +1,13 @@
+---
+- name: Bootstraping Ceph OSD
+  command: /usr/bin/env docker run --rm=True \
+        -v /etc/ceph:/etc/ceph \
+        -v "/var/lib/ceph/osd/{{ item.1.fs_uuid }}:/var/lib/ceph/osd/new_osd" \
+        -e "CEPH_CLUSTER_NAME={{ ceph_cluster_name}}" \
+        -e "INITIALIZE_OSD=true" \
+        -e "HOSTNAME={{ ansible_hostname }}" \
+        -t "{{ docker_registry }}/yaodu/ceph" /opt/ceph/osd.sh
+  with_together:
+    - osd.results
+    - osds['initialized']
+  when: not item.0.stat.exists

@@ -5,10 +5,11 @@ set -o errexit
 main() {
     initial_setup
 
-    if [[ ! -e "${whoami}" ]]; then
+
+    if [[ -n "${INITIALIZE_OSD}" ]]; then
 	osd_id="$(ceph osd create)"
 	osd_dir="${osd_basedir}/${CEPH_CLUSTER_NAME}-${osd_id}"
-	ln -s "osd" "${osd_dir}"
+	ln -s "new_osd" "${osd_dir}"
 
 	ceph-osd -i "${osd_id}" --mkfs --mkkey
 	ceph auth add "osd.${osd_id}" osd 'allow *' mon 'allow profile osd' \
@@ -17,11 +18,13 @@ main() {
 	ceph osd crush add-bucket "${HOSTNAME}" host
 	ceph osd crush move "${HOSTNAME}" root=default
 	ceph osd crush add "${osd_id}" 1.0 host="${HOSTNAME}"
-    else
-    	osd_id="$(cat ${whoami})"
-	osd_dir="${osd_basedir}/${CEPH_CLUSTER_NAME}-${osd_id}"
-	ln -s "osd" "${osd_dir}"
+
+	exit 0
     fi
+
+    osd_dir="$(find ${osd_basedir} -mindepth 1 -maxdepth 1 -type d)"
+    osd_id="$(cat ${osd_dir}/whoami | awk -F- '{print $(NF)}')"
+    whoami="${osd_basedir}/whoami"
 }
 
 initial_setup() {
@@ -37,8 +40,7 @@ initial_setup() {
 
     ceph_conf="/etc/ceph/${CEPH_CLUSTER_NAME}.conf"
     keyring_admin="/etc/ceph/${CEPH_CLUSTER_NAME}.client.admin.keyring"
-    osd_basedir="/var/lib/ceph/osd"
-    whoami="${osd_basedir}/osd/whoami"
+    osd_basedir="/var/lib/ceph/osd/"
 
     if [[ ! -e "${ceph_conf}" ]]; then
         file="${ceph_conf}"
