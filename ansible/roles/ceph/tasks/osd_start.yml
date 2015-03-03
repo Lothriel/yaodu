@@ -10,7 +10,7 @@
 
 - name: Starting Ceph mon
   docker:
-    net: host
+    privileged: True
     volumes: /var/lib/ceph/osd/{{ item.fs_uuid }}:/var/lib/ceph/osd/osd,/etc/ceph:/etc/ceph
     state: running
     image: "{{ docker_registry }}/yaodu/ceph"

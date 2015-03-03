@@ -10,8 +10,14 @@
 
 - name: Installing common packages
   apt:
-    name: "{{ item }}"
+    name: '{{ item }}'
     state: present
   with_items:
     - python-pip
     - lxc-docker
+
+- name: Setting insecure-registry
+  copy:
+    content: 'DOCKER_OPTS="--insecure-registry {{ docker_registry }}"\n'
+    dest: '/etc/default/docker'
+  notify: restart docker
