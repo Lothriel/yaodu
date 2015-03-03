@@ -15,7 +15,7 @@ main() {
 							-i "${osd_dir}/keyring"
 
 	ceph osd crush add-bucket "${HOSTNAME}" host
-	ceph osd crush mode "${HOSTNAME}" root=default
+	ceph osd crush move "${HOSTNAME}" root=default
 	ceph osd crush add "${osd_id}" 1.0 host="${HOSTNAME}"
     else
     	osd_id="$(cat ${whoami})"
