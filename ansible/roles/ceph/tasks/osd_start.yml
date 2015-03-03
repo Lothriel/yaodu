@@ -1,0 +1,21 @@
+---
+- name: Mounting volumes
+  mount:
+    src: "UUID={{ item['fs_uuid'] }}"
+    fstype: xfs
+    state: mounted
+    name: "/var/lib/ceph/osd/{{ item['fs_uuid'] }}"
+  with_items: osds['initialized']
+  when: osds['initialized'] and osds is defined
+
+- name: Starting Ceph mon
+  docker:
+    net: host
+    volumes: /var/lib/ceph/osd/{{ item.fs_uuid }}:/var/lib/ceph/osd/osd,/etc/ceph:/etc/ceph
+    state: running
+    image: "{{ docker_registry }}/yaodu/ceph"
+    env: "CEPH_CLUSTER_NAME={{ ceph_cluster_name }}"
+    command: "/opt/ceph/osd.sh"
+    name: "ceph_osd_{{ item.fs_uuid }}"
+  with_items: osds['initialized']
+  when: osds['initialized'] and osds is defined
