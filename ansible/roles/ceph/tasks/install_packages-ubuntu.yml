@@ -1,8 +1,7 @@
 ---
 - name: Adding Ceph key to keyserver
   apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: 7F6C9F236D170493FCF404F27EBFDD5D17ED316D
+    url: "https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc"
 
 - name: Adding Ceph repository to apt sources
   apt_repository:
