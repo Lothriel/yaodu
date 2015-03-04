@@ -28,12 +28,12 @@
 
 - name: Starting Ceph OSD
   docker:
-    privileged: True
     net: host
+    pid: host
     volumes: "/var/lib/ceph/osd/{{ item.1.fs_uuid }}:/var/lib/ceph/osd/{{ ceph_cluster_name }}-{{ item.0.stdout }},/etc/ceph:/etc/ceph"
     state: running
     image: "{{ docker_registry }}/yaodu/ceph"
-    env: "CEPH_CLUSTER_NAME={{ ceph_cluster_name }},HOSTNAME={{ ansible_hostname }}"
+    env: "CEPH_CLUSTER_NAME={{ ceph_cluster_name }},OSD_ID={{ item.0.stdout }}"
     command: "/opt/ceph/osd.sh"
     name: "ceph_osd_{{ item.0.stdout }}"
   with_together:

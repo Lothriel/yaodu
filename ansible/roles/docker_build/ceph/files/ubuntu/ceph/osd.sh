@@ -7,6 +7,11 @@ main() {
 
 
     if [[ -n "${INITIALIZE_OSD}" ]]; then
+    	if [[ ! -n "${HOSTNAME}" ]]; then
+                variable_name="HOSTNAME"
+            	unset_variable
+	fi
+
 	osd_id="$(ceph osd create)"
 	osd_dir="${osd_basedir}/${CEPH_CLUSTER_NAME}-${osd_id}"
 	ln -s "new_osd" "${osd_dir}"
@@ -22,19 +27,17 @@ main() {
 	exit 0
     fi
 
-    osd_dir="$(find ${osd_basedir} -mindepth 1 -maxdepth 1 -type d)"
-    osd_id="$(cat ${osd_dir}/whoami | awk -F- '{print $(NF)}')"
-    whoami="${osd_basedir}/whoami"
+    if [[ ! -n "${OSD_ID}" ]]; then
+            variable_name="OSD_ID"
+            unset_variable
+    fi
+
+    osd_dir="${osd_basedir}/${CEPH_CLUSTER_NAME}-${OSD_ID}"
 }
 
 initial_setup() {
     if [[ ! -n "${CEPH_CLUSTER_NAME}" ]]; then
             variable_name="CEPH_CLUSTER_NAME"
-            unset_variable
-    fi
-
-    if [[ ! -n "${HOSTNAME}" ]]; then
-            variable_name="HOSTNAME"
             unset_variable
     fi
 
@@ -55,14 +58,14 @@ initial_setup() {
 
 unset_variable() {
     echo "ERROR: \"${variable_name}\" is a required variable"
-    exit 1
+    exit 31
 }
 
 missing_file() {
     echo "ERROR: \"${file}\" does not exist"
-    exit 2
+    exit 32
 }
 
 main
 
-exec ceph-osd -f -d -i "${osd_id}" --osd-journal "${osd_dir}/journal" -k "${osd_dir}/keyring"
+exec ceph-osd -f -d -i "${OSD_ID}" --osd-journal "${osd_dir}/journal" -k "${osd_dir}/keyring"
