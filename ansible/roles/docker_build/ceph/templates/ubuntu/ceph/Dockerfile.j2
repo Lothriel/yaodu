@@ -4,7 +4,7 @@ MAINTAINER	Sam Yaple <sam@yaple.net>
 RUN		curl 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | apt-key add -
 ADD		ceph.list /etc/apt/sources.list.d/ceph.list
 
-RUN		apt-get update && apt-get install -y ceph
+RUN		apt-get update && apt-get install -y ceph parted
 ADD		mon.sh /opt/ceph/
 ADD		osd.sh /opt/ceph/
 

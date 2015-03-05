@@ -68,7 +68,6 @@ def main():
     try:
         disks = subprocess.check_output("parted -l", shell=True).split('\n')
 
-        osd_all = []
         osd_uninitialized = []
         osd_initialized = []
 
@@ -78,21 +77,19 @@ def main():
             if d[0] == 'Disk':
                 dev = d[1][:-1]
 
-            if "CEPH_OSD" in line:
-                osd_all.append(dev + d[1])
+            if line.find('CEPH_OSD') != -1 or line.find('ceph data') != -1:
+                try:
+                    part = dev + d[1]
+                    c = subprocess.check_output("blkid " + part, shell=True).split('"')[1]
+                    osd_initialized.append({'device': part, 'fs_uuid': c})
+                except subprocess.CalledProcessError:
+                    osd_uninitialized.append(dev)
+                    continue
 
-        if not osd_all:
+        if not osd_uninitialized and not osd_initialized:
             module.exit_json(initialized=None, uninitialized=None)
 
-        for k in osd_all:
-            try:
-                c = subprocess.check_output("blkid " + k, shell=True).split('"')[1]
-                osd_initialized.append({'device': k, 'fs_uuid': c})
-            except subprocess.CalledProcessError:
-                osd_uninitialized.append(k)
-                continue
-
-        module.exit_json(initialized=osd_initialized, unitialized=osd_uninitialized)
+        module.exit_json(initialized=osd_initialized, uninitialized=osd_uninitialized)
 
     except Exception as e:
         module.exit_json(failed=True, msg=repr(e))

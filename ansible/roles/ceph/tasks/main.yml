@@ -30,12 +30,12 @@
   when: inventory_hostname in groups['ceph-mon']
   serial: 1
 
-# Ansible Hackery
-# We look this up across all hosts even though we are only running the mounts
-# on the ceph-osd group
-- name: Looking up partitions
-  ceph_osd_list:
-  register: osds
+- include: osd_lookup.yml
+
+- include: osd_bootstrap.yml
+  when: inventory_hostname in groups['ceph-osd']
+
+- include: osd_lookup.yml
 
 - include: osd_start.yml
   when: inventory_hostname in groups['ceph-osd']

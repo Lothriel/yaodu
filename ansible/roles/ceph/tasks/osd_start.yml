@@ -8,15 +8,6 @@
   with_items: osds['initialized']
   when: osds['initialized'] and osds is defined
 
-- name: Checking if OSD has been initialized
-  stat:
-    path: "/var/lib/ceph/osd/{{ item['fs_uuid'] }}/whoami"
-  with_items: osds['initialized']
-  when: osds['initialized'] and osds is defined
-  register: osd
-
-- include: osd_bootstrap.yml
-
 - name: Gathering OSD IDs
   command: 'cat /var/lib/ceph/osd/{{ item.fs_uuid }}/whoami'
   with_items: osds['initialized']
@@ -28,15 +19,16 @@
 
 - name: Starting Ceph OSD
   docker:
+    privileged: True
     net: host
     pid: host
-    volumes: "/var/lib/ceph/osd/{{ item.1.fs_uuid }}:/var/lib/ceph/osd/{{ ceph_cluster_name }}-{{ item.0.stdout }},/etc/ceph:/etc/ceph"
+    volumes: "/var/lib/ceph/osd/{{ item.1.fs_uuid }}:/var/lib/ceph/osd/{{ ceph_cluster_name }}-{{ item.0.stdout }},/etc/ceph:/etc/ceph,/dev:/dev"
     state: running
     image: "{{ docker_registry }}/yaodu/ceph"
     env: "CEPH_CLUSTER_NAME={{ ceph_cluster_name }},OSD_ID={{ item.0.stdout }}"
     command: "/opt/ceph/osd.sh"
     name: "ceph_osd_{{ item.0.stdout }}"
   with_together:
-    - id.results
+    - id['results']
     - osds['initialized']
   when: osds['initialized'] and osds is defined
