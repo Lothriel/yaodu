@@ -19,7 +19,7 @@ compute02
 [management:children]
 support
 
-[build_hosts:children]
+[build-hosts:children]
 support
 
 [ceph-all:children]
@@ -47,10 +47,10 @@ support
 [keystone:children]
 support
 
-[load_balancer:children]
+[load-balancer:children]
 network
 
-[message_broker:children]
+[message-broker:children]
 support
 
 [neutron-server:children]

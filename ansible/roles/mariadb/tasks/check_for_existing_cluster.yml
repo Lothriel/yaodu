@@ -1,0 +1,13 @@
+---
+- name: Checking if a previous database exists
+  stat:
+    path: "/opt/yaodu/mariadb/data/mysql/"
+  register: mysql
+
+- name: Bootstraping mysql database
+  command: /usr/bin/env docker run --rm=True                                   \
+             -v /opt/yaodu/mariadb/galera.cnf:/etc/mysql/conf.d/galera.cnf     \
+             -v /opt/yoadu/mariadb/data/:/var/lib/mysql/                       \
+             -e "BOOTSTRAP=true"                                               \
+             -t "{{ docker_registry }}/yaodu/mariadb" /opt/mariadb/database.sh
+  when: not mysql.stat.exists

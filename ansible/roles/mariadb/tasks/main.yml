@@ -1,0 +1,22 @@
+---
+- include: install_packages-ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+
+- include: container_pull.yml
+  when: inventory_hostname in groups['database']
+  vars:
+    container: mariadb
+
+- name: Ensuring /opt/yaodu/mariadb/data/ exists
+  file:
+    path: /opt/yaodu/mariadb/data/
+    state: directory
+
+- name: Copying MaraiDB and Galera cluster conf files
+  template:
+    src: galera.cnf.j2
+    dest: "/opt/yaodu/mariadb/galera.cnf"
+    mode: 0644
+
+- include: check_for_existing_cluster.yml
+  when: inventory_hostname in groups['database']

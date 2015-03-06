@@ -19,11 +19,13 @@
 #      env: "{{ docker_registry_env_vars | default('GUNICORN_OPTS=[--preload]') }}"
 #    run_once: true
 
-- hosts: build_hosts
+- hosts: build-hosts
   roles:
     - docker_build/common
     - docker_build/openstack_common
     - docker_build/ceph
+    - docker_build/mariadb
+  tags: build
 
 - hosts:
     - management
@@ -31,3 +33,7 @@
     - compute
   roles:
     - ceph
+
+#- hosts: database
+#  roles:
+#    - mariadb
