@@ -1,0 +1,11 @@
+---
+- name: Starting Mariadb Database
+  docker:
+    net: bridge
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:3306:3306,{{ ansible_br_mgmt['ipv4']['address'] }}:4444:4444,{{ ansible_br_mgmt['ipv4']['address'] }}:4567:4567,{{ ansible_br_mgmt['ipv4']['address'] }}:4568:4568"
+    volumes: "/opt/yaodu/mariadb/galera.cnf:/etc/mysql/conf.d/galera.cnf,/opt/yaodu/mariadb/data/:/var/lib/mysql/"
+    state: running
+    env: "BOOTSTRAP=true,DATABASE_ROOT_PASSWORD={{ database_root_password }}"
+    image: "{{ docker_registry }}/yaodu/mariadb"
+    command: "/opt/mariadb/database.sh"
+    name: "mariadb"

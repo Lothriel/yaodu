@@ -6,3 +6,6 @@
       - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
       - { src: "{{ yaodu_distro }}/{{ container }}/mariadb.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/mariadb.list" }
       - { src: "{{ yaodu_distro }}/{{ container }}/percona.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/percona.list" }
+    files:
+      - { src: "{{ yaodu_distro }}/{{ container }}/database.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/database.sh" }
+

@@ -20,3 +20,6 @@
 
 - include: check_for_existing_cluster.yml
   when: inventory_hostname in groups['database']
+
+- include: mariadb_start.yml
+  when: inventory_hostname in groups['database']

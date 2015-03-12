@@ -6,4 +6,10 @@ RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 430BDF5C56E7
 ADD		mariadb.list /etc/apt/sources.list.d/mariadb.list
 ADD		percona.list /etc/apt/sources.list.d/percona.list
 
-RUN		apt-get update && apt-get install -y mariadb-galera-server percona-xtrabackup socat
+RUN		apt-get update && apt-get install -y mariadb-galera-server percona-xtrabackup socat expect
+
+ADD		database.sh /opt/mariadb/database.sh
+RUN		chmod +x /opt/mariadb/database.sh
+
+VOLUME		["/etc/mysql/conf.d/galera.cnf", "/var/lib/mysql/"]
+EXPOSE		3306 4444 4567 4568

@@ -34,6 +34,7 @@
   roles:
     - ceph
 
-#- hosts: database
-#  roles:
-#    - mariadb
+- hosts: database
+  roles:
+    - mariadb
+  tags: database
