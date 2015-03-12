@@ -23,7 +23,7 @@ main() {
 	mysqld --wsrep-new-cluster &
 	pid=$!
 
-	sleep 5
+	sleep 15
         bootstrap_database
 
 	mysql --password="${DATABASE_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '${DATABASE_ROOT_PASSWORD}' WITH GRANT OPTION;"
