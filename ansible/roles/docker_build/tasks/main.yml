@@ -1,0 +1,12 @@
+---
+- include: common.yml
+  tags: common, openstack_common, ceph, mariadb
+
+- include: openstack_common.yml
+  tags: openstack_common
+
+- include: ceph.yml
+  tags: ceph
+
+- include: mariadb.yml
+  tags: mariadb

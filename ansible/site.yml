@@ -21,10 +21,7 @@
 
 - hosts: build-hosts
   roles:
-    - docker_build/common
-    - docker_build/openstack_common
-    - docker_build/ceph
-    - docker_build/mariadb
+    - docker_build
   tags: build
 
 - hosts:
