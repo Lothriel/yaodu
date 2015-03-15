@@ -1,0 +1,12 @@
+FROM		{{ docker_registry }}/yaodu/common
+MAINTAINER	Sam Yaple <sam@yaple.net>
+
+RUN		apt-get install -y --no-install-recommends keepalived
+RUN		apt-get clean -y
+
+ADD		keepalived.sh /opt/keepalived.sh
+
+RUN		chmod +x /opt/keepalived.sh
+
+VOLUME          ["/etc/keepalived/keepalived.conf"]
+EXPOSE          3306

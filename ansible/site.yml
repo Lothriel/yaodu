@@ -22,7 +22,7 @@
 - hosts: build-hosts
   roles:
     - docker_build
-  tags: build
+  tags: build, common, openstack_common, ceph, mariadb, haproxy, keepalived
 
 - hosts:
     - management
