@@ -20,7 +20,7 @@ main() {
 	    unset_variable
 	fi
 
-	mysqld --wsrep-new-cluster &
+	/usr/sbin/mysqld --wsrep-new-cluster &
 	pid=$!
 
 	sleep 15
@@ -29,7 +29,8 @@ main() {
 	mysql --password="${DATABASE_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '${DATABASE_ROOT_PASSWORD}' WITH GRANT OPTION;"
 	mysql --password="${DATABASE_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '${DATABASE_ROOT_PASSWORD}' WITH GRANT OPTION;"
 
-#	mysqladmin --password="${DATABASE_ROOT_PASSWORD}" shutdown
+	mysql --password="${DATABASE_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON *.* TO 'haproxy'@'localhost';"
+	mysql --password="${DATABASE_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON *.* TO 'haproxy'@'%';"
 
 	wait "${pid}"
 	exit $?
