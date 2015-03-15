@@ -35,3 +35,9 @@
   roles:
     - mariadb
   tags: database
+
+- hosts: load-balancer
+  roles:
+    - haproxy
+  tags: haproxy
+

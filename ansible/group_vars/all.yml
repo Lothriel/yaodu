@@ -2,7 +2,7 @@ forced: false
 update_conf: false
 yaodu_directory: "/opt/yaodu"
 yaodu_distro: "ubuntu"
-yaodu_distro_tag: "14.04.1"
+yaodu_distro_tag: "14.04.2"
 ceph_release: giant
 ceph_cluster_name: ceph
 ceph_cluster_fsid: "3cc8d825-cfbf-4a14-836a-186bcf333b06"

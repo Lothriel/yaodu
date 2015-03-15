@@ -1,0 +1,19 @@
+---
+- include: container_pull.yml
+  when: inventory_hostname in groups['load-balancer']
+  vars:
+    container: haproxy
+
+- name: Ensuring /opt/yaodu/mariadb/data/ exists
+  file:
+    path: /opt/yaodu/haproxy/
+    state: directory
+
+- name: Copying haproxy.cfg
+  template:
+    src: haproxy.cfg.j2
+    dest: "/opt/yaodu/haproxy/haproxy.cfg"
+    mode: 0644
+
+- include: haproxy_start.yml
+  when: inventory_hostname in groups['load-balancer']
