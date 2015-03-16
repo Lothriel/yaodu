@@ -1,0 +1,11 @@
+---
+- name: Starting keepalived
+  docker:
+    privileged: True
+    pid: host
+    net: host
+    volumes: "/opt/yaodu/keepalived/keepalived.conf:/etc/keepalived/keepalived.conf,/lib/modules/:/lib/modules/"
+    state: running
+    image: "{{ docker_registry }}/yaodu/keepalived"
+    command: "/opt/keepalived/keepalived.sh"
+    name: "keepalived"

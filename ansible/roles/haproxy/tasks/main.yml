@@ -15,5 +15,8 @@
     dest: "/opt/yaodu/haproxy/haproxy.cfg"
     mode: 0644
 
+- name: Allowing non-local IP binding
+  sysctl: name="net.ipv4.ip_nonlocal_bind" value=1 sysctl_set=yes
+
 - include: haproxy_start.yml
   when: inventory_hostname in groups['load-balancer']

@@ -1,0 +1,19 @@
+---
+- include: container_pull.yml
+  when: inventory_hostname in groups['load-balancer']
+  vars:
+    container: keepalived
+
+- name: Ensuring /opt/yaodu/mariadb/data/ exists
+  file:
+    path: /opt/yaodu/keepalived/
+    state: directory
+
+- name: Copying keepalived.conf
+  template:
+    src: keepalived.conf.j2
+    dest: "/opt/yaodu/keepalived/keepalived.conf"
+    mode: 0644
+
+- include: keepalived_start.yml
+  when: inventory_hostname in groups['load-balancer']

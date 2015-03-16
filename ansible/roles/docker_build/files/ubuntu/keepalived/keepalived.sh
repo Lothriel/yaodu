@@ -27,4 +27,4 @@ missing_file() {
 
 main
 
-exec /usr/sbin/keepalived
+exec /usr/sbin/keepalived -n
