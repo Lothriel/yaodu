@@ -5,6 +5,8 @@ RUN		curl 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | a
 ADD		ceph.list /etc/apt/sources.list.d/ceph.list
 
 RUN		apt-get update && apt-get install -y ceph parted
-ADD		entrypoint.sh /entrypoint.sh
 
+ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
+
+VOLUMES         ["/etc/ceph", "/var/lib/ceph"]

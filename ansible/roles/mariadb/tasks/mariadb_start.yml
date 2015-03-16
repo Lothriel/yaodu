@@ -6,5 +6,5 @@
     volumes: "/opt/yaodu/mariadb/galera.cnf:/etc/mysql/conf.d/galera.cnf,/opt/yaodu/mariadb/data/:/var/lib/mysql/"
     state: running
     image: "{{ docker_registry }}/yaodu/mariadb"
-    command: "/opt/mariadb/database.sh"
+    command: "/entrypoint.sh"
     name: "mariadb"

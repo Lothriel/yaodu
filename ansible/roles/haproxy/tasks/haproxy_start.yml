@@ -7,5 +7,5 @@
     volumes: "/opt/yaodu/haproxy/haproxy.cfg:/etc/haproxy/haproxy.cfg"
     state: running
     image: "{{ docker_registry }}/yaodu/haproxy"
-    command: "/opt/haproxy/haproxy.sh"
+    command: "/entrypoint.sh"
     name: "haproxy"

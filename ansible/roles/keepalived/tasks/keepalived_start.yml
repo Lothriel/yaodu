@@ -7,5 +7,5 @@
     volumes: "/opt/yaodu/keepalived/keepalived.conf:/etc/keepalived/keepalived.conf,/lib/modules/:/lib/modules/"
     state: running
     image: "{{ docker_registry }}/yaodu/keepalived"
-    command: "/opt/keepalived/keepalived.sh"
+    command: "/entrypoint.sh"
     name: "keepalived"

@@ -6,8 +6,8 @@ ADD		rabbitmq.list /etc/apt/sources.list.d/rabbitmq.list
 
 RUN		apt-get update && apt-get install -y rabbitmq-server
 
-ADD		rabbitmq.sh /opt/rabbitmq/rabbitmq.sh
-RUN		chmod +x /opt/rabbitmq/rabbitmq.sh
+ADD		entrypoint.sh /entrypoint.sh
+RUN		chmod +x /entrypoint.sh
 
 VOLUME		["/var/lib/rabbitmq/"]
 EXPOSE		4369 5672 15672 25672

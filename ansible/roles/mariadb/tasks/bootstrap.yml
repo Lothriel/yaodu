@@ -7,5 +7,5 @@
     state: running
     env: "BOOTSTRAP=true,DATABASE_ROOT_PASSWORD={{ database_root_password }}"
     image: "{{ docker_registry }}/yaodu/mariadb"
-    command: "/opt/mariadb/database.sh"
+    command: "/entrypoint.sh"
     name: "mariadb"

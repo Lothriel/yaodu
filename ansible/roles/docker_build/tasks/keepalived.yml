@@ -5,4 +5,4 @@
     templates:
       - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
     files:
-      - { src: "{{ yaodu_distro }}/{{ container }}/keepalived.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/keepalived.sh" }
+      - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }

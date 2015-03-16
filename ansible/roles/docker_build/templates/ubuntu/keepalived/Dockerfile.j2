@@ -4,8 +4,7 @@ MAINTAINER	Sam Yaple <sam@yaple.net>
 RUN		apt-get install -y --no-install-recommends keepalived
 RUN		apt-get clean -y
 
-ADD		keepalived.sh /opt/keepalived/keepalived.sh
-
-RUN		chmod +x /opt/keepalived/keepalived.sh
+ADD		entrypoint.sh /entrypoint.sh
+RUN		chmod +x /entrypoint.sh
 
 VOLUME          ["/etc/keepalived/keepalived.conf", "/lib/modules"]
