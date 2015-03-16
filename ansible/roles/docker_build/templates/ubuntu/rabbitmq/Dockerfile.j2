@@ -1,0 +1,13 @@
+FROM		{{ docker_registry }}/yaodu/common
+MAINTAINER	Sam Yaple <sam@yaple.net>
+
+RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com F78372A06FF50C80464FC1B4F7B8CEA6056E8E56
+ADD		rabbitmq.list /etc/apt/sources.list.d/rabbitmq.list
+
+RUN		apt-get update && apt-get install -y rabbitmq-server
+
+ADD		rabbitmq.sh /opt/rabbitmq/rabbitmq.sh
+RUN		chmod +x /opt/rabbitmq/rabbitmq.sh
+
+VOLUME		["/var/lib/rabbitmq/"]
+EXPOSE		4369 5672 15672 25672

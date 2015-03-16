@@ -1,0 +1,9 @@
+---
+- include: check.yml
+  vars:
+    container: rabbitmq
+    templates:
+      - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
+      - { src: "{{ yaodu_distro }}/{{ container }}/rabbitmq.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/rabbitmq.list" }
+    files:
+      - { src: "{{ yaodu_distro }}/{{ container }}/rabbitmq.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/rabbitmq.sh" }
