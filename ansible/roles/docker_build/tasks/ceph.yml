@@ -3,8 +3,7 @@
   vars:
     container: ceph
     files:
-      - { src: "{{ yaodu_distro }}/{{ container }}/mon.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/mon.sh" }
-      - { src: "{{ yaodu_distro }}/{{ container }}/osd.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/osd.sh" }
+      - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }
     templates:
       - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
       - { src: "{{ yaodu_distro }}/{{ container }}/ceph.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/ceph.list" }

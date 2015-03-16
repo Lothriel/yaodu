@@ -4,9 +4,10 @@
         --privileged \
         -v /dev:/dev \
         -v /etc/ceph:/etc/ceph \
+        -e "SERVICE=osd" \
         -e "CEPH_CLUSTER_NAME={{ ceph_cluster_name }}" \
         -e "OSD_DEV={{ item }}" \
         -e "INITIALIZE_OSD=true" \
         -e "HOSTNAME={{ ansible_hostname }}" \
-        -t "{{ docker_registry }}/yaodu/ceph" /opt/ceph/osd.sh
+        -t "{{ docker_registry }}/yaodu/ceph" /entrypoint.sh
   with_items: osds['uninitialized']

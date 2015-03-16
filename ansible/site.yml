@@ -30,6 +30,7 @@
     - compute
   roles:
     - ceph
+  tags: ceph
 
 - hosts: database
   roles:
