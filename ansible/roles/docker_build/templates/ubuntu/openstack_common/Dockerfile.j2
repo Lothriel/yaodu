@@ -1,10 +1,9 @@
 FROM		{{ docker_registry }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-get install -y --no-install-recommends build-essential python-dev libssl-dev libffi-dev libyaml-dev libxml2-dev libxslt-dev git && \
+RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 391A9AA2147192839E9DB0315EDB1B62EC4926EA
+ADD             juno.list /etc/apt/sources.list.d/juno.list
+
+RUN		apt-get update && \
+                apt-get dist-upgrade -y && \
                 apt-get clean
-
-RUN		curl https://bootstrap.pypa.io/get-pip.py | python
-RUN		pip install wheel python-memcached
-
-RUN		mkdir -p /opt/ && cd /opt/ && git clone --depth 1 --branch stable/juno https://github.com/openstack/requirements.git
