@@ -1,6 +1,8 @@
 ---
+- include: osd_lookup.yml
+
 - name: Bootstraping Ceph OSD
-  command: /usr/bin/env docker run --rm=True \
+  command: /usr/bin/env docker run \
         --privileged \
         -v /dev:/dev \
         -v /etc/ceph:/etc/ceph \
@@ -11,3 +13,6 @@
         -e "HOSTNAME={{ ansible_hostname }}" \
         -t "{{ docker_registry }}/yaodu/ceph" /entrypoint.sh
   with_items: osds['uninitialized']
+  when: inventory_hostname in groups['ceph-osd']
+
+- include: osd_lookup.yml

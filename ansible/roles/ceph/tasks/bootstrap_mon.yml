@@ -9,6 +9,6 @@
                         -e "MON_IP={{ ansible_br_stor['ipv4']['address'] }}" \
                         -t "{{ docker_registry }}/yaodu/ceph" /entrypoint.sh
 
-- name: Setting host if no existing cluster was found
+- name: Setting host for cluster files
   set_fact:
     delegate_host: "{{ ansible_hostname }}"

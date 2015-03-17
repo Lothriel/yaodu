@@ -1,9 +1,2 @@
 ---
-- name: Stopping Ceph mon
-  docker:
-    image: "{{ docker_registry }}/yaodu/ceph"
-    state: absent
-    name: "ceph_mon"
-  when: ceph_changed is defined
-
-- include: mon_start.yml
+- include: start_mon.yml

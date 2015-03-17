@@ -26,4 +26,3 @@
 - name: Pushing monitor map and keyring
   include: configs_push.yml
   when: inventory_hostname in groups['ceph-mon']
-

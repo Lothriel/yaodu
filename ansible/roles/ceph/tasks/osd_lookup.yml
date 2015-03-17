@@ -1,6 +1,6 @@
 # Ansible Hackery
 # We look this up across all hosts even though we are only running the mounts
-# on the ceph-osd group
-- name: Looking up partitions
+# on the ceph-osd group to avoid and issue with variable not being set
+- name: Looking up partitions to use for Ceph OSD
   ceph_osd_list:
   register: osds

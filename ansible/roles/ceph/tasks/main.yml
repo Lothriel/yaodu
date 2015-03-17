@@ -1,6 +1,7 @@
 ---
 - include: install_packages-ubuntu.yml
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu' and
+        inventory_hostname in groups['management']
 
 - include: container_pull.yml
   when: inventory_hostname in groups['ceph-all']
@@ -23,19 +24,10 @@
 
 - include: configs_sync.yml
 
-- include: mon_start.yml
+- include: start_mon.yml
   when: inventory_hostname in groups['ceph-mon']
 
-- include: mon_restart.yml
-  when: inventory_hostname in groups['ceph-mon']
-  serial: 1
+- include: bootstrap_osd.yml
 
-- include: osd_lookup.yml
-
-- include: osd_bootstrap.yml
-  when: inventory_hostname in groups['ceph-osd']
-
-- include: osd_lookup.yml
-
-- include: osd_start.yml
+- include: start_osd.yml
   when: inventory_hostname in groups['ceph-osd']

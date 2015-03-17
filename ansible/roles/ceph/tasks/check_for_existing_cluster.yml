@@ -32,5 +32,6 @@
   always_run: True
   run_once: True
 
-- include: bootstrap.yml
+- include: bootstrap_mon.yml
   when: delegate_host == 'None' and inventory_hostname == groups['support'][0]
+
