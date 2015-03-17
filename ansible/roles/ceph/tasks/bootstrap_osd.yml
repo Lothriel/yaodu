@@ -13,6 +13,7 @@
         -e "HOSTNAME={{ ansible_hostname }}" \
         -t "{{ docker_registry }}/yaodu/ceph" /entrypoint.sh
   with_items: osds['uninitialized']
-  when: inventory_hostname in groups['ceph-osd']
+  when: inventory_hostname in groups['ceph-osd'] and
+        osds['uninitialized']
 
 - include: osd_lookup.yml
