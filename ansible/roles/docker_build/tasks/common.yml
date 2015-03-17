@@ -13,3 +13,5 @@
       - { src: "{{ yaodu_distro }}/common/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
       - { src: "{{ yaodu_distro }}/common/sources.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/sources.list" }
       - { src: "{{ yaodu_distro }}/common/apt.conf.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/apt.conf" }
+    files:
+      - { src: "errors.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/errors.sh" }
