@@ -1,8 +1,8 @@
 FROM		{{ docker_registry }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-get install -y --no-install-recommends keepalived
-RUN		apt-get clean -y
+RUN		apt-get install -y --no-install-recommends keepalived && \
+		apt-get clean -y
 
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh

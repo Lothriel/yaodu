@@ -1,12 +1,14 @@
 FROM		{{ docker_registry  }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		curl 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | apt-key add -
+RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 7F6C9F236D170493FCF404F27EBFDD5D17ED316D
 ADD		ceph.list /etc/apt/sources.list.d/ceph.list
 
-RUN		apt-get update && apt-get install -y ceph parted
+RUN		apt-get update && \
+                apt-get install -y --no-install-recommends ceph parted && \
+                apt-get clean
 
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
 
-VOLUMES         ["/etc/ceph", "/var/lib/ceph"]
+VOLUME          ["/etc/ceph", "/var/lib/ceph"]

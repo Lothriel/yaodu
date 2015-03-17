@@ -4,7 +4,9 @@ MAINTAINER	Sam Yaple <sam@yaple.net>
 RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com F78372A06FF50C80464FC1B4F7B8CEA6056E8E56
 ADD		rabbitmq.list /etc/apt/sources.list.d/rabbitmq.list
 
-RUN		apt-get update && apt-get install -y rabbitmq-server
+RUN		apt-get update && \
+                apt-get install -y --no-install-recommends rabbitmq-server && \
+                apt-get clean
 
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
