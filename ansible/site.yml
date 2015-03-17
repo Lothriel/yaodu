@@ -32,7 +32,9 @@
     - ceph
   tags: ceph
 
-- hosts: database
+- hosts:
+    - management
+    - database
   roles:
     - mariadb
   tags: database
