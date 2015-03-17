@@ -1,6 +1,6 @@
 ---
 - include: common.yml
-  tags: common, openstack_common, ceph, mariadb, haproxy, keepalived, rabbitmq
+  tags: common
 
 - include: openstack_common.yml
   tags: openstack_common

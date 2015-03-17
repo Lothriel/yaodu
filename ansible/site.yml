@@ -22,7 +22,7 @@
 - hosts: build-hosts
   roles:
     - docker_build
-  tags: build, common, openstack_common, ceph, mariadb, haproxy, keepalived, rabbitmq
+  tags: build
 
 - hosts:
     - management
@@ -45,3 +45,7 @@
     - haproxy
   tags: keepalived, haproxy
 
+- hosts: message-broker
+  roles:
+    - rabbitmq
+  tags: rabbitmq

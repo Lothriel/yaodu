@@ -1,0 +1,17 @@
+---
+- name: Pulling erlang cookie
+  bslurp:
+     src: "{{ item }}"
+  with_items:
+     - "/opt/yaodu/rabbitmq/.erlang.cookie"
+  register: files
+  delegate_to: "{{ delegate_hostname }}"
+  run_once: True
+
+- name: Pushing erlang cookie
+  bslurp:
+    src: "{{ item.content }}"
+    dest: "{{ item.source }}"
+    mode: "{{ item.mode }}"
+    sha_hash: "{{ item.sha_hash }}"
+  with_items: files.results

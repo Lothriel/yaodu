@@ -1,0 +1,13 @@
+---
+- include: container_pull.yml
+  vars:
+    container: rabbitmq
+
+- name: Ensuring /opt/yaodu/rabbitmq/ exists
+  file:
+    path: /opt/yaodu/rabbitmq/
+    state: directory
+
+- include: check_for_existing_cluster.yml
+
+- include: start.yml

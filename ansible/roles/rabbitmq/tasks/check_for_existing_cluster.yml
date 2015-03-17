@@ -1,0 +1,48 @@
+---
+- name: Creating temp file on localhost
+  local_action: shell echo 'None' > /tmp/yaodu_rabbitmq_cluster
+  register: status
+  changed_when: False
+  failed_when: status.rc != 0
+  always_run: True
+  run_once: True
+
+- name: Checking if a previous cluster exists
+  stat:
+    path: "/opt/yaodu/rabbitmq/erlang.cookie"
+  register: file
+
+- name: Writing hostname of host with existing cluster files to temp file
+  local_action: shell echo "{{ ansible_hostname }}" > /tmp/yaodu_rabbitmq_cluster
+  register: status
+  changed_when: False
+  failed_when: status.rc != 0
+  always_run: True
+  when: file.stat.exists
+
+- name: Registering host from temp file
+  set_fact:
+    delegate_host: "{{ lookup('file', '/tmp/yaodu_rabbitmq_cluster') }}"
+
+- name: Cleaning up temp file on localhost
+  local_action: shell rm /tmp/yaodu_rabbitmq_cluster
+  register: status
+  changed_when: False
+  failed_when: status.rc != 0
+  always_run: True
+  run_once: True
+
+- name: Setting host for cluster files
+  set_fact:
+    delegate_hostname: "{{ groups['message-broker'][0] }}"
+  when: delegate_host == 'None'
+
+- include: bootstrap.yml
+  when: delegate_host == 'None' and inventory_hostname == groups['message-broker'][0]
+
+- include: start.yml
+  when: inventory_hostname == groups['message-broker'][0]
+
+- include: configs_sync.yml
+
+- include: bootstrap_if_needed.yml

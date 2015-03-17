@@ -1,0 +1,8 @@
+---
+- name: Bootstraping RabbitMQ cluster
+  command: /usr/bin/env docker run --rm=true \
+                        -v /opt/yaodu/rabbitmq/:/var/lib/rabbitmq/ \
+                        -h "{{ ansible_hostname }}"
+                        -e "INITIAL=true" \
+                        -e "NODE_TO_JOIN={{ delegate_hostname }}" \
+                        -t "{{ docker_registry }}/yaodu/rabbitmq" /entrypoint.sh
