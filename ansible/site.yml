@@ -37,7 +37,7 @@
     - database
   roles:
     - mariadb
-  tags: database
+  tags: mariadb
 
 - hosts: load-balancer
   roles:
