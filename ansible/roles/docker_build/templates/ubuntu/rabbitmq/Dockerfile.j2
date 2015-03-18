@@ -10,6 +10,3 @@ RUN		apt-get update && \
 
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
-
-VOLUME		["/var/lib/rabbitmq/"]
-EXPOSE		4369 5672 15672 25672
