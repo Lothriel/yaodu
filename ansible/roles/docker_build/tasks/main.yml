@@ -9,11 +9,15 @@
     - haproxy
     - keepalived
     - keystone
+    - glance
+    - nova
 
 - include: openstack_common.yml
   tags:
     - openstack_common
     - keystone
+    - glance
+    - nova
 
 - include: ceph.yml
   tags: ceph
@@ -32,3 +36,9 @@
 
 - include: keystone.yml
   tags: keystone
+
+- include: glance.yml
+  tags: glance
+
+- include: nova.yml
+  tags: nova
