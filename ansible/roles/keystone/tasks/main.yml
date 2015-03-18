@@ -20,4 +20,6 @@
     dest: "/opt/yaodu/keystone/keystone.conf"
     mode: 0644
 
-#- include: start.yml
+- include: bootstrap.yml
+
+- include: start.yml

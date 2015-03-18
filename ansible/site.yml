@@ -43,7 +43,9 @@
   roles:
     - keepalived
     - haproxy
-  tags: keepalived, haproxy
+  tags:
+    - keepalived
+    - haproxy
 
 - hosts: message-broker
   roles:

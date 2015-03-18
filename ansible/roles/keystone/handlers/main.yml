@@ -1,0 +1,7 @@
+---
+- name: dbsync
+  command: /usr/bin/env docker run --rm=true \
+                        -v /opt/yaodu/keystone/:/etc/keystone/ \
+                        -t "{{ docker_registry }}/yaodu/keystone" \
+                        /usr/bin/env keystone-manage db_sync
+  run_once: True

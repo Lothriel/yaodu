@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# added pid mode, this file can be removed when ansible 1.9 hits, i got it
+# merged upstream
+
 # (c) 2013, Cove Schneider
 # (c) 2014, Joshua Conner <joshua.conner@gmail.com>
 # (c) 2014, Pavel Antonov <antonov@adwz.ru>

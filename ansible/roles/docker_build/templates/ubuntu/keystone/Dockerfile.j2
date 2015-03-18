@@ -1,5 +1,16 @@
-FROM		{{ docker_registry }}/yaodu/common
+FROM		{{ docker_registry }}/yaodu/openstack_common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-get install -y keystone
+RUN		apt-get install -y keystone && \
                 apt-get clean
+
+RUN             mv /etc/keystone /etc/keystone.org
+
+ADD             entrypoint.sh /entrypoint.sh
+RUN             chmod +x /entrypoint.sh
+
+USER            keystone
+WORKDIR         /var/lib/keystone
+
+VOLUME          ["/etc/keystone"]
+EXPOSE          5000 35357

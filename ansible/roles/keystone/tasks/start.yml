@@ -1,11 +1,9 @@
 ---
-- name: Starting haproxy
+- name: Starting Keystone
   docker:
-    privileged: True
-    pid: host
-    ports: "{{ yaodu_api_vip }}:3306:3306"
-    volumes: "/opt/yaodu/haproxy/haproxy.cfg:/etc/haproxy/haproxy.cfg"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:5000:5000,{{ ansible_br_mgmt['ipv4']['address'] }}:35357:35357"
+    volumes: "/opt/yaodu/keystone/:/etc/keystone/"
     state: running
-    image: "{{ docker_registry }}/yaodu/haproxy"
+    image: "{{ docker_registry }}/yaodu/keystone"
     command: "/entrypoint.sh"
-    name: "haproxy"
+    name: "keystone"

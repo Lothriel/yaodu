@@ -11,7 +11,9 @@
     - keystone
 
 - include: openstack_common.yml
-  tags: openstack_common
+  tags:
+    - openstack_common
+    - keystone
 
 - include: ceph.yml
   tags: ceph

@@ -1,0 +1,22 @@
+---
+- name: Creating keystone database
+  mysql_db:
+    login_host: "{{ yaodu_api_vip }}"
+    login_user: "root"
+    login_password: "{{ database_root_password }}"
+    name: "keystone"
+  notify: dbsync
+  run_once: True
+
+- name: Creating keystone database user and setting permissions
+  mysql_user:
+    login_host: "{{ yaodu_api_vip }}"
+    login_user: "root"
+    login_password: "{{ database_root_password }}"
+    name: "keystone"
+    password: "password"
+    host: "%"
+    priv: keystone.*:ALL
+    append_privs: yes
+  run_once: True
+
