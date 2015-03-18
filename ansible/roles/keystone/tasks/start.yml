@@ -1,0 +1,11 @@
+---
+- name: Starting haproxy
+  docker:
+    privileged: True
+    pid: host
+    ports: "{{ yaodu_api_vip }}:3306:3306"
+    volumes: "/opt/yaodu/haproxy/haproxy.cfg:/etc/haproxy/haproxy.cfg"
+    state: running
+    image: "{{ docker_registry }}/yaodu/haproxy"
+    command: "/entrypoint.sh"
+    name: "haproxy"

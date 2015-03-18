@@ -1,0 +1,23 @@
+---
+- include: container_pull.yml
+  vars:
+    container: keystone
+
+- name: Ensuring /opt/yaodu/keystone/ exists
+  file:
+    path: /opt/yaodu/keystone/
+    state: directory
+
+- name: Creating default keystone files
+  copy:
+    directory_mode: yes
+    src: etc/keystone/
+    dest: "/opt/yaodu/keystone/"
+
+- name: Copying keystone.conf
+  template:
+    src: keystone.conf.j2
+    dest: "/opt/yaodu/keystone/keystone.conf"
+    mode: 0644
+
+#- include: start.yml

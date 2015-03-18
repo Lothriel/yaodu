@@ -6,6 +6,6 @@ ADD             juno.list /etc/apt/sources.list.d/juno.list
 
 RUN		apt-get update && \
                 apt-get dist-upgrade -y && \
-                apt-get install -y --no-install-recommends python-cinderclient python-glanceclient python-keystoneclient python-neutronclient python-novaclient python-swiftclient \
-                                                           alembic python-oslo.messaging python-oslo.db python-oslo.rootwrap python-oslo.serialization python-oslo.vmware && \
+                apt-get install -y python-cinderclient python-glanceclient python-keystoneclient python-neutronclient python-novaclient python-swiftclient \
+                                   alembic python-mysqldb python-oslo.messaging python-oslo.db python-oslo.rootwrap python-oslo.serialization && \
                 apt-get clean

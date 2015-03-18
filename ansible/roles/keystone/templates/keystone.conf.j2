@@ -1,0 +1,23 @@
+[DEFAULT]
+verbose = true
+debug = true
+
+#CHANGEME
+admin_token = password
+
+public_endpoint = http://{{ yaodu_api_vip }}:5000
+admin_endpoint = http://{{ yaodu_api_vip }}:35357
+
+log_file = keystone.log
+log_dir = /var/log/keystone
+
+rpc_backend = rabbit
+rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
+
+#CHANGEME
+rabbit_password = password
+rabbit_ha_queues = true
+
+[database]
+#CHANGEME
+connection = mysql://keystone:password@{{ yaodu_api_vip }}/keystone

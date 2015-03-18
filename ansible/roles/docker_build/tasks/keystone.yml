@@ -1,0 +1,6 @@
+---
+- include: check.yml
+  vars:
+    container: keystone
+    templates:
+      - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
