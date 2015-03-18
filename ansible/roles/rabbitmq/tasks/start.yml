@@ -1,11 +1,11 @@
 ---
 - name: Starting RabbitMQ
   docker:
+    name: "rabbitmq"
+    image: "{{ docker_registry }}/yaodu/rabbitmq"
+    state: running
     ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:4369:4369,{{ ansible_br_mgmt['ipv4']['address'] }}:5672:5672,{{ ansible_br_mgmt['ipv4']['address'] }}:15672:15672,{{ ansible_br_mgmt['ipv4']['address'] }}:25672:25672"
     expose: "4369,5672,15672,25672"
     volumes: "/opt/yaodu/rabbitmq/:/var/lib/rabbitmq/"
-    state: running
-    image: "{{ docker_registry }}/yaodu/rabbitmq"
-    command: "/entrypoint.sh"
-    name: "rabbitmq"
     hostname: "{{ ansible_hostname }}"
+    command: "/entrypoint.sh"

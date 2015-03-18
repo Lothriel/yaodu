@@ -1,10 +1,10 @@
 ---
 - name: Starting Ceph mon
   docker:
-    net: host
-    volumes: /etc/ceph:/etc/ceph
-    state: running
+    name: "ceph_mon"
     image: "{{ docker_registry }}/yaodu/ceph"
+    state: "running"
+    net: "host"
+    volumes: "/etc/ceph:/etc/ceph"
     env: "SERVICE=mon,CEPH_CLUSTER_NAME={{ ceph_cluster_name }},MON_NAME={{ ansible_hostname }},MON_IP={{ ansible_br_stor['ipv4']['address'] }}"
     command: "/entrypoint.sh"
-    name: "ceph_mon"

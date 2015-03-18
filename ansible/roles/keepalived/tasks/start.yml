@@ -1,11 +1,11 @@
 ---
 - name: Starting keepalived
   docker:
-    privileged: True
-    pid: host
-    net: host
-    volumes: "/opt/yaodu/keepalived/keepalived.conf:/etc/keepalived/keepalived.conf,/lib/modules/:/lib/modules/"
-    state: running
-    image: "{{ docker_registry }}/yaodu/keepalived"
-    command: "/entrypoint.sh"
     name: "keepalived"
+    image: "{{ docker_registry }}/yaodu/keepalived"
+    state: "running"
+    privileged: "True"
+    pid: "host"
+    net: "host"
+    volumes: "/opt/yaodu/keepalived/keepalived.conf:/etc/keepalived/keepalived.conf,/lib/modules/:/lib/modules/"
+    command: "/entrypoint.sh"

@@ -1,10 +1,10 @@
 ---
 - name: Starting Keystone
   docker:
+    name: "keystone"
+    image: "{{ docker_registry }}/yaodu/keystone"
+    state: "running"
     ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:5000:5000,{{ ansible_br_mgmt['ipv4']['address'] }}:35357:35357"
     expose: "5000,35357"
     volumes: "/opt/yaodu/keystone/:/etc/keystone/"
-    state: running
-    image: "{{ docker_registry }}/yaodu/keystone"
     command: "/entrypoint.sh"
-    name: "keystone"
