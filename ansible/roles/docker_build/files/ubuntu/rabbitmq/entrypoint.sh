@@ -20,10 +20,7 @@ main() {
 
 	rabbitmq-plugins enable --online rabbitmq_management
 
-        if [[ "${NODE_TO_JOIN}" == "$(hostname)" ]]; then
-            #CHANGEME
-            rabbitmqctl change_password guest password
-        else
+        if [[ "${NODE_TO_JOIN}" != "$(hostname)" && "${NODE_TO_JOIN}" != "None" ]]; then
 	    rabbitmqctl stop_app
             rabbitmqctl join_cluster "rabbit@${NODE_TO_JOIN}"
             rabbitmqctl start_app
