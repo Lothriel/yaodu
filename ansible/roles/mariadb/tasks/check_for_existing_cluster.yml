@@ -9,7 +9,7 @@
 
 - name: Checking if a previous cluster exists
   stat:
-    path: "/opt/yaodu/mariadb/grastate.dat"
+    path: "/opt/yaodu/mariadb/data/grastate.dat"
   register: mysql
 
 - name: Writing hostname of host with existing cluster files to temp file
