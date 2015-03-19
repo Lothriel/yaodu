@@ -5,7 +5,7 @@ RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 7F6C9F236D17
 ADD		ceph.list /etc/apt/sources.list.d/ceph.list
 
 RUN		apt-get update && \
-                apt-get install -y ceph parted && \
+                apt-get install -y ceph parted hdparm && \
                 apt-get clean
 
 ADD		entrypoint.sh /entrypoint.sh
