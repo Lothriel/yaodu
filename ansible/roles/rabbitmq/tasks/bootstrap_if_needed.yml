@@ -2,8 +2,18 @@
 - name: Checking if a previous cluster exists
   stat:
     path: "/opt/yaodu/rabbitmq/mnesia"
-  register: file
+  register: mnesia_dir
+
+- name: Removing old reference to host in RabbitMQ cluster
+  command: /usr/bin/env docker exec -i -t rabbitmq \
+                  rabbitmqctl forget_cluster_node rabbit@{{ ansible_hostname }}
+  register: status
+  changed_when: status.rc == 0
+  failed_when: status.rc != 0 and status.rc != 2
+  delegate_to: "{{ delegate_host }}"
+  run_once: True
+  when: not mnesia_dir.stat.exists
 
 - name: Writing hostname of host with existing cluster files to temp file
   include: bootstrap.yml
-  when: not file.stat.exists
+  when: not mnesia_dir.stat.exists

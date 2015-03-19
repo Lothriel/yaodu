@@ -5,7 +5,7 @@
   with_items:
      - "/opt/yaodu/rabbitmq/.erlang.cookie"
   register: files
-  delegate_to: "{{ delegate_hostname }}"
+  delegate_to: "{{ delegate_host }}"
   run_once: True
 
 - name: Pushing erlang cookie

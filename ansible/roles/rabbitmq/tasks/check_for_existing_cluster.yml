@@ -9,7 +9,7 @@
 
 - name: Checking if a previous cluster exists
   stat:
-    path: "/opt/yaodu/rabbitmq/erlang.cookie"
+    path: "/opt/yaodu/rabbitmq/.erlang.cookie"
   register: file
 
 - name: Writing hostname of host with existing cluster files to temp file
@@ -32,16 +32,16 @@
   always_run: True
   run_once: True
 
-- name: Setting host for cluster files
-  set_fact:
-    delegate_hostname: "{{ groups['message-broker'][0] }}"
-  when: delegate_host == 'None'
-
 - include: bootstrap.yml
   when: delegate_host == 'None' and inventory_hostname == groups['message-broker'][0]
 
+- name: Setting host for cluster files
+  set_fact:
+    delegate_host: "{{ groups['message-broker'][0] }}"
+  when: delegate_host == 'None'
+
 - include: start.yml
-  when: inventory_hostname == groups['message-broker'][0]
+  when: delegate_host == inventory_hostname
 
 - include: configs_sync.yml
 

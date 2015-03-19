@@ -1,8 +1,0 @@
----
-- name: Pushing keyrings to monitors
-  bslurp:
-    src: "{{ item.content }}"
-    dest: "{{ item.source }}"
-    mode: "{{ item.mode }}"
-    sha_hash: "{{ item.sha_hash }}"
-  with_items: files.results

@@ -1,8 +1,17 @@
 ---
+- name: Removing old reference to host in RabbitMQ cluster
+  command: /usr/bin/env docker exec -i -t rabbitmq \
+                  rabbitmqctl forget_cluster_node rabbit@{{ ansible_hostname }}
+  register: status
+  changed_when: status.rc == 0
+  failed_when: status.rc != 0 and status.rc != 2
+  delegate_to: "{{ delegate_host }}"
+  when: delegate_host != 'None'
+
 - name: Bootstraping RabbitMQ cluster
   command: /usr/bin/env docker run --rm=true \
                         -v /opt/yaodu/rabbitmq/:/var/lib/rabbitmq/ \
                         -h "{{ ansible_hostname }}"
                         -e "INITIAL=true" \
-                        -e "NODE_TO_JOIN={{ delegate_hostname }}" \
+                        -e "NODE_TO_JOIN={{ delegate_host }}" \
                         -t "{{ docker_registry }}/yaodu/rabbitmq" /entrypoint.sh
