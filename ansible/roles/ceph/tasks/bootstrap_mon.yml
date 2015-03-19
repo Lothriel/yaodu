@@ -1,7 +1,7 @@
 ---
 - name: Bootstraping Ceph cluster
-  command: /usr/bin/env docker run \
-                        --rm=True -v /etc/ceph:/etc/ceph \
+  command: /usr/bin/env docker run --rm=True \
+                        -v /etc/ceph:/etc/ceph \
                         -e "SERVICE=mon"
                         -e "CEPH_CLUSTER_NAME={{ ceph_cluster_name}}" \
                         -e "INITIAL_CLUSTER=true" \

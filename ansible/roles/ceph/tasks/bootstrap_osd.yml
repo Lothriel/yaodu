@@ -2,7 +2,7 @@
 - include: osd_lookup.yml
 
 - name: Bootstraping Ceph OSD
-  command: /usr/bin/env docker run \
+  command: /usr/bin/env docker run --rm=True \
         --privileged \
         -v /dev:/dev \
         -v /etc/ceph:/etc/ceph \
