@@ -1,11 +1,12 @@
 FROM		{{ docker_registry }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 391A9AA2147192839E9DB0315EDB1B62EC4926EA
-ADD             juno.list /etc/apt/sources.list.d/juno.list
-
-RUN		apt-get update && \
-                apt-get dist-upgrade -y && \
-                apt-get install -y python-cinderclient python-glanceclient python-keystoneclient python-neutronclient python-novaclient python-swiftclient \
-                                   alembic python-mysqldb python-oslo.messaging python-oslo.db python-oslo.rootwrap python-oslo.serialization && \
+RUN		apt-get install -y python-pip python-dev libmysqlclient-dev libxslt1-dev libpq-dev libffi-dev libyaml-dev pkg-config && \
                 apt-get clean
+
+RUN             pip install --upgrade wheel cython
+
+ADD             openstack-requirements.tar /opt/yaodu/
+RUN             ln -s /opt/yaodu/openstack-requirements-*/ /opt/yaodu/requirements
+
+RUN             awk '/^python-.*client/ {print $1}' /opt/yaodu/requirements/global-requirements.txt | xargs pip install --upgrade

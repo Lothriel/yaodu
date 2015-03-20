@@ -5,3 +5,5 @@
     templates:
       - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
       - { src: "{{ yaodu_distro }}/{{ container }}/juno.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/juno.list" }
+    web_files:
+        - { src: "https://github.com/openstack/requirements/tarball/stable/juno", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/openstack-requirements.tar" }
