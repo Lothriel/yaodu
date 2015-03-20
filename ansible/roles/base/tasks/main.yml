@@ -2,6 +2,11 @@
 - include: install_packages-ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
 
+- name: Upgrade pip
+  pip:
+    name: pip
+    state: latest
+
 - name: Installing docker-py
   pip:
     name: docker-py
