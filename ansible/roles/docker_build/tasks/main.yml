@@ -40,5 +40,5 @@
 - include: glance.yml
   tags: glance
 
-- include: nova.yml
-  tags: nova
+#- include: nova.yml
+#  tags: nova

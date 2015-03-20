@@ -1,13 +1,14 @@
 FROM		{{ docker_registry }}/yaodu/openstack_common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-get install -y --no-install-recommends nova-api nova-scheduler nova-conductor nova-cert nova-console nova-consoleauth && \
-                apt-get clean
+ADD             {{ container }}.tar.gz /opt/yaodu/
+RUN             ln -s /opt/yaodu/{{ container }}-*/ /opt/yaodu/{{ container }}
 
-RUN             mv /etc/nova/ /etc/nova.org/
+RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
+RUN             cd /opt/yaodu/{{ container }}/ && pip install .
 
 ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh
 
-USER            nova
-WORKDIR         /var/lib/nova
+#USER            {{ container }}
+#WORKDIR         /var/lib/{{ container }}

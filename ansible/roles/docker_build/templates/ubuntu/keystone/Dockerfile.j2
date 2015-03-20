@@ -1,13 +1,14 @@
 FROM		{{ docker_registry }}/yaodu/openstack_common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-get install -y keystone && \
-                apt-get clean
+ADD             {{ container }}.tar.gz /opt/yaodu/
+RUN             ln -s /opt/yaodu/{{ container }}-*/ /opt/yaodu/{{ container }}
 
-RUN             mv /etc/keystone/ /etc/keystone.org/
+RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
+RUN             cd /opt/yaodu/{{ container }}/ && pip install .
 
 ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh
 
-USER            keystone
-WORKDIR         /var/lib/keystone
+#USER            {{ container }}
+#WORKDIR         /var/lib/{{ container }}
