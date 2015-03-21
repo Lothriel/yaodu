@@ -1,0 +1,24 @@
+[DEFAULT]
+verbose = true
+debug = true
+log_file = /var/log/glance/glance-registry.log
+use_syslog = false
+
+rpc_backend = rabbit
+rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
+
+rabbit_password = password
+rabbit_ha_queues = true
+
+[database]
+connection = mysql://glance:password@{{ yaodu_api_vip }}/glance
+
+[keystone_authtoken]
+identity_uri = http://{{ yaodu_api_vip }}:35357
+auth_uri = http://{{ yaodu_api_vip }}:5000/v2.0
+admin_tenant_name = service
+admin_user = glance
+admin_password = password
+
+[paste_deploy]
+flavor = keystone

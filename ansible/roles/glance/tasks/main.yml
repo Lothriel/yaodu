@@ -1,0 +1,30 @@
+---
+- include: container_pull.yml
+  vars:
+    container: glance
+
+- name: Ensuring /opt/yaodu/glance/ exists
+  file:
+    path: /opt/yaodu/glance/
+    state: directory
+    group: yaodu
+    owner: yaodu
+
+- name: Creating default glance files
+  copy:
+    directory_mode: yes
+    src: "etc/glance/"
+    dest: "/opt/yaodu/glance/"
+
+- name: Copying Glance configs
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+  with_items:
+    - { src: "glance-api.conf.j2" , dest: "/opt/yaodu/glance/glance-api.conf" }
+    - { src: "glance-registry.conf.j2" , dest: "/opt/yaodu/glance/glance-registry.conf" }
+
+- include: bootstrap.yml
+
+- include: start.yml

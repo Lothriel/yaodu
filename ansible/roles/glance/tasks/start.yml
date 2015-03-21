@@ -1,0 +1,20 @@
+---
+- name: Starting Glance Registry
+  docker:
+    name: "glance"
+    image: "{{ docker_registry }}/yaodu/glance"
+    state: "running"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9191:9191"
+    expose: "9191"
+    volumes: "/opt/yaodu/glance/:/etc/glance/"
+    command: "/entrypoint.sh"
+
+- name: Starting Glance Api
+  docker:
+    name: "glance"
+    image: "{{ docker_registry }}/yaodu/glance"
+    state: "running"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9292:9292"
+    expose: "9292"
+    volumes: "/opt/yaodu/glance/:/etc/glance/"
+    command: "/entrypoint.sh"

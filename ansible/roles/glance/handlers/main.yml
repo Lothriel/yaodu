@@ -1,0 +1,7 @@
+---
+- name: dbsync
+  command: /usr/bin/env docker run --rm=true \
+                        -v /opt/yaodu/glance/:/etc/glance/ \
+                        -t "{{ docker_registry }}/yaodu/glance" \
+                        /usr/bin/env glance-manage db_sync
+  run_once: True
