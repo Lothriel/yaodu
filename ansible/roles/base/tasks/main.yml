@@ -10,3 +10,15 @@
 - name: Installing docker-py
   pip:
     name: docker-py
+
+- name: Create yaodu group
+  group:
+    name: yaodu
+    gid: 42424
+
+- name: Create yaodu user
+  user:
+    name: yaodu
+    group: yaodu
+    createhome: no
+    uid: 42424

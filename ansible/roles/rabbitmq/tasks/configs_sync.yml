@@ -15,3 +15,9 @@
     mode: "{{ item.mode }}"
     sha_hash: "{{ item.sha_hash }}"
   with_items: files.results
+
+- name: Setting proper permissions
+  file:
+    path: /opt/yaodu/rabbitmq/.erlang.cookie
+    group: yaodu
+    owner: yaodu

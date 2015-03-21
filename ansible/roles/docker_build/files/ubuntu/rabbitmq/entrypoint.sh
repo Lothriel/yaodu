@@ -40,8 +40,6 @@ main() {
 
 initial_setup() {
     _erlang_cookie="/var/lib/rabbitmq/.erlang.cookie"
-
-    chown -R rabbitmq: /var/lib/rabbitmq/
 }
 
 main

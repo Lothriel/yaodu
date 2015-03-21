@@ -9,3 +9,6 @@
     volumes: "/opt/yaodu/mariadb/galera.cnf:/etc/mysql/conf.d/galera.cnf,/opt/yaodu/mariadb/data/:/var/lib/mysql/"
     env: "BOOTSTRAP=true,DATABASE_ROOT_PASSWORD={{ database_root_password }}"
     command: "/entrypoint.sh"
+
+- name: Sleeping while server bootstraps
+  local_action: command sleep 15

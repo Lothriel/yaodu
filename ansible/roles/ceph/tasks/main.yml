@@ -12,6 +12,8 @@
   file:
     path: /etc/ceph/
     state: directory
+    group: yaodu
+    owner: yaodu
 
 - name: Copying Ceph cluster conf
   template:

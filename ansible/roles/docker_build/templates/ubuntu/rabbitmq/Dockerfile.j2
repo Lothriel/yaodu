@@ -10,3 +10,9 @@ RUN		apt-get update && \
 
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
+
+RUN             groupmod -g 42424 rabbitmq && usermod -u 42424 rabbitmq
+RUN             chown -R rabbitmq: /var/log/rabbitmq/ /etc/rabbitmq/
+
+USER            rabbitmq
+WORKDIR         /var/lib/rabbitmq/

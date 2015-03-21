@@ -7,6 +7,8 @@
   file:
     path: /opt/yaodu/rabbitmq/
     state: directory
+    group: yaodu
+    owner: yaodu
 
 - include: check_for_existing_cluster.yml
 

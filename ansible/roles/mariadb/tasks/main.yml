@@ -8,10 +8,20 @@
     container: mariadb
   when: inventory_hostname in groups['database']
 
+- name: Ensuring /opt/yaodu/mariadb/ exists
+  file:
+    path: /opt/yaodu/mariadb/
+    state: directory
+    group: yaodu
+    owner: yaodu
+  when: inventory_hostname in groups['database']
+
 - name: Ensuring /opt/yaodu/mariadb/data/ exists
   file:
     path: /opt/yaodu/mariadb/data/
     state: directory
+    group: yaodu
+    owner: yaodu
   when: inventory_hostname in groups['database']
 
 - name: Copying MaraiDB and Galera cluster conf files
@@ -19,6 +29,8 @@
     src: galera.cnf.j2
     dest: "/opt/yaodu/mariadb/galera.cnf"
     mode: 0644
+    group: yaodu
+    owner: yaodu
   when: inventory_hostname in groups['database']
 
 - include: check_for_existing_cluster.yml
