@@ -53,6 +53,22 @@ listen keystone_admin
 listen keystone_user
         bind *:5000
 {% for host in groups['keystone'] %}
-	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:500 check inter 2000 rise 2 fall 5
+	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:5000 check inter 2000 rise 2 fall 5
+
+{% endfor %}
+
+
+listen glance_registry
+        bind *:9191
+{% for host in groups['glance'] %}
+	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:9191 check inter 2000 rise 2 fall 5
+
+{% endfor %}
+
+
+listen glance_api
+        bind *:9292
+{% for host in groups['glance'] %}
+	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:9292 check inter 2000 rise 2 fall 5
 
 {% endfor %}

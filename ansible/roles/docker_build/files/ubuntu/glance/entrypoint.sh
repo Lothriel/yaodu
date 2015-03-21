@@ -15,11 +15,13 @@ initial_setup() {
         dir="${glance_dir}"
         missing_directory
     fi
+
+    mkdir -p /var/log/glance/
 }
 
 main
 
-exec /usr/bin/keystone-all
+#exec /usr/bin/env keystone-all
 exit $?
 
 execution_should_never_reach_here

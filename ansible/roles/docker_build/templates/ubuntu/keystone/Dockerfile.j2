@@ -10,5 +10,8 @@ RUN             cd /opt/yaodu/{{ container }}/ && pip install .
 ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh
 
-#USER            {{ container }}
-#WORKDIR         /var/lib/{{ container }}
+RUN             groupadd -g 42424 {{ container }} && useradd -u 42424 -g {{ container }} -s /sbin/nologin -c "{{ container }} user" {{ container }}
+RUN             mkdir -p /var/log/{{ container }}/ /var/lib/{{ container }}/ && chown -R {{ container }}: /var/log/{{ container }}/ /var/lib/{{ container }}/
+
+USER            {{ container }}
+WORKDIR         /var/lib/{{ container }}

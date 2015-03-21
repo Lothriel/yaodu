@@ -19,7 +19,7 @@ initial_setup() {
 
 main
 
-exec /usr/bin/keystone-all
+exec /usr/bin/env keystone-all
 exit $?
 
 execution_should_never_reach_here
