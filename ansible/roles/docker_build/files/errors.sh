@@ -27,3 +27,9 @@ execution_should_never_reach_here() {
 EOF
     exit 42
 }
+
+invalid_service() {
+    echo "ERROR: \"SERVICE\" variable is set to \"${SERVICE}\"
+       It must be a value from this list: ${services[@]}"
+    exit 51
+}

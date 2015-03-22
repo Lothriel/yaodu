@@ -14,3 +14,4 @@ keystone_admin_password: password
 rabbitmq_guest_password: password
 database_keystone_password: password
 keystone_admin_token: password
+keystone_glance_password: password

@@ -25,6 +25,31 @@
     - { src: "glance-api.conf.j2" , dest: "/opt/yaodu/glance/glance-api.conf" }
     - { src: "glance-registry.conf.j2" , dest: "/opt/yaodu/glance/glance-registry.conf" }
 
+- name: Creating keystone user glance
+  keystone:
+    command: "ensure_user"
+    tenant_name: "service"
+    user_name: "glance"
+    password: "{{ keystone_glance_password }}"
+    description: "Glance User"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
+- name: Adding keystone role admin to user glance
+  keystone:
+    command: "ensure_user_role"
+    user_name: "glance"
+    tenant_name: "service"
+    role_name: "admin"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
 - name: Creating keystone service glance
   keystone:
     command: "ensure_service"
