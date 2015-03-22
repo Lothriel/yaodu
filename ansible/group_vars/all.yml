@@ -10,3 +10,7 @@ docker_registry: "172.16.0.1:5000"
 database_root_password: password
 yaodu_api_vip: 10.10.1.20
 openstack_revision: 2014.2.2
+keystone_admin_password: password
+rabbitmq_guest_password: password
+database_keystone_password: password
+keystone_admin_token: password

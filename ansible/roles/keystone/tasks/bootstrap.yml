@@ -5,7 +5,7 @@
     login_user: "root"
     login_password: "{{ database_root_password }}"
     name: "keystone"
-  notify: dbsync
+  register: database
   run_once: True
 
 - name: Creating keystone database user and setting permissions
@@ -16,7 +16,15 @@
     name: "keystone"
     password: "password"
     host: "%"
-    priv: keystone.*:ALL
-    append_privs: yes
+    priv: "keystone.*:ALL"
+    append_privs: "yes"
   run_once: True
 
+
+- name: Create initial Keystone database
+  command: /usr/bin/env docker run --rm=true \
+                        -v /opt/yaodu/keystone/:/etc/keystone/ \
+                        -t "{{ docker_registry }}/yaodu/keystone" \
+                        /usr/bin/env keystone-manage db_sync
+  when: database|changed
+  run_once: True

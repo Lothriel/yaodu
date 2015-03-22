@@ -25,6 +25,33 @@
     - { src: "glance-api.conf.j2" , dest: "/opt/yaodu/glance/glance-api.conf" }
     - { src: "glance-registry.conf.j2" , dest: "/opt/yaodu/glance/glance-registry.conf" }
 
+- name: Creating keystone service glance
+  keystone:
+    command: "ensure_service"
+    service_name: "glance"
+    service_type: "image"
+    description: "Image Service"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
+- name: Creating keystone endpoint glance
+  keystone:
+    command: "ensure_endpoint"
+    region_name: "regionOne"
+    service_name: "glance"
+    service_type: "image"
+    publicurl: "http://{{ yaodu_api_vip }}:9292"
+    adminurl: "http://{{ yaodu_api_vip }}:9292"
+    internalurl: "http://{{ yaodu_api_vip }}:9292"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
 - include: bootstrap.yml
 
 - include: start.yml

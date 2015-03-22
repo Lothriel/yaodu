@@ -392,7 +392,7 @@ class ManageKeystone(object):
                 auth_url=endpoint,
                 username=login_user,
                 password=login_password,
-                tenant_name=login_tenant_name
+                project_name=login_tenant_name
             )
 
     def _get_tenant(self, name):

@@ -5,7 +5,7 @@
     login_user: "root"
     login_password: "{{ database_root_password }}"
     name: "glance"
-  notify: dbsync
+  register: database
   run_once: True
 
 - name: Creating keystone database user and setting permissions
@@ -16,7 +16,14 @@
     name: "glance"
     password: "password"
     host: "%"
-    priv: glance.*:ALL
-    append_privs: yes
+    priv: "glance.*:ALL"
+    append_privs: "yes"
   run_once: True
 
+- name: Create initial Keystone database
+  command: /usr/bin/env docker run --rm=true \
+                        -v /opt/yaodu/glance/:/etc/glance/ \
+                        -t "{{ docker_registry }}/yaodu/glance" \
+                        /usr/bin/env glance-manage db_sync
+  when: database|changed
+  run_once: True
