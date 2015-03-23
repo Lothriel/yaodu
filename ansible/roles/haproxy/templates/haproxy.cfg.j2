@@ -72,3 +72,27 @@ listen glance_api
 	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:9292 check inter 2000 rise 2 fall 5
 
 {% endfor %}
+
+
+listen cinder_api
+        bind *:8776
+{% for host in groups['cinder'] %}
+	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:8776 check inter 2000 rise 2 fall 5
+
+{% endfor %}
+
+
+listen nova_api
+        bind *:8774
+{% for host in groups['nova'] %}
+	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:8774 check inter 2000 rise 2 fall 5
+
+{% endfor %}
+
+
+listen neutron_server
+        bind *:9696
+{% for host in groups['neutron-server'] %}
+	server {{ hostvars[host]['ansible_hostname'] }} {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}:9696 check inter 2000 rise 2 fall 5
+
+{% endfor %}

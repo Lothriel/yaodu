@@ -1,15 +1,6 @@
 [DEFAULT]
 verbose = True
 debug = True
-state_path = /var/lib/cinder
-lock_path = /var/lock/cinder
-volumes_dir = /var/lib/cinder/volumes
-rootwrap_config = /etc/cinder/rootwrap.conf
-api_paste_confg = /etc/cinder/api-paste.ini
-
-iscsi_helper = tgtadm
-volume_name_template = volume-%s
-volume_group = cinder-volumes
 
 auth_strategy = keystone
 
@@ -19,19 +10,13 @@ rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansi
 rabbit_password = {{ rabbitmq_cinder_password }}
 rabbit_ha_queues = true
 
-glance_host = {{ yaodu_api_vip }}
-
 my_ip = {{ ansible_br_mgmt['ipv4']['address'] }}
+
+glance_host = {{ yaodu_api_vip }}
+glance_api_version = 2
 
 volume_driver = cinder.volume.drivers.rbd.RBDDriver
 rbd_pool = volumes
-rbd_ceph_conf = /etc/ceph/ceph.conf
-rbd_flatten_volume_from_snapshot = false
-rbd_max_clone_depth = 5
-rbd_store_chunk_size = 4
-rados_connect_timeout = -1
-glance_api_version = 2
-
 rbd_user = cinder
 rbd_secret_uuid = {{ libvirt_secret_uuid }}
 

@@ -2,6 +2,7 @@
 - hosts: all
   roles:
     - base
+  tags: base
 
 - hosts:
     - management
@@ -40,3 +41,18 @@
   roles:
     - glance
   tags: glance
+
+- hosts: cinder
+  roles:
+    - cinder
+  tags: cinder
+
+#- hosts: nova
+#  roles:
+#    - nova
+#  tags: nova
+
+#- hosts: neutron
+#  roles:
+#    - neutron
+#  tags: neutron

@@ -18,13 +18,22 @@
     group: yaodu
     owner: yaodu
 
-- name: Copying Cinder configs
+- name: Copying Glance configs
   template:
-    src: "cinder.conf.j2"
-    dest: "cinder.conf"
     mode: 0644
     group: yaodu
     owner: yaodu
+    - { src: "glance-registry.conf.j2" , dest: "/opt/yaodu/glance/glance-registry.conf" }
+- name: Copying Cinder configs
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+    group: yaodu
+    owner: yaodu
+  with_items:
+    - { src: "cinder.conf.j2" , dest: "/opt/yaodu/cinder/cinder.conf" }
+    - { src: "ceph.conf.j2" , dest: "/opt/yaodu/cinder/cinder.conf" }
 
 - name: Getting Cephx Cinder key
   shell: ceph auth get-or-create client.cinder
