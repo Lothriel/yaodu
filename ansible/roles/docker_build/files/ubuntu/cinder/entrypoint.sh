@@ -9,7 +9,7 @@ main() {
 }
 
 initial_setup() {
-    cinder_dir="/etc/nova/"
+    cinder_dir="/etc/cinder/"
     services=("api" "scheduler" "volume" "backup")
 
     if [[ ! -n "${SERVICE}" ]]; then

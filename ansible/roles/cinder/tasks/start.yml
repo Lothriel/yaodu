@@ -16,7 +16,8 @@
     image: "{{ docker_registry }}/yaodu/cinder"
     state: "running"
     volumes: "/opt/yaodu/cinder/:/etc/cinder/"
-    env: "SERVICE=scheduleri"
+    hostname: "{{ ansible_hostname }}"
+    env: "SERVICE=scheduler"
     command: "/entrypoint.sh"
 
 - name: Starting Cinder Volume

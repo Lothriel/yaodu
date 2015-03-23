@@ -15,6 +15,8 @@ my_ip = {{ ansible_br_mgmt['ipv4']['address'] }}
 glance_host = {{ yaodu_api_vip }}
 glance_api_version = 2
 
+enable_v1_api=false
+
 volume_driver = cinder.volume.drivers.rbd.RBDDriver
 rbd_pool = volumes
 rbd_user = cinder
