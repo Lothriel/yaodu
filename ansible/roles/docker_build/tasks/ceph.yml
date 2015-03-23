@@ -4,6 +4,5 @@
     container: ceph
     templates:
       - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
-      - { src: "{{ yaodu_distro }}/{{ container }}/ceph.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/ceph.list" }
     files:
       - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }

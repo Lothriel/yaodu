@@ -13,5 +13,9 @@
       - { src: "{{ yaodu_distro }}/common/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
       - { src: "{{ yaodu_distro }}/common/sources.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/sources.list" }
       - { src: "{{ yaodu_distro }}/common/apt.conf.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/apt.conf" }
+      - { src: "{{ yaodu_distro }}/common/mariadb.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/mariadb.list" }
+      - { src: "{{ yaodu_distro }}/common/rabbitmq.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/rabbitmq.list" }
+      - { src: "{{ yaodu_distro }}/common/ceph.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/ceph.list" }
+      - { src: "{{ yaodu_distro }}/common/percona.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/percona.list" }
     files:
       - { src: "errors.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/errors.sh" }

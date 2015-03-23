@@ -3,9 +3,18 @@ MAINTAINER	Sam Yaple <sam@yaple.net>
 
 ENV		DEBIAN_FRONTEND	noninteractive
 
+RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com F78372A06FF50C80464FC1B4F7B8CEA6056E8E56
+RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 199369E5404BD5FC7D2FE43BCBCB082A1BB943DB
+RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A
+RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 7F6C9F236D170493FCF404F27EBFDD5D17ED316D
+ADD		rabbitmq.list /etc/apt/sources.list.d/rabbitmq.list
+ADD		mariadb.list /etc/apt/sources.list.d/mariadb.list
+ADD		percona.list /etc/apt/sources.list.d/percona.list
+ADD		ceph.list /etc/apt/sources.list.d/ceph.list
+ADD		sources.list /etc/apt/sources.list
+
 # Recommend apt-cacher-ng for bandwidth savings. Not required.
 ADD		apt.conf /etc/apt/apt.conf
-ADD		sources.list /etc/apt/sources.list
 
 RUN		apt-get update && apt-get dist-upgrade -y && \
 		apt-get install -y --no-install-recommends curl ca-certificates && \

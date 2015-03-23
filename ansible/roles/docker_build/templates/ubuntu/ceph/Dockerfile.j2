@@ -1,11 +1,7 @@
 FROM		{{ docker_registry  }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 7F6C9F236D170493FCF404F27EBFDD5D17ED316D
-ADD		ceph.list /etc/apt/sources.list.d/ceph.list
-
-RUN		apt-get update && \
-                apt-get install -y --no-install-recommends ceph parted hdparm && \
+RUN             apt-get install -y --no-install-recommends ceph parted hdparm && \
                 apt-get clean
 
 ADD		entrypoint.sh /entrypoint.sh

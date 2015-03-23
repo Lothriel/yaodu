@@ -1,13 +1,7 @@
 FROM		{{ docker_registry }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 199369E5404BD5FC7D2FE43BCBCB082A1BB943DB
-RUN		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com 430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A
-ADD		mariadb.list /etc/apt/sources.list.d/mariadb.list
-ADD		percona.list /etc/apt/sources.list.d/percona.list
-
-RUN		apt-get update && \
-                apt-get install -y --no-install-recommends mariadb-galera-server percona-xtrabackup socat expect && \
+RUN             apt-get install -y --no-install-recommends mariadb-galera-server percona-xtrabackup socat expect && \
                 apt-get clean
 
 ADD		entrypoint.sh /entrypoint.sh
