@@ -1,0 +1,79 @@
+[DEFAULT]
+verbose = True
+debug = True
+log_dir = /var/log/nova
+state_path = /var/lib/nova
+lock_path = /var/lock/nova
+api_paste_config = /etc/nova/api-paste.ini
+
+auto_delete = false
+rpc_backend = rabbit
+rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
+
+rabbit_password = {{ rabbitmq_nova_password }}
+rabbit_ha_queues = true
+
+my_ip = {{ ansible_br_mgmt['ipv4']['address'] }}
+metadata_host = {{ yaodu_api_vip }}
+
+security_group_api = neutron
+network_api_class = nova.network.neutronv2.api.API
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+
+compute_driver = libvirt.LibvirtDriver
+allow_resize_to_same_host = true
+
+vnc_enabled = false
+
+#memcached_servers = {% for host in groups['memcache'] %}{{ hostvars[host]['ansible_hostname'] }}:11211{% if not loop.last %},{% endif %}{% endfor %}
+
+[spice]
+server_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
+server_proxyclient_address = {{ ansible_br_mgmt['ipv4']['address'] }}
+html5proxy_base_url = http://{{ yaodu_api_vip }}:6082/spice_auto.html
+agent_enabled = true
+enabled = true
+keymap = en-us
+
+[glance]
+host = {{ yaodu_api_vip }}
+
+[cinder]
+catalog_info = volume:cinder:internalURL
+
+[neutron]
+url = http://{{ yaodu_api_vip }}:9696
+auth_strategy = keystone
+admin_auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
+admin_tenant_name = service
+admin_username = neutron
+admin_password = {{ keystone_neutron_password }}
+metadata_proxy_shared_secret = {{ metadata_shared_secret }}
+service_metadata_proxy = true
+
+[osapi_v3]
+enabled = True
+
+[database]
+connection = mysql://nova:{{ database_nova_password }}@{{ yaodu_api_vip }}/nova
+
+[keystone_authtoken]
+identity_uri = http://{{ yaodu_api_vip }}:35357
+auth_uri = http://{{ yaodu_api_vip }}:5000/v2.0
+admin_tenant_name = service
+admin_user = nova
+admin_password = {{ keystone_nova_password }}
+
+[libvirt]
+images_type = rbd
+images_rbd_pool = vms
+images_rbd_ceph_conf = /etc/ceph/ceph.conf
+rbd_user = cinder
+rbd_secret_uuid = {{ libvirt_secret_uuid }}
+
+inject_password = false
+inject_key = false
+inject_partition = -2
+
+live_migration_flag="VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST"

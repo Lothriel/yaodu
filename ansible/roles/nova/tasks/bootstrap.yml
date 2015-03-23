@@ -1,0 +1,29 @@
+---
+- name: Creating nova database
+  mysql_db:
+    login_host: "{{ yaodu_api_vip }}"
+    login_user: "root"
+    login_password: "{{ database_root_password }}"
+    name: "nova"
+  register: database
+  run_once: True
+
+- name: Creating keystone database user and setting permissions
+  mysql_user:
+    login_host: "{{ yaodu_api_vip }}"
+    login_user: "root"
+    login_password: "{{ database_root_password }}"
+    name: "nova"
+    password: "{{ database_nova_password }}"
+    host: "%"
+    priv: "nova.*:ALL"
+    append_privs: "yes"
+  run_once: True
+
+- name: Initializing Nova database
+  command: /usr/bin/env docker run --rm=true \
+                        -v /opt/yaodu/nova/:/etc/nova/ \
+                        -t "{{ docker_registry }}/yaodu/nova" \
+                        /usr/bin/env nova-manage db sync
+  when: database|changed
+  run_once: True
