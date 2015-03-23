@@ -31,7 +31,7 @@ identity_uri = http://{{ yaodu_api_vip }}:35357
 auth_uri = http://{{ yaodu_api_vip }}:5000/v2.0
 admin_tenant_name = service
 admin_user = glance
-admin_password = password
+admin_password = {{ keystone_glance_password }}
 
 [paste_deploy]
 flavor = keystone
