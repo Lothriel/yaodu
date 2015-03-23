@@ -9,8 +9,8 @@ main() {
 }
 
 initial_setup() {
-    nova_dir="/etc/nova/"
-    services=("api" "console" "compute")
+    neutron_dir="/etc/neutron/"
+    services=("server" "l3")
 
     if [[ ! -n "${SERVICE}" ]]; then
         variable_name="SERVICE"
@@ -21,8 +21,8 @@ initial_setup() {
         invalid_service
     fi
 
-    if [[ ! -e "${nova_dir}" ]]; then
-        dir="${nova_dir}"
+    if [[ ! -e "${neutron_dir}" ]]; then
+        dir="${neutron_dir}"
         missing_directory
     fi
 }
