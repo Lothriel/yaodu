@@ -20,8 +20,7 @@
     append_privs: "yes"
   run_once: True
 
-
-- name: Create initial Keystone database
+- name: Initializing Keystone database
   command: /usr/bin/env docker run --rm=true \
                         -v /opt/yaodu/keystone/:/etc/keystone/ \
                         -t "{{ docker_registry }}/yaodu/keystone" \
