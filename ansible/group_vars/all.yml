@@ -7,7 +7,7 @@ ceph_release: giant
 ceph_cluster_name: ceph
 ceph_cluster_fsid: "3cc8d825-cfbf-4a14-836a-186bcf333b06"
 docker_registry: "172.16.0.1:5000"
-yaodu_api_vip: 10.10.1.20
+yaodu_api_vip: 172.16.1.20
 
 openstack_version: "juno"
 openstack_revision: "2014.2.2"

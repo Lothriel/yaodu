@@ -6,7 +6,7 @@
                         -e "CEPH_CLUSTER_NAME={{ ceph_cluster_name}}" \
                         -e "INITIAL_CLUSTER=true" \
                         -e "MON_NAME={{ ansible_hostname }}" \
-                        -e "MON_IP={{ ansible_br_stor['ipv4']['address'] }}" \
+                        -e "MON_IP={{ ansible_br_mgmt['ipv4']['address'] }}" \
                         -t "{{ docker_registry }}/yaodu/ceph" /entrypoint.sh
 
 - name: Setting host for cluster files

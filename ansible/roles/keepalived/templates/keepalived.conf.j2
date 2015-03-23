@@ -10,9 +10,9 @@ vrrp_instance VIP_API {
 	virtual_router_id 250
 {% for host in groups['load-balancer'] %}
 {% if hostvars[host]['ansible_hostname'] == ansible_hostname %}	priority {{ loop.index }}
-	vrrp_unicast_bind {{ ansible_br_api['ipv4']['address'] }}
+	vrrp_unicast_bind {{ ansible_br_mgmt['ipv4']['address'] }}
 {% endif %}
-{% if hostvars[host]['ansible_hostname'] != ansible_hostname %}	vrrp_unicast_peer {{ hostvars[host]['ansible_br_api']['ipv4']['address'] }}
+{% if hostvars[host]['ansible_hostname'] != ansible_hostname %}	vrrp_unicast_peer {{ hostvars[host]['ansible_br_mgmt']['ipv4']['address'] }}
 {% endif %}
 {% endfor %}
 	virtual_ipaddress {
