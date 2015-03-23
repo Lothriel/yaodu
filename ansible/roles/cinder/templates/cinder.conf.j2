@@ -16,6 +16,7 @@ glance_host = {{ yaodu_api_vip }}
 glance_api_version = 2
 
 enable_v1_api=false
+volume_name_template = %s
 
 volume_driver = cinder.volume.drivers.rbd.RBDDriver
 rbd_pool = volumes
