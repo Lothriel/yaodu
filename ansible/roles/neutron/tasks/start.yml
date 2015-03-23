@@ -1,0 +1,22 @@
+---
+- name: Starting Glance Registry
+  docker:
+    name: "glance-registry"
+    image: "{{ docker_registry }}/yaodu/glance"
+    state: "running"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9191:9191"
+    expose: "9191"
+    volumes: "/opt/yaodu/glance/:/etc/glance/"
+    env: "SERVICE=registry"
+    command: "/entrypoint.sh"
+
+- name: Starting Glance Api
+  docker:
+    name: "glance-api"
+    image: "{{ docker_registry }}/yaodu/glance"
+    state: "running"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9292:9292"
+    expose: "9292"
+    volumes: "/opt/yaodu/glance/:/etc/glance/,/opt/yaodu/glance/ceph.conf:/etc/ceph/ceph.conf,/opt/yaodu/glance/ceph.client.glance.keyring:/etc/ceph/ceph.client.glance.keyring"
+    env: "SERVICE=api"
+    command: "/entrypoint.sh"

@@ -1,0 +1,55 @@
+[DEFAULT]
+verbose = True
+debug = True
+use_syslog = false
+log_file = /var/log/neutron/neutron.log
+lock_path = /var/lock/neutron
+auth_strategy = keystone
+
+rpc_backend = rabbit
+rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
+
+rabbit_password = {{ rabbitmq_neutron_password }}
+rabbit_ha_queues = true
+notification_driver = neutron.openstack.common.notifier.rpc_notifier
+
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+external_network_bridge = br-ex
+
+enable_isolated_metadata = true
+dnsmasq_config_file = /etc/neutron/dnsmasq.conf
+ha_vrrp_auth_password = {{ neutron_l3ha_secret }}
+l3_ha = true
+
+use_namespaces = true
+network_device_mtu = 1450
+allow_overlapping_ips = true
+core_plugin = ml2
+service_plugins = router
+
+auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
+nova_metadata_ip = {{ yaodu_api_vip }}
+metadata_proxy_shared_secret = {{ metadata_shared_secret }}
+enable_metadata_proxy = true
+admin_tenant_name = service
+admin_user = neutron
+admin_password = {{ keystone_neutron_password }}
+
+nova_url = http://{{ yaodu_api_vip }}:8774/v2
+nova_admin_username = nova
+nova_admin_tenant_id = ##KEYSTONE_NOVA_TENANT_ID##
+nova_admin_password = {{ keystone_nova_password }}
+nova_admin_auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
+
+[agent]
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[database]
+connection = mysql://neutron:##MYSQL_NEUTRON_PASSWORD##@infra/neutron?charset=utf8
+
+[keystone_authtoken]
+identity_uri = http://{{ yaodu_api_vip }}:35357
+auth_uri = http://{{ yaodu_api_vip }}:5000/v2.0
+admin_tenant_name = service
+admin_user = neutron
+admin_password = {{ keystone_neutron_password }}

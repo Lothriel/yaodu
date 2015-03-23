@@ -13,7 +13,7 @@ cinder_catalog_info = volume:cinder:internalURL
 rpc_backend = rabbit
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
 
-rabbit_password = password
+rabbit_password = {{ rabbitmq_glance_password }}
 rabbit_ha_queues = true
 
 [glance_store]
