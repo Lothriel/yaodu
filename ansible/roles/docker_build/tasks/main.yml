@@ -12,6 +12,7 @@
     - glance
     - nova
     - neutron
+    - cinder
 
 - include: openstack_common.yml
   tags:
@@ -20,6 +21,7 @@
     - glance
     - nova
     - neutron
+    - cinder
 
 - include: ceph.yml
   tags: ceph
@@ -47,3 +49,6 @@
 
 - include: neutron.yml
   tags: neutron
+
+- include: cinder.yml
+  tags: cinder

@@ -1,0 +1,46 @@
+[DEFAULT]
+verbose = True
+debug = True
+state_path = /var/lib/cinder
+lock_path = /var/lock/cinder
+volumes_dir = /var/lib/cinder/volumes
+rootwrap_config = /etc/cinder/rootwrap.conf
+api_paste_confg = /etc/cinder/api-paste.ini
+
+iscsi_helper = tgtadm
+volume_name_template = volume-%s
+volume_group = cinder-volumes
+
+auth_strategy = keystone
+
+rpc_backend = rabbit
+rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
+
+rabbit_password = {{ rabbitmq_cinder_password }}
+rabbit_ha_queues = true
+
+glance_host = {{ yaodu_api_vip }}
+
+my_ip = {{ ansible_br_mgmt['ipv4']['address'] }}
+
+volume_driver = cinder.volume.drivers.rbd.RBDDriver
+rbd_pool = volumes
+rbd_ceph_conf = /etc/ceph/ceph.conf
+rbd_flatten_volume_from_snapshot = false
+rbd_max_clone_depth = 5
+rbd_store_chunk_size = 4
+rados_connect_timeout = -1
+glance_api_version = 2
+
+rbd_user = cinder
+rbd_secret_uuid = {{ libvirt_secret_uuid }}
+
+[database]
+connection = mysql://cinder:{{ database_cinder_password }}@{{ yaodu_api_vip }}/cinder
+
+[keystone_authtoken]
+identity_uri = http://{{ yaodu_api_vip }}:35357
+auth_uri = http://{{ yaodu_api_vip }}:5000/v2.0
+admin_tenant_name = service
+admin_user = cinder
+admin_password = {{ keystone_cinder_password }}
