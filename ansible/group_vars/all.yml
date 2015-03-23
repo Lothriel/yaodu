@@ -7,11 +7,32 @@ ceph_release: giant
 ceph_cluster_name: ceph
 ceph_cluster_fsid: "3cc8d825-cfbf-4a14-836a-186bcf333b06"
 docker_registry: "172.16.0.1:5000"
-database_root_password: password
 yaodu_api_vip: 10.10.1.20
-openstack_revision: 2014.2.2
-keystone_admin_password: password
+
+openstack_version: "juno"
+openstack_revision: "2014.2.2"
+
+libvirt_secret_uuid: "6f88a95b-8aa5-459a-be3c-e8db2ecadd7a"
+metadata_shared_secret: "11d48eca-b3d4-4d65-bf31-d777d94dc8d3"
+neutron_l3ha_secret: "6e561456-d613-4ad7-8dbc-4df6d0fa2be0"
+
 rabbitmq_guest_password: password
+rabbitmq_keystone_password: password
+rabbitmq_glance_password: password
+rabbitmq_nova_password: password
+rabbitmq_neutron_password: password
+rabbitmq_cinder_password: password
+
+database_root_password: password
 database_keystone_password: password
+database_glance_password: password
+database_nova_password: password
+database_neutron_password: password
+database_cinder_password: password
+
 keystone_admin_token: password
+keystone_admin_password: password
 keystone_glance_password: password
+keystone_nova_password: password
+keystone_neutron_password: password
+keystone_cinder_password: password
