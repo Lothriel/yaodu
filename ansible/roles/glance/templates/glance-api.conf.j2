@@ -3,8 +3,9 @@ verbose = true
 debug = true
 log_file = /var/log/glance/glance-api.log
 use_syslog = false
-default_store = file
-known_stores = glance.store.filesystem.Store
+
+default_store = rbd
+show_image_direct_url = True
 
 registry_host = {{ yaodu_api_vip }}
 cinder_catalog_info = volume:cinder:internalURL
@@ -15,7 +16,12 @@ rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansi
 rabbit_password = password
 rabbit_ha_queues = true
 
-filesystem_store_datadir = /var/lib/glance/images/
+[glance_store]
+stores = rbd
+rbd_store_pool = images
+rbd_store_user = glance
+rbd_store_ceph_conf = /etc/ceph/ceph.conf
+rbd_store_chunk_size = 8
 
 [database]
 connection = mysql://glance:password@{{ yaodu_api_vip }}/glance
