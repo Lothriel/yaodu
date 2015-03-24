@@ -3,7 +3,7 @@
   vars:
     container: keepalived
 
-- name: Ensuring /opt/yaodu/mariadb/data/ exists
+- name: Ensuring /opt/yaodu/keepalived/ exists
   file:
     path: /opt/yaodu/keepalived/
     state: directory

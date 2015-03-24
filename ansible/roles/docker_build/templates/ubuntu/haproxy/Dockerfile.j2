@@ -8,3 +8,9 @@ RUN		mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.org
 
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
+
+RUN             groupmod -g 42424 haproxy && usermod -u 42424 haproxy
+RUN             chown -R haproxy: /etc/haproxy/ /var/lib/haproxy/
+
+USER            haproxy
+WORKDIR         /var/lib/haproxy/
