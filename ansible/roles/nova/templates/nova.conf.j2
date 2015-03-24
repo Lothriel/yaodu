@@ -1,12 +1,11 @@
 [DEFAULT]
-verbose = True
-debug = True
+verbose = true
+debug = true
 
 state_path = /var/lib/nova
 lock_path = /var/lock/nova
 api_paste_config = /etc/nova/api-paste.ini
 
-auto_delete = false
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
 
 rabbit_virtual_host = /{{ rabbitmq_nova_vhost }}
@@ -15,9 +14,6 @@ rabbit_password = {{ rabbitmq_nova_password }}
 rabbit_ha_queues = true
 
 notification_driver = nova.openstack.common.notifier.rpc_notifier
-
-my_ip = {{ ansible_br_mgmt['ipv4']['address'] }}
-metadata_host = {{ yaodu_api_vip }}
 
 security_group_api = neutron
 network_api_class = nova.network.neutronv2.api.API
@@ -35,9 +31,7 @@ vnc_enabled = false
 server_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
 server_proxyclient_address = {{ ansible_br_mgmt['ipv4']['address'] }}
 html5proxy_base_url = http://{{ yaodu_api_vip }}:6082/spice_auto.html
-agent_enabled = true
 enabled = true
-keymap = en-us
 
 [glance]
 host = {{ yaodu_api_vip }}
