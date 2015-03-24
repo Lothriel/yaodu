@@ -1,16 +1,18 @@
 [DEFAULT]
 verbose = True
 debug = True
-use_syslog = false
-log_file = /var/log/neutron/neutron.log
+
 lock_path = /var/lock/neutron
+
 auth_strategy = keystone
 
-rpc_backend = rabbit
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
 
+rabbit_virtual_host = /{{ rabbitmq_neutron_vhost }}
+rabbit_userid = {{ rabbitmq_neutron_user }}
 rabbit_password = {{ rabbitmq_neutron_password }}
 rabbit_ha_queues = true
+
 notification_driver = neutron.openstack.common.notifier.rpc_notifier
 
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver

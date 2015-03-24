@@ -1,20 +1,20 @@
 [DEFAULT]
-verbose = true
-debug = true
-log_file = /var/log/glance/glance-api.log
-use_syslog = false
+verbose = True
+debug = True
+
+rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
+
+rabbit_virtual_host = /{{ rabbitmq_glance_vhost }}
+rabbit_userid = {{ rabbitmq_glance_user }}
+rabbit_password = {{ rabbitmq_glance_password }}
+rabbit_ha_queues = true
+
+notification_driver = nova.openstack.common.notifier.rpc_notifier
 
 default_store = rbd
 show_image_direct_url = True
 
 registry_host = {{ yaodu_api_vip }}
-cinder_catalog_info = volume:cinder:internalURL
-
-rpc_backend = rabbit
-rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
-
-rabbit_password = {{ rabbitmq_glance_password }}
-rabbit_ha_queues = true
 
 [glance_store]
 stores = rbd
