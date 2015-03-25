@@ -2,15 +2,6 @@
 verbose = True
 debug = True
 
-rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
-
-rabbit_virtual_host = /{{ rabbitmq_glance_vhost }}
-rabbit_userid = {{ rabbitmq_glance_user }}
-rabbit_password = {{ rabbitmq_glance_password }}
-rabbit_ha_queues = true
-
-notification_driver = nova.openstack.common.notifier.rpc_notifier
-
 [database]
 connection = mysql://glance:password@{{ yaodu_api_vip }}/glance
 

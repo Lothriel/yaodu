@@ -4,7 +4,7 @@ debug = True
 
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
 
-rabbit_virtual_host = /{{ rabbitmq_glance_vhost }}
+rabbit_virtual_host = {{ rabbitmq_glance_vhost }}
 rabbit_userid = {{ rabbitmq_glance_user }}
 rabbit_password = {{ rabbitmq_glance_password }}
 rabbit_ha_queues = true
@@ -22,9 +22,6 @@ rbd_store_pool = images
 rbd_store_user = glance
 rbd_store_ceph_conf = /etc/ceph/ceph.conf
 rbd_store_chunk_size = 8
-
-[database]
-connection = mysql://glance:password@{{ yaodu_api_vip }}/glance
 
 [keystone_authtoken]
 identity_uri = http://{{ yaodu_api_vip }}:35357

@@ -6,7 +6,7 @@ lock_path = /var/lock/neutron
 
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
 
-rabbit_virtual_host = /{{ rabbitmq_neutron_vhost }}
+rabbit_virtual_host = {{ rabbitmq_neutron_vhost }}
 rabbit_userid = {{ rabbitmq_neutron_user }}
 rabbit_password = {{ rabbitmq_neutron_password }}
 rabbit_ha_queues = true
