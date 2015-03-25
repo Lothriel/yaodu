@@ -15,19 +15,41 @@
     directory_mode: yes
     src: "etc/neutron/"
     dest: "/opt/yaodu/neutron/"
-    group: yaodu
-    owner: yaodu
 
 - name: Copying Neutron configs
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: 0644
-    group: yaodu
-    owner: yaodu
   with_items:
     - { src: "neutron.conf.j2" , dest: "/opt/yaodu/neutron/neutron.conf" }
-    - { src: "ml2_conf.ini.j2" , dest: "/opt/yaodu/neutron/ml2_conf.ini" }
+    - { src: "ml2_conf.ini.j2" , dest: "/opt/yaodu/neutron/plugins/ml2/ml2_conf.ini" }
+
+- name: Setting recursive owner for conf files
+  file:
+    path: "/opt/yaodu/neutron/"
+    state: "directory"
+    group: yaodu
+    owner: yaodu
+    recurse: "yes"
+
+- name: Setting permissions for conf files and directories
+  file:
+    path: "/opt/yaodu/neutron/rootwrap.d/"
+    state: "directory"
+    group: root
+    owner: root
+    recurse: "yes"
+
+- name: Setting folder permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "/opt/yaodu/neutron/"
+    - "/opt/yaodu/neutron/plugins/"
+    - "/opt/yaodu/neutron/plugins/ml2/"
+    - "/opt/yaodu/neutron/rootwrap.d/"
 
 - name: Creating keystone user neutron
   keystone:

@@ -50,6 +50,9 @@ support
 [load-balancer:children]
 network
 
+[memcache:children]
+support
+
 [message-broker:children]
 support
 

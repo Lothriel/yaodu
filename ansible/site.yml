@@ -47,12 +47,14 @@
     - cinder
   tags: cinder
 
-#- hosts: nova
-#  roles:
-#    - nova
-#  tags: nova
+- hosts: nova
+  roles:
+    - nova
+  tags: nova
 
-#- hosts: neutron
-#  roles:
-#    - neutron
-#  tags: neutron
+- hosts:
+    - neutron-server
+    - neutron-agents
+  roles:
+      - neutron
+  tags: neutron

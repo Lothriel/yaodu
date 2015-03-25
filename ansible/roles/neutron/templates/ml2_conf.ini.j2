@@ -1,0 +1,22 @@
+[ml2]
+type_drivers = flat,gre
+tenant_network_types = gre
+mechanism_drivers = openvswitch
+
+[ml2_type_gre]
+tunnel_id_ranges = 1:1000
+
+[ml2_type_vxlan]
+vni_ranges = 1:1000
+vxlan_group = 239.1.1.1
+
+[securitygroup]
+firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+enable_ipset = true
+enable_security_group = true
+
+[ovs]
+local_ip = {{ ansible_br_mgmt['ipv4']['address'] }}
+tunnel_type = gre
+enable_tunneling = true
+bridge_mappings = external:br-ex

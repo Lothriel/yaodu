@@ -50,7 +50,7 @@ nova_admin_auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
 root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
 
 [database]
-connection = mysql://neutron:##MYSQL_NEUTRON_PASSWORD##@infra/neutron?charset=utf8
+connection = mysql://neutron:{{ database_neutron_password }}@{{ yaodu_api_vip }}/neutron
 
 [keystone_authtoken]
 identity_uri = http://{{ yaodu_api_vip }}:35357

@@ -1,4 +1,4 @@
 ---
-rabbitmq_glance_password: "{{ rabbitmq_password }}"
-rabbitmq_glance_user: "{{ rabbitmq_user }}"
-rabbitmq_glance_vhost: "{{ rabbitmq_vhost }}"
+rabbitmq_neutron_password: "{{ rabbitmq_password }}"
+rabbitmq_neutron_user: "{{ rabbitmq_user }}"
+rabbitmq_neutron_vhost: "{{ rabbitmq_vhost }}"

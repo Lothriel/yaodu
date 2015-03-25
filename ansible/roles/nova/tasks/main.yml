@@ -7,24 +7,17 @@
   file:
     path: /opt/yaodu/nova/
     state: directory
-    group: yaodu
-    owner: yaodu
 
 - name: Creating default nova files
   copy:
     directory_mode: yes
     src: "etc/nova/"
     dest: "/opt/yaodu/nova/"
-    group: yaodu
-    owner: yaodu
 
 - name: Copying Nova configs
   template:
     src: "nova.conf.j2"
-    dest: "nova.conf"
-    mode: 0644
-    group: yaodu
-    owner: yaodu
+    dest: "/opt/yaodu/nova/nova.conf"
 
 - name: Getting Cephx Cinder key
   shell: ceph auth get-or-create client.cinder
@@ -35,8 +28,31 @@
   copy:
     content: "{{ cephx_key.stdout }}\n\r"
     dest: "/opt/yaodu/cinder/ceph.client.cinder.keyring"
+
+- name: Setting recursive owner for conf files
+  file:
+    path: "/opt/yaodu/nova/"
+    state: "directory"
     group: yaodu
     owner: yaodu
+    recurse: "yes"
+
+- name: Setting permissions for conf files and directories
+  file:
+    path: "/opt/yaodu/nova/rootwrap.d/"
+    state: "directory"
+    group: root
+    owner: root
+    recurse: "yes"
+
+- name: Setting folder permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "/opt/yaodu/nova/"
+    - "/opt/yaodu/nova/rootwrap.d/"
 
 - name: Creating keystone user nova
   keystone:
