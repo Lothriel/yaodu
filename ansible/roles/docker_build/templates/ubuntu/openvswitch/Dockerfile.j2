@@ -1,0 +1,14 @@
+FROM		{{ docker_registry }}/yaodu/common
+MAINTAINER	Sam Yaple <sam@yaple.net>
+
+RUN		apt-get install -y --no-install-recommends openvswitch-switch && \
+                apt-get clean
+
+ADD		entrypoint.sh /entrypoint.sh
+RUN		chmod +x /entrypoint.sh
+
+RUN             groupmod -g 42424 openvswitch && usermod -u 42424 openvswitch
+RUN             chown -R openvswitch: /var/log/openvswitch/ /etc/openvswitch/
+
+USER            openvswitch
+WORKDIR         /var/lib/openvswitch/

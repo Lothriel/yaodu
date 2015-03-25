@@ -1,0 +1,8 @@
+---
+- include: check.yml
+  vars:
+    container: openvswitch
+    templates:
+      - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
+    files:
+      - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }

@@ -1,22 +1,71 @@
 ---
-- name: Starting Glance Registry
+- name: Starting neutron-server
   docker:
-    name: "glance-registry"
+    name: "neutron-server"
     image: "{{ docker_registry }}/yaodu/glance"
     state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9191:9191"
-    expose: "9191"
-    volumes: "/opt/yaodu/glance/:/etc/glance/"
-    env: "SERVICE=registry"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9696:9696"
+    expose: "9696"
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/"
+    env: "SERVICE=server"
     command: "/entrypoint.sh"
+  when: inventory_hostname is in groups['neutron-server']
 
-- name: Starting Glance Api
+- name: Starting neutron-l3-agent
   docker:
-    name: "glance-api"
-    image: "{{ docker_registry }}/yaodu/glance"
+    name: "neutron-l3-agent"
+    image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9292:9292"
-    expose: "9292"
-    volumes: "/opt/yaodu/glance/:/etc/glance/,/opt/yaodu/glance/ceph.conf:/etc/ceph/ceph.conf,/opt/yaodu/glance/ceph.client.glance.keyring:/etc/ceph/ceph.client.glance.keyring"
-    env: "SERVICE=api"
+    privileged: true
+    net: host
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/"
+    env: "SERVICE=l3-agent"
     command: "/entrypoint.sh"
+  when: inventory_hostname is in groups['neutron-agents']
+
+- name: Starting neutron-dhcp-agent
+  docker:
+    name: "neutron-dhcp-agent"
+    image: "{{ docker_registry }}/yaodu/neutron"
+    state: "running"
+    privileged: true
+    net: host
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/"
+    env: "SERVICE=dhcp-agent"
+    command: "/entrypoint.sh"
+  when: inventory_hostname is in groups['neutron-agents']
+
+- name: Starting neutron-plugin-openvswitch-agent
+  docker:
+    name: "neutron-plugin-openvswitch-agent"
+    image: "{{ docker_registry }}/yaodu/neutron"
+    state: "running"
+    privileged: true
+    net: host
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/"
+    env: "SERVICE=plugin-openvswitch-agent"
+    command: "/entrypoint.sh"
+  when: inventory_hostname is in groups['neutron-agents']
+
+- name: Starting openvswitch-db
+  docker:
+    name: "openvswitch"
+    image: "{{ docker_registry }}/yaodu/openvswitch"
+    state: "running"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:6168:6168"
+    expose: "6168"
+    volumes: "/opt/yaodu/openvswitch/:/etc/openvswitch/"
+    command: "/entrypoint.sh"
+  when: inventory_hostname is in groups['neutron-agents']
+
+- name: Starting openvswitch-switch
+  docker:
+    name: "openvswitch"
+    image: "{{ docker_registry }}/yaodu/openvswitch"
+    state: "running"
+    privileged: true
+    net: host
+    volumes: "/lib/modules/:/lib/modules/"
+    env: "REMOTE_IP={{ ansible_br_mgmt['ipv4']['address'] }}"
+    command: "/entrypoint.sh"
+  when: inventory_hostname is in groups['neutron-agents']

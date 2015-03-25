@@ -34,16 +34,19 @@
 
 - name: Setting permissions for conf files and directories
   file:
-    path: "/opt/yaodu/neutron/rootwrap.d/"
-    state: "directory"
+    path: "{{ item.src }}"
+    state: "{{ item.state }}"
     group: root
     owner: root
     recurse: "yes"
+  with_items:
+    - { src: "/opt/yaodu/neutron/rootwrap.conf", state: "file" }
+    - { src: "/opt/yaodu/neutron/rootwrap.conf.d/", state: "directory" }
 
 - name: Setting folder permissions
   file:
     path: "{{ item }}"
-    state: directory
+    state: "directory"
     mode: 0755
   with_items:
     - "/opt/yaodu/neutron/"
@@ -105,4 +108,4 @@
 
 - include: bootstrap.yml
 
-#- include: start.yml
+- include: start.yml

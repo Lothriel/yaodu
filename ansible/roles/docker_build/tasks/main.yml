@@ -8,6 +8,7 @@
     - rabbitmq
     - haproxy
     - keepalived
+    - openvswitch
     - keystone
     - glance
     - nova
@@ -37,6 +38,9 @@
 
 - include: keepalived.yml
   tags: keepalived
+
+- include: openvswitch.yml
+  tags: openvswitch
 
 - include: keystone.yml
   tags: keystone

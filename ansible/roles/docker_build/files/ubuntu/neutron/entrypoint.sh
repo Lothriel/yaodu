@@ -10,7 +10,7 @@ main() {
 
 initial_setup() {
     neutron_dir="/etc/neutron/"
-    services=("server" "l3")
+    services=("server" "l3-agent" "dhcp-agent" "plugin-openvswitch-agent")
 
     if [[ ! -n "${SERVICE}" ]]; then
         variable_name="SERVICE"

@@ -39,23 +39,23 @@
 
 - name: Setting permissions for conf files and directories
   file:
-    path: "/opt/yaodu/nova/rootwrap.d/"
-    state: "directory"
+    path: "{{ item.src }}"
+    state: "{{ item.state }}"
     group: root
     owner: root
     recurse: "yes"
+  with_items:
+    - { src: "/opt/yaodu/nova/rootwrap.conf", state: "file" }
+    - { src: "/opt/yaodu/nova/rootwrap.conf.d/", state: "directory" }
 
 - name: Setting folder permissions
   file:
-    path: "{{ item.src }}"
-    state: "{{ item.state }}"
-    mode: "{{ item.mode }}"
-    group: root
-    owner: root
+    path: "{{ item }}"
+    state: "directory"
+    mode: 0755
   with_items:
-    - { src: "/opt/yaodu/nova/", state: "directory", mode: "u=rwx,g=rx,o=rx" }
-    - { src: "/opt/yaodu/nova/rootwrap.conf", state: "file", mode: "u=rw,g=r,o=r" }
-    - { src: "/opt/yaodu/nova/rootwrap.d/", state: "directory", mode: "u=rwx,g=rx,o=rx" }
+    - "/opt/yaodu/nova/"
+    - "/opt/yaodu/nova/rootwrap.d/"
 
 - name: Creating keystone user nova
   keystone:
