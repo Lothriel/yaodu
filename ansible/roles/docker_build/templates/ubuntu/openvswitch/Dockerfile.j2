@@ -7,8 +7,8 @@ RUN		apt-get install -y --no-install-recommends openvswitch-switch && \
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
 
-RUN             groupmod -g 42424 openvswitch && usermod -u 42424 openvswitch
-RUN             chown -R openvswitch: /var/log/openvswitch/ /etc/openvswitch/
+RUN             groupadd -g 42424 {{ container }} && useradd -u 42424 -g {{ container }} -s /sbin/nologin -c "{{ container }} user" {{ container }}
+RUN             chown -R {{ container }}: /var/log/{{ container }}/ /etc/{{ container }}/
 
-USER            openvswitch
-WORKDIR         /var/lib/openvswitch/
+USER            {{ container }}
+WORKDIR         /var/lib/{{ container }}/
