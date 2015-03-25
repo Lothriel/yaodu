@@ -4,6 +4,7 @@
     container: nova
     templates:
       - { src: "{{ yaodu_distro }}/{{ container }}/Dockerfile.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/Dockerfile" }
+      - { src: "{{ yaodu_distro }}/{{ container }}/sudoers.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/sudoers" }
     files:
       - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }
     web_files:

@@ -1,22 +1,53 @@
 ---
-- name: Starting Glance Registry
+- name: Starting nova-api
   docker:
-    name: "glance-registry"
-    image: "{{ docker_registry }}/yaodu/glance"
+    name: "nova-api"
+    image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9191:9191"
-    expose: "9191"
-    volumes: "/opt/yaodu/glance/:/etc/glance/"
-    env: "SERVICE=registry"
+    privileged: true
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:8773:8773,{{ ansible_br_mgmt['ipv4']['address'] }}:8774:8774,{{ ansible_br_mgmt['ipv4']['address'] }}:8775:8775"
+    expose: "8773,8774,8775"
+    volumes: "/opt/yaodu/nova/:/etc/nova/"
+    env: "SERVICE=api"
     command: "/entrypoint.sh"
 
-- name: Starting Glance Api
+- name: Starting nova-scheduler
   docker:
-    name: "glance-api"
-    image: "{{ docker_registry }}/yaodu/glance"
+    name: "nova-scheduler"
+    image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9292:9292"
-    expose: "9292"
-    volumes: "/opt/yaodu/glance/:/etc/glance/,/opt/yaodu/glance/ceph.conf:/etc/ceph/ceph.conf,/opt/yaodu/glance/ceph.client.glance.keyring:/etc/ceph/ceph.client.glance.keyring"
-    env: "SERVICE=api"
+    volumes: "/opt/yaodu/nova/:/etc/nova/"
+    hostname: "{{ ansible_hostname }}-nova"
+    env: "SERVICE=scheduler"
+    command: "/entrypoint.sh"
+
+- name: Starting nova-console
+  docker:
+    name: "nova-console"
+    image: "{{ docker_registry }}/yaodu/nova"
+    state: "running"
+    volumes: "/opt/yaodu/nova/:/etc/nova/"
+    hostname: "{{ ansible_hostname }}-nova"
+    env: "SERVICE=console"
+    command: "/entrypoint.sh"
+
+- name: Starting nova-consoleauth
+  docker:
+    name: "nova-consoleauth"
+    image: "{{ docker_registry }}/yaodu/nova"
+    state: "running"
+    volumes: "/opt/yaodu/nova/:/etc/nova/"
+    hostname: "{{ ansible_hostname }}-nova"
+    env: "SERVICE=consoleauth"
+    command: "/entrypoint.sh"
+
+- name: Starting nova-spicehtml5proxy
+  docker:
+    name: "nova-spicehtml5proxy"
+    image: "{{ docker_registry }}/yaodu/nova"
+    state: "running"
+    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:6082:6082"
+    expose: "6082"
+    volumes: "/opt/yaodu/nova/:/etc/nova/"
+    env: "SERVICE=spicehtml5proxy"
     command: "/entrypoint.sh"

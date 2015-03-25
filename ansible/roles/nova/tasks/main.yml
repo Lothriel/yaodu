@@ -47,12 +47,15 @@
 
 - name: Setting folder permissions
   file:
-    path: "{{ item }}"
-    state: directory
-    mode: 0755
+    path: "{{ item.src }}"
+    state: "{{ item.state }}"
+    mode: "{{ item.mode }}"
+    group: root
+    owner: root
   with_items:
-    - "/opt/yaodu/nova/"
-    - "/opt/yaodu/nova/rootwrap.d/"
+    - { src: "/opt/yaodu/nova/", state: "directory", mode: "u=rwx,g=rx,o=rx" }
+    - { src: "/opt/yaodu/nova/rootwrap.conf", state: "file", mode: "u=rw,g=r,o=r" }
+    - { src: "/opt/yaodu/nova/rootwrap.d/", state: "directory", mode: "u=rwx,g=rx,o=rx" }
 
 - name: Creating keystone user nova
   keystone:
@@ -106,6 +109,33 @@
     login_tenant_name: "admin"
   run_once: True
 
+- name: Creating keystone service novav3
+  keystone:
+    command: "ensure_service"
+    service_name: "novav3"
+    service_type: "computev3"
+    description: "Compute Service"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
+- name: Creating keystone endpoint novav3
+  keystone:
+    command: "ensure_endpoint"
+    region_name: "regionOne"
+    service_name: "novav3"
+    service_type: "computev3"
+    publicurl: "http://{{ yaodu_api_vip }}:8774/v3"
+    adminurl: "http://{{ yaodu_api_vip }}:8774/v3"
+    internalurl: "http://{{ yaodu_api_vip }}:8774/v3"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
 - include: bootstrap.yml
 
-#- include: start.yml
+- include: start.yml

@@ -1,0 +1,2 @@
+Defaults:{{ container }} !requiretty
+{{ container }} ALL = (root) NOPASSWD: /usr/local/bin/{{ container }}-rootwrap /etc/{{ container }}/rootwrap.conf *
