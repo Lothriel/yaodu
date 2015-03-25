@@ -8,7 +8,7 @@ api_paste_config = /etc/nova/api-paste.ini
 
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
 
-rabbit_virtual_host = /{{ rabbitmq_nova_vhost }}
+rabbit_virtual_host = {{ rabbitmq_nova_vhost }}
 rabbit_userid = {{ rabbitmq_nova_user }}
 rabbit_password = {{ rabbitmq_nova_password }}
 rabbit_ha_queues = true
@@ -48,9 +48,6 @@ admin_username = neutron
 admin_password = {{ keystone_neutron_password }}
 metadata_proxy_shared_secret = {{ metadata_shared_secret }}
 service_metadata_proxy = true
-
-[osapi_v3]
-enabled = True
 
 [database]
 connection = mysql://nova:{{ database_nova_password }}@{{ yaodu_api_vip }}/nova

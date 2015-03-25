@@ -4,7 +4,7 @@ MAINTAINER	Sam Yaple <sam@yaple.net>
 ADD             {{ container }}.tar.gz /opt/yaodu/
 RUN             ln -s /opt/yaodu/{{ container }}-*/ /opt/yaodu/{{ container }}
 
-RUN             apt-get install -y --no-install-recommends ceph-common spice-html5
+RUN             apt-get install -y --no-install-recommends ceph-common spice-html5 iptables
 
 RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
 RUN             cd /opt/yaodu/{{ container }}/ && pip install .

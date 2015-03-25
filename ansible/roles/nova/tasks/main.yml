@@ -83,7 +83,7 @@
   keystone:
     command: "ensure_service"
     service_name: "nova"
-    service_type: "compue"
+    service_type: "compute"
     description: "Compute Service"
     endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
     login_user: "admin"
@@ -96,7 +96,7 @@
     command: "ensure_endpoint"
     region_name: "regionOne"
     service_name: "nova"
-    service_type: "compue"
+    service_type: "compute"
     publicurl: "http://{{ yaodu_api_vip }}:8774/v2/%(tenant_id)s"
     adminurl: "http://{{ yaodu_api_vip }}:8774/v2/%(tenant_id)s"
     internalurl: "http://{{ yaodu_api_vip }}:8774/v2/%(tenant_id)s"
