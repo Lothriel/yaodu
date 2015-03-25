@@ -1,8 +1,7 @@
 FROM		{{ docker_registry }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-get update && \
-                apt-get install -y --no-install-recommends rabbitmq-server && \
+RUN		apt-get install -y --no-install-recommends rabbitmq-server && \
                 apt-get clean
 
 ADD		entrypoint.sh /entrypoint.sh
