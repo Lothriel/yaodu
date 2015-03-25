@@ -3,12 +3,15 @@
   vars:
     container: neutron
 
-- name: Ensuring /opt/yaodu/neutron/ exists
+- name: Ensuring directories exist
   file:
-    path: /opt/yaodu/neutron/
+    path: "{{ item }}"
     state: directory
     group: yaodu
     owner: yaodu
+  with_items:
+    - "/opt/yaodu/neutron/"
+    - "/opt/yaodu/openvswitch/"
 
 - name: Creating default neutron files
   copy:
@@ -38,10 +41,10 @@
     state: "{{ item.state }}"
     group: root
     owner: root
-    recurse: "yes"
+    recurse: "{{ item.recurse }}"
   with_items:
-    - { src: "/opt/yaodu/neutron/rootwrap.conf", state: "file" }
-    - { src: "/opt/yaodu/neutron/rootwrap.conf.d/", state: "directory" }
+    - { src: "/opt/yaodu/neutron/rootwrap.conf", state: "file", recurse: "no" }
+    - { src: "/opt/yaodu/neutron/rootwrap.d/", state: "directory", recurse: "yes"}
 
 - name: Setting folder permissions
   file:

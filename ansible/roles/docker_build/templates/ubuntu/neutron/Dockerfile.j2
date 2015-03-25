@@ -4,16 +4,24 @@ MAINTAINER	Sam Yaple <sam@yaple.net>
 ADD             {{ container }}.tar.gz /opt/yaodu/
 RUN             ln -s /opt/yaodu/{{ container }}-*/ /opt/yaodu/{{ container }}
 
-RUN             apt-get install -y --no-install-recommends iptables
+RUN             apt-get install -y --no-install-recommends iptables dnsmasq openvswitch-switch
 
 RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
 RUN             cd /opt/yaodu/{{ container }}/ && pip install .
+
+ADD             sudoers /etc/sudoers.d/sudoers
 
 ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh
 
 RUN             groupadd -g 42424 {{ container }} && useradd -u 42424 -g {{ container }} -s /sbin/nologin -c "{{ container }} user" {{ container }}
-RUN             mkdir -p /var/log/{{ container }}/ /var/lib/{{ container }}/ && chown -R {{ container }}: /var/log/{{ container }}/ /var/lib/{{ container }}/
+RUN             mkdir -p /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/ && \
+                chown -R {{ container }}: /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/
+
+ADD             ovs-vsctl-db.patch /opt/yaodu/
+RUN             cd /usr/local/lib/python2.7/dist-packages/neutron/agent/linux/ && \
+                patch -p1 -i /opt/yaodu/ovs-vsctl-db.patch && \
+                rm /opt/yaodu/ovs-vsctl-db.patch
 
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}

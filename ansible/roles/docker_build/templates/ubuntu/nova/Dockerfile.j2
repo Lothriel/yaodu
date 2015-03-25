@@ -10,12 +10,12 @@ RUN             ln -s /opt/yaodu/kanaka-noVNC-*/ /usr/share/novnc
 ADD             spice-html5.tar.gz /opt/yaodu/
 RUN             ln -s /opt/yaodu/SPICE-spice-html5-*/ /usr/share/spice-html5
 
-ADD             sudoers /etc/sudoers.d/{{ container }}_sudoers
-
 RUN             apt-get install -y --no-install-recommends ceph-common iptables
 
 RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
 RUN             cd /opt/yaodu/{{ container }}/ && pip install .
+
+ADD             sudoers /etc/sudoers.d/sudoers
 
 ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh

@@ -14,6 +14,7 @@ rabbit_ha_queues = true
 notification_driver = neutron.openstack.common.notifier.rpc_notifier
 
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+ovs_vsctl_db = "tcp:{{ ansible_br_mgmt['ipv4']['address'] }}:6633"
 
 network_device_mtu = 1450
 allow_overlapping_ips = true
@@ -47,7 +48,7 @@ nova_admin_password = {{ keystone_nova_password }}
 nova_admin_auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
 
 [agent]
-root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+root_helper = sudo neutron-rootwrap /etc/neutron/rootwrap.conf
 
 [database]
 connection = mysql://neutron:{{ database_neutron_password }}@{{ yaodu_api_vip }}/neutron

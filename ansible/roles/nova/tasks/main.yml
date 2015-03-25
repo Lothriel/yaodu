@@ -43,10 +43,10 @@
     state: "{{ item.state }}"
     group: root
     owner: root
-    recurse: "yes"
+    recurse: "{{ item.recurse }}"
   with_items:
-    - { src: "/opt/yaodu/nova/rootwrap.conf", state: "file" }
-    - { src: "/opt/yaodu/nova/rootwrap.conf.d/", state: "directory" }
+    - { src: "/opt/yaodu/nova/rootwrap.conf", state: "file", recurse: "no" }
+    - { src: "/opt/yaodu/nova/rootwrap.d/", state: "directory", recurse: "yes" }
 
 - name: Setting folder permissions
   file:
