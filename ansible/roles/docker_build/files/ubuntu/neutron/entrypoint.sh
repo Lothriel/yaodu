@@ -29,6 +29,6 @@ initial_setup() {
 
 main
 
-exec /usr/bin/env "glance-${SERVICE}"
+exec /usr/bin/env "neutron-${SERVICE}" --log-file="/var/log/neutron/neutron-${SERVICE}.log"
 
 execution_should_never_reach_here

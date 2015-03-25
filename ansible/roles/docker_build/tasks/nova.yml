@@ -8,3 +8,5 @@
       - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }
     web_files:
         - { src: "http://tarballs.openstack.org/{{ container }}/{{ container }}-{{ openstack_revision }}.tar.gz", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/{{ container }}.tar.gz" }
+        - { src: "http://github.com/kanaka/noVNC/tarball/v0.5.1", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/novnc.tar.gz" }
+        - { src: "http://github.com/SPICE/spice-html5/tarball/spice-html5-0.1.5", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/spice-html5.tar.gz" }

@@ -10,7 +10,7 @@ main() {
 
 initial_setup() {
     nova_dir="/etc/nova/"
-    services=("api" "console" "compute")
+    services=("api" "scheduler" "console" "consoleauth" "novncproxy" "spicehtml5proxy" "compute")
 
     if [[ ! -n "${SERVICE}" ]]; then
         variable_name="SERVICE"
@@ -29,6 +29,6 @@ initial_setup() {
 
 main
 
-exec /usr/bin/env "glance-${SERVICE}"
+exec /usr/bin/env "nova-${SERVICE}" --log-file="/var/log/nova/nova-${SERVICE}.log"
 
 execution_should_never_reach_here
