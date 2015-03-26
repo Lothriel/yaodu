@@ -6,5 +6,5 @@
     state: "running"
     privileged: true
     net: host
-    volumes: "/opt/yaodu/libvirt/:/etc/libvirt/,/opt/yaodu/libvirt/ceph.conf:/etc/ceph/ceph.conf,/lib/modules/:/lib/modules/"
+    volumes: "/opt/yaodu/libvirt/:/etc/libvirt/,/opt/yaodu/libvirt/ceph.conf:/etc/ceph/ceph.conf,/lib/modules/:/lib/modules/,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/"
     command: "/entrypoint.sh"

@@ -8,5 +8,6 @@
     files:
       - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }
       - { src: "{{ yaodu_distro }}/{{ container }}/ovs-vsctl-db.patch", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/ovs-vsctl-db.patch" }
+      - { src: "{{ yaodu_distro }}/{{ container }}/ovsdb_client.patch", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/ovsdb_client.patch" }
     web_files:
         - { src: "http://tarballs.openstack.org/{{ container }}/{{ container }}-{{ openstack_revision }}.tar.gz", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/{{ container }}.tar.gz" }

@@ -10,7 +10,7 @@ RUN             ln -s /opt/yaodu/kanaka-noVNC-*/ /usr/share/novnc
 ADD             spice-html5.tar.gz /opt/yaodu/
 RUN             ln -s /opt/yaodu/SPICE-spice-html5-*/ /usr/share/spice-html5
 
-RUN             apt-get install -y --no-install-recommends ceph-common iptables python-libvirt
+RUN             apt-get install -y --no-install-recommends ceph-common iptables bridge-utils python-libvirt openssh-client
 
 RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
 RUN             cd /opt/yaodu/{{ container }}/ && pip install .

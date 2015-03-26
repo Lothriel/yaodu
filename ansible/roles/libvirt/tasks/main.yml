@@ -10,6 +10,13 @@
     group: yaodu
     owner: yaodu
 
+- name: Ensuring /opt/yaodu/libvirt/instances/ exists
+  file:
+    path: /opt/yaodu/libvirt/instances/
+    state: directory
+    group: yaodu
+    owner: yaodu
+
 - name: Ensuring directories exist
   file:
     path: "/opt/yaodu/libvirt/secrets/"

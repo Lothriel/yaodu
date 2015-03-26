@@ -25,15 +25,6 @@
          try:
              return utils.execute(full_args, root_helper=self.root_helper)
          except Exception as e:
-@@ -162,7 +168,7 @@
-         self.run_vsctl(args)
- 
-     def run_ofctl(self, cmd, args, process_input=None):
--        full_args = ["ovs-ofctl", cmd, self.br_name] + args
-+        full_args = ["ovs-ofctl", cmd, self.br_name, self.vsctl_db] + args
-         try:
-             return utils.execute(full_args, root_helper=self.root_helper,
-                                  process_input=process_input)
 @@ -524,8 +530,8 @@
  
  

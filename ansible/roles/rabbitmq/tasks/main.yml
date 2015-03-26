@@ -13,3 +13,7 @@
 - include: check_for_existing_cluster.yml
 
 - include: start.yml
+
+- name: Setting users and permissions
+  shell: docker exec -i -t rabbitmq rabbitmqctl add_user openstack password; docker exec -i -t rabbitmq rabbitmqctl add_vhost openstack; docker exec -i -t rabbitmq rabbitmqctl set_permissions -p openstack openstack ".*" ".*" ".*"
+  run_once: true

@@ -18,7 +18,7 @@
     state: "running"
     privileged: true
     net: host
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/"
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/,/lib/modules/:/lib/modules/"
     env: "SERVICE=l3-agent"
     command: "/entrypoint.sh"
   when: inventory_hostname in groups['neutron-agents']
@@ -55,9 +55,14 @@
     state: "running"
     privileged: true
     net: host
-    volumes: "/lib/modules/:/lib/modules/"
+    volumes: "/lib/modules/:/lib/modules/,/opt/yaodu/openvswitch/run/:/var/run/openvswitch/"
     env: "SERVICE=switch,REMOTE_IP={{ ansible_br_mgmt['ipv4']['address'] }}"
     command: "/entrypoint.sh"
+  when: inventory_hostname in groups['neutron-agents'] or
+        inventory_hostname in groups['nova-compute']
+
+- name: setup bridge
+  shell: sleep 5; docker run -i -t --rm 172.16.0.1:5000/yaodu/neutron ovs-vsctl --db tcp:{{ ansible_br_mgmt['ipv4']['address'] }}:6633 add-br br-ex; ovs-vsctl --db tcp:{{ ansible_br_mgmt['ipv4']['address'] }}:6633 add-port br-ex br-data || true
   when: inventory_hostname in groups['neutron-agents'] or
         inventory_hostname in groups['nova-compute']
 
@@ -68,7 +73,7 @@
     state: "running"
     privileged: true
     net: host
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/"
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/,/opt/yaodu/openvswitch/run/:/var/run/openvswitch/"
     env: "SERVICE=openvswitch-agent"
     command: "/entrypoint.sh"
   when: inventory_hostname in groups['neutron-agents'] or

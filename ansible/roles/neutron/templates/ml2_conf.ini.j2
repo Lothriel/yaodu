@@ -3,6 +3,9 @@ type_drivers = flat,gre
 tenant_network_types = gre
 mechanism_drivers = openvswitch
 
+[ml2_type_flat]
+flat_networks = external
+
 [ml2_type_gre]
 tunnel_id_ranges = 1:1000
 

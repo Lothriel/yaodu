@@ -12,6 +12,7 @@
   with_items:
     - "/opt/yaodu/neutron/"
     - "/opt/yaodu/openvswitch/"
+    - "/opt/yaodu/openvswitch/run/"
 
 - name: Creating default neutron files
   copy:

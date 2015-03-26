@@ -29,7 +29,9 @@ main() {
             unset_variable
         fi
 
-        exec /usr/bin/env ovs-vswitchd "tcp:${REMOTE_IP}:6633" -vfile:dbg --mlockall --log-file=/var/log/openvswitch/ovs-vswitchd.log
+        sudo modprobe openvswitch
+
+        exec /usr/bin/env sudo ovs-vswitchd "tcp:${REMOTE_IP}:6633" -vfile:dbg --mlockall --log-file=/var/log/openvswitch/ovs-vswitchd.log
         execution_should_never_reach_here
     fi
 
@@ -56,6 +58,6 @@ initial_setup() {
 
 main
 
-exec /usr/bin/env "neutron-${SERVICE}" --log-file="/var/log/neutron/neutron-${SERVICE}.log"
+exec /usr/bin/env "neutron-${SERVICE}" --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini --log-file="/var/log/neutron/neutron-${SERVICE}.log"
 
 execution_should_never_reach_here
