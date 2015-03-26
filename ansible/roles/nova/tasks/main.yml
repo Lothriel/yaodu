@@ -19,6 +19,11 @@
     src: "nova.conf.j2"
     dest: "/opt/yaodu/nova/nova.conf"
 
+- name: Copying ceph config
+  template:
+    src: "ceph.conf.j2"
+    dest: "/opt/yaodu/nova/ceph.conf"
+
 - name: Getting Cephx Cinder key
   shell: ceph auth get-or-create client.cinder
   register: cephx_key
@@ -27,7 +32,7 @@
 - name: Setting Cephx Cinder key
   copy:
     content: "{{ cephx_key.stdout }}\n\r"
-    dest: "/opt/yaodu/cinder/ceph.client.cinder.keyring"
+    dest: "/opt/yaodu/nova/ceph.client.cinder.keyring"
 
 - name: Setting recursive owner for conf files
   file:

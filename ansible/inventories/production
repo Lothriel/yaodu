@@ -18,6 +18,7 @@ compute02
 
 [management:children]
 support
+compute
 
 [build-hosts:children]
 support

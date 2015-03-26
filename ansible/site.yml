@@ -47,7 +47,14 @@
     - cinder
   tags: cinder
 
-- hosts: nova
+- hosts: compute
+  roles:
+    - libvirt
+  tags: libvirt
+
+- hosts:
+    - nova
+    - compute
   roles:
     - nova
   tags: nova

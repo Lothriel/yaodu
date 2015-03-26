@@ -1,0 +1,10 @@
+---
+- name: Starting libvirt
+  docker:
+    name: "libvirt"
+    image: "{{ docker_registry }}/yaodu/libvirt"
+    state: "running"
+    privileged: true
+    net: host
+    volumes: "/opt/yaodu/libvirt/:/etc/libvirt/,/opt/yaodu/libvirt/ceph.conf:/etc/ceph/ceph.conf,/lib/modules/:/lib/modules/"
+    command: "/entrypoint.sh"

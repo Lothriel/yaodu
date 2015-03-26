@@ -8,6 +8,7 @@
     - rabbitmq
     - haproxy
     - keepalived
+    - libvirt
     - keystone
     - glance
     - nova
@@ -37,6 +38,9 @@
 
 - include: keepalived.yml
   tags: keepalived
+
+- include: libvirt.yml
+  tags: libvirt
 
 - include: keystone.yml
   tags: keystone

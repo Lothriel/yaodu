@@ -10,6 +10,7 @@
     volumes: "/opt/yaodu/nova/:/etc/nova/"
     env: "SERVICE=api"
     command: "/entrypoint.sh"
+  when: inventory_hostname in groups['nova']
 
 - name: Starting nova-scheduler
   docker:
@@ -20,6 +21,18 @@
     hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=scheduler"
     command: "/entrypoint.sh"
+  when: inventory_hostname in groups['nova']
+
+- name: Starting nova-conductor
+  docker:
+    name: "nova-conductor"
+    image: "{{ docker_registry }}/yaodu/nova"
+    state: "running"
+    volumes: "/opt/yaodu/nova/:/etc/nova/"
+    hostname: "{{ ansible_hostname }}-nova"
+    env: "SERVICE=conductor"
+    command: "/entrypoint.sh"
+  when: inventory_hostname in groups['nova']
 
 - name: Starting nova-console
   docker:
@@ -30,6 +43,7 @@
     hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=console"
     command: "/entrypoint.sh"
+  when: inventory_hostname in groups['nova']
 
 - name: Starting nova-consoleauth
   docker:
@@ -40,6 +54,7 @@
     hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=consoleauth"
     command: "/entrypoint.sh"
+  when: inventory_hostname in groups['nova']
 
 - name: Starting nova-spicehtml5proxy
   docker:
@@ -51,3 +66,15 @@
     volumes: "/opt/yaodu/nova/:/etc/nova/"
     env: "SERVICE=spicehtml5proxy"
     command: "/entrypoint.sh"
+  when: inventory_hostname in groups['nova']
+
+- name: Starting nova-compute
+  docker:
+    name: "nova-compute"
+    image: "{{ docker_registry }}/yaodu/nova"
+    state: "running"
+    volumes: "/opt/yaodu/nova/:/etc/nova/,/opt/yaodu/nova/ceph.conf:/etc/ceph/ceph.conf,/opt/yaodu/nova/ceph.client.cinder.keyring:/etc/ceph/ceph.client.cinder.keyring"
+    hostname: "{{ ansible_hostname }}-nova"
+    env: "SERVICE=compute"
+    command: "/entrypoint.sh"
+  when: inventory_hostname in groups['nova-compute']

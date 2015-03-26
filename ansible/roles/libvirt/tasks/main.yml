@@ -1,0 +1,45 @@
+---
+- include: container_pull.yml
+  vars:
+    container: libvirt
+
+- name: Ensuring directories exist
+  file:
+    path: "/opt/yaodu/libvirt/"
+    state: directory
+    group: yaodu
+    owner: yaodu
+
+- name: Ensuring directories exist
+  file:
+    path: "/opt/yaodu/libvirt/secrets/"
+    state: directory
+
+- name: Getting Cephx Cinder key
+  shell: ceph auth get-key client.cinder
+  register: cephx_key
+  run_once: True
+
+- name: Setting Cephx Cinder key
+  copy:
+    content: "{{ cephx_key.stdout }}"
+    dest: "/opt/yaodu/libvirt/secrets/{{ libvirt_secret_uuid }}.base64"
+    mode: 0600
+
+- name: Settings secrets file
+  template:
+    src: "secret.xml.j2"
+    dest: "/opt/yaodu/libvirt/secrets/{{ libvirt_secret_uuid }}.xml"
+    mode: 0600
+
+- name: Copying libvirt configs
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    group: yaodu
+    owner: yaodu
+  with_items:
+    - { src: "ceph.conf.j2", dest: "/opt/yaodu/libvirt/ceph.conf" }
+    - { src: "libvirtd.conf.j2", dest: "/opt/yaodu/libvirt/libvirtd.conf" }
+
+- include: start.yml

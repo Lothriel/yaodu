@@ -10,7 +10,7 @@ main() {
 
 initial_setup() {
     nova_dir="/etc/nova/"
-    services=("api" "scheduler" "console" "consoleauth" "novncproxy" "spicehtml5proxy" "compute")
+    services=("api" "scheduler" "conductor" "console" "consoleauth" "novncproxy" "spicehtml5proxy" "compute")
 
     if [[ ! -n "${SERVICE}" ]]; then
         variable_name="SERVICE"

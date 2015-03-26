@@ -10,7 +10,7 @@ RUN             ln -s /opt/yaodu/kanaka-noVNC-*/ /usr/share/novnc
 ADD             spice-html5.tar.gz /opt/yaodu/
 RUN             ln -s /opt/yaodu/SPICE-spice-html5-*/ /usr/share/spice-html5
 
-RUN             apt-get install -y --no-install-recommends ceph-common iptables
+RUN             apt-get install -y --no-install-recommends ceph-common iptables python-libvirt
 
 RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
 RUN             cd /opt/yaodu/{{ container }}/ && pip install .
@@ -21,7 +21,8 @@ ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh
 
 RUN             groupadd -g 42424 {{ container }} && useradd -u 42424 -g {{ container }} -s /sbin/nologin -c "{{ container }} user" {{ container }}
-RUN             mkdir -p /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ container }}/ && chown -R {{ container }}: /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ container }}/
+RUN             mkdir -p /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ container }}/ && \
+                chown -R {{ container }}: /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ container }}/
 
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}
