@@ -62,6 +62,7 @@
 - hosts:
     - neutron-server
     - neutron-agents
+    - compute
   roles:
       - neutron
   tags: neutron

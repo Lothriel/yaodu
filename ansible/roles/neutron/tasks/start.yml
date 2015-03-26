@@ -45,7 +45,8 @@
     volumes: "/opt/yaodu/openvswitch/:/etc/openvswitch/"
     env: "SERVICE=db"
     command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents']
+  when: inventory_hostname in groups['neutron-agents'] or
+        inventory_hostname in groups['nova-compute']
 
 - name: Starting openvswitch-switch
   docker:
@@ -57,7 +58,8 @@
     volumes: "/lib/modules/:/lib/modules/"
     env: "SERVICE=switch,REMOTE_IP={{ ansible_br_mgmt['ipv4']['address'] }}"
     command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents']
+  when: inventory_hostname in groups['neutron-agents'] or
+        inventory_hostname in groups['nova-compute']
 
 - name: Starting neutron-openvswitch-agent
   docker:
@@ -69,4 +71,5 @@
     volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/"
     env: "SERVICE=openvswitch-agent"
     command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents']
+  when: inventory_hostname in groups['neutron-agents'] or
+        inventory_hostname in groups['nova-compute']
