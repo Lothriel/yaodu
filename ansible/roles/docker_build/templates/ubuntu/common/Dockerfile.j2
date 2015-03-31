@@ -20,4 +20,7 @@ RUN		apt-get update && apt-get dist-upgrade -y && \
 		apt-get install -y --no-install-recommends curl ca-certificates && \
                 apt-get clean -y
 
+ADD             common.sh /opt/yaodu/common.sh
 ADD             errors.sh /opt/yaodu/errors.sh
+ADD             env_parser.py /opt/yaodu/env_parser.py
+RUN             chmod +x /opt/yaodu/common.sh /opt/yaodu/errors.sh /opt/yaodu/env_parser.py

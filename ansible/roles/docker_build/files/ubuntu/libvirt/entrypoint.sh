@@ -2,10 +2,18 @@
 
 set -o errexit
 
-source /opt/yaodu/errors.sh
+source /opt/yaodu/common.sh
 
 main() {
     initial_setup
+
+    if [[ $(cat /proc/cpuinfo | grep vmx) ]]; then
+         sudo modprobe kvm_intel
+    elif [[ $(cat /proc/cpuinfo | grep svm) ]]; then
+        sudo modprobe kvm_amd
+    else
+        echo "WARNING: Unable to find an approriate KVM module to load"
+    fi
 }
 
 initial_setup() {

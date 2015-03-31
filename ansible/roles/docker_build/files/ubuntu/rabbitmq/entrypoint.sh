@@ -2,7 +2,7 @@
 
 set -o errexit
 
-source /opt/yaodu/errors.sh
+source /opt/yaodu/common.sh
 
 main() {
     initial_setup

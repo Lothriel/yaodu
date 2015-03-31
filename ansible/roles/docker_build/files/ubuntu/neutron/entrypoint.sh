@@ -2,7 +2,7 @@
 
 set -o errexit
 
-source /opt/yaodu/errors.sh
+source /opt/yaodu/common.sh
 
 main() {
     initial_setup
@@ -19,19 +19,14 @@ main() {
             ovsdb-tool create
         fi
 
-        exec /usr/bin/env ovsdb-server /etc/openvswitch/conf.db -vfile:dbg --remote=ptcp:6633 --log-file=/var/log/openvswitch/ovsdb-server.log
+        exec /usr/bin/env ovsdb-server /etc/openvswitch/conf.db --remote=punix:/var/run/openvswitch/db.sock -vfile:dbg --log-file=/var/log/openvswitch/ovsdb-server.log
         execution_should_never_reach_here
     fi
 
     if [[ "${SERVICE}" == "switch" ]]; then
-        if [[ ! -n "${REMOTE_IP}" ]]; then
-            variable_name="REMOTE_IP"
-            unset_variable
-        fi
-
         sudo modprobe openvswitch
 
-        exec /usr/bin/env sudo ovs-vswitchd "tcp:${REMOTE_IP}:6633" -vfile:dbg --mlockall --log-file=/var/log/openvswitch/ovs-vswitchd.log
+        exec /usr/bin/env sudo ovs-vswitchd unix:/var/run/openvswitch/db.sock -vfile:dbg --mlockall --log-file=/var/log/openvswitch/ovs-vswitchd.log
         execution_should_never_reach_here
     fi
 
@@ -40,6 +35,15 @@ main() {
     if [[ ! -e "${neutron_dir}" ]]; then
         dir="${neutron_dir}"
         missing_directory
+    fi
+
+    if [[ "${SERVICE}" == "openvswitch-agent" ]]; then
+        if [[ -n "${BRIDGE_MAPPING}" && -n "${BRIDGE_INTERFACE}" ]]; then
+            set +o errexit
+            ovs-vsctl add-br "${BRIDGE_MAPPING}"
+            ovs-vsctl add-port "${BRIDGE_MAPPING}" "${BRIDGE_INTERFACE}"
+            set -o errexit
+        fi
     fi
 }
 

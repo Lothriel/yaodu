@@ -1,0 +1,65 @@
+openvswitchdb:
+  image: "{{ docker_registry }}/yaodu/neutron"
+  name: openvswitch-db
+  environment:
+    SERVICE: db
+  volumes:
+    - /run/openvswitch/
+  entrypoint: /entrypoint.sh
+
+openvswitchswitchd:
+  image: "{{ docker_registry }}/yaodu/neutron"
+  name: openvswitch-switchd
+  privileged: true
+  net: "host"
+  environment:
+    SERVICE: switch
+  volumes_from:
+    - openvswitchdb
+  volumes:
+    - /lib/modules/:/lib/modules/:ro
+  entrypoint: /entrypoint.sh
+
+neutronopenvswitchagent:
+  image: "{{ docker_registry }}/yaodu/neutron"
+  name: neutron-openvswitch-agent
+  privileged: true
+  net: "host"
+  environment:
+    SERVICE: openvswitch-agent
+    BRIDGE_MAPPING: br-ex
+    BRIDGE_INTERFACE: br-ext
+  volumes_from:
+    - openvswitchdb
+  volumes:
+    - /run/netns/:/run/netns/
+    - /opt/yaodu/neutron/:/etc/neutron/:ro
+  entrypoint: /entrypoint.sh
+
+libvirt:
+  image: "{{ docker_registry }}/yaodu/libvirt"
+  name: libvirt
+  privileged: true
+  net: "host"
+  volumes:
+    - /opt/yaodu/libvirt/:/etc/libvirt/
+    - /opt/yaodu/libvirt/ceph.conf:/etc/ceph/ceph.conf:ro
+    - /lib/modules/:/lib/modules/:ro
+    - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:ro
+    - /var/lib/nova/instances/
+  entrypoint: /entrypoint.sh
+
+novacompute:
+  image: "{{ docker_registry }}/yaodu/nova"
+  name: nova-compute
+  privileged: true
+  net: "host"
+  environment:
+    SERVICE: compute
+  volumes_from:
+    - openvswitchdb
+    - libvirt
+  volumes:
+    - /opt/yaodu/nova/:/etc/nova/:ro
+    - /opt/yaodu/nova/ceph.client.cinder.keyring:/etc/ceph/ceph.client.cinder.keyring:ro
+  entrypoint: /entrypoint.sh

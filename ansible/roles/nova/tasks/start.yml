@@ -73,6 +73,7 @@
     name: "nova-compute"
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
+    privileged: true
     net: host
     volumes: "/opt/yaodu/nova/:/etc/nova/,/opt/yaodu/nova/ceph.conf:/etc/ceph/ceph.conf,/opt/yaodu/nova/ceph.client.cinder.keyring:/etc/ceph/ceph.client.cinder.keyring,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/"
     hostname: "{{ ansible_hostname }}-nova"

@@ -18,12 +18,5 @@ RUN             groupadd -g 42424 {{ container }} && useradd -u 42424 -g {{ cont
 RUN             mkdir -p /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/ && \
                 chown -R {{ container }}: /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/
 
-ADD             ovs-vsctl-db.patch /opt/yaodu/
-ADD             ovsdb_client.patch /opt/yaodu/
-RUN             cd /usr/local/lib/python2.7/dist-packages/neutron/agent/linux/ && \
-                patch -p1 -i /opt/yaodu/ovs-vsctl-db.patch && \
-                patch -p1 -i /opt/yaodu/ovsdb_client.patch && \
-                rm /opt/yaodu/ovs-vsctl-db.patch /opt/yaodu/ovsdb_client.patch
-
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}
