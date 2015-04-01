@@ -4,8 +4,8 @@
 - name: Bootstraping Ceph OSD
   command: /usr/bin/env docker run --rm=True \
         --privileged \
-        -v /dev:/dev \
-        -v /etc/ceph:/etc/ceph \
+        -v /dev/:/dev/ \
+        -v /opt/yaodu/ceph/:/etc/ceph/ \
         -e "SERVICE=osd" \
         -e "CEPH_CLUSTER_NAME={{ ceph_cluster_name }}" \
         -e "OSD_DEV={{ item }}" \

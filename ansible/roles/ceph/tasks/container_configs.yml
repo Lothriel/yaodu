@@ -1,0 +1,49 @@
+---
+- name: Ensuring /opt/yaodu/ceph/ exists
+  file:
+    path: /opt/yaodu/ceph/
+    state: directory
+    owner: yaodu
+    group: yaodu
+
+- name: Copying Ceph cluster conf
+  template:
+    src: ceph.conf.j2
+    dest: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf"
+    mode: 0644
+    owner: yaodu
+    group: yaodu
+
+- name: Pulling "{{ keyring }}" keyring
+  shell: ceph auth get-or-create client.{{ keyring }}
+  register: cephx_key
+  delegate_to: "{{ groups['ceph-mon'][0] }}"
+  run_once: true
+
+- name: Pushing "{{ keyring }}" keyring
+  copy:
+    content: "{{ cephx_key.stdout }}\n\r"
+    dest: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.{{ keyring }}.keyring"
+    mode: "0600"
+    group: yaodu
+    owner: yaodu
+
+#- name: Pulling {{ keyring }} keyring
+#  bslurp:
+#     src: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.{{ keyring }}.keyring"
+#  register: file
+#  delegate_to: "{{ groups['ceph-mon'][0] }}"
+#  run_once: true
+
+#- name: Pushing {{ keyring }} keyring
+#  bslurp:
+#    src: "{{ file.content }}"
+#    dest: "/etc/ceph/{{ ceph_cluster_name }}.client.{{ keyring }}.keyring"
+#    mode: "0600"
+#    sha_hash: "{{ file.sha_hash }}"
+
+- name: Setting "{{ keyring }}" keyring owner and group
+  file:
+    name: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.{{ keyring }}.keyring"
+    owner: yaodu
+    group: yaodu

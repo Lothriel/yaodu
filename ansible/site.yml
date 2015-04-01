@@ -4,20 +4,22 @@
     - base
   tags: base
 
-- hosts:
-    - management
-    - ceph-all
-    - compute
+- hosts: ceph-all
   roles:
     - ceph
+  vars:
+    group_name: ceph-all
   tags: ceph
 
-- hosts:
-    - management
-    - database
+- hosts: database
   roles:
     - mariadb
   tags: mariadb
+
+- hosts: message-broker
+  roles:
+    - rabbitmq
+  tags: rabbitmq
 
 - hosts: load-balancer
   roles:
@@ -27,42 +29,54 @@
     - keepalived
     - haproxy
 
-- hosts: message-broker
-  roles:
-    - rabbitmq
-  tags: rabbitmq
-
 - hosts: keystone
   roles:
     - keystone
   tags: keystone
 
+- hosts: management
+  roles:
+    - ceph
+  vars:
+    group_name: management
+  tags: management
+
 - hosts: glance
   roles:
+    - ceph
     - glance
+  vars:
+    group_name: glance
   tags: glance
 
 - hosts: cinder
   roles:
+    - ceph
     - cinder
+  vars:
+    group_name: cinder
   tags: cinder
 
 - hosts: compute
   roles:
+    - ceph
     - libvirt
+    - nova
+    - neutron
+  vars:
+    group_name: compute
   tags: libvirt
 
-- hosts:
-    - nova
-    - compute
+- hosts: nova
   roles:
     - nova
+  vars:
+    group_name: nova
   tags: nova
 
-- hosts:
-    - neutron-server
-    - neutron-agents
-    - compute
+- hosts: neutron-all
   roles:
       - neutron
+  vars:
+      group_name: neutron-all
   tags: neutron

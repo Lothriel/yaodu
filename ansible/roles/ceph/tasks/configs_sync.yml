@@ -3,22 +3,20 @@
   bslurp:
      src: "{{ item }}"
   with_items:
-     - "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
+     - "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
   register: ceph_files
   delegate_to: "{{ delegate_host }}"
   run_once: True
 
 - name: Pushing admin keyring
   include: configs_push.yml
-  when: inventory_hostname in groups['management'] or
-        inventory_hostname in groups['ceph-all']
 
 - name: Pulling monitor map and keyring
   bslurp:
      src: "{{ item }}"
   with_items:
-     - "/etc/ceph/{{ ceph_cluster_name }}.mon.keyring"
-     - "/etc/ceph/{{ ceph_cluster_name }}.monmap"
+     - "/opt/yaodu/ceph/{{ ceph_cluster_name }}.mon.keyring"
+     - "/opt/yaodu/ceph/{{ ceph_cluster_name }}.monmap"
   register: ceph_files
   delegate_to: "{{ delegate_host }}"
   run_once: True

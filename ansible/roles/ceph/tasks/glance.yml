@@ -1,0 +1,4 @@
+---
+- include: container_configs.yml
+  vars:
+    keyring: glance

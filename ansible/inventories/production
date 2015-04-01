@@ -51,11 +51,15 @@ support
 [message-broker:children]
 support
 
+[neutron-all:children]
+neutron-agent
+neutron-server
+
+[neutron-agent:children]
+network
+
 [neutron-server:children]
 support
-
-[neutron-agents:children]
-network
 
 [nova:children]
 support

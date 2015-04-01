@@ -1,0 +1,30 @@
+---
+- include: container_pull.yml
+  vars:
+    container: ceph
+
+- name: Ensuring /opt/yaodu/ceph/ exists
+  file:
+    path: /opt/yaodu/ceph/
+    state: directory
+    group: yaodu
+    owner: yaodu
+
+- name: Copying Ceph cluster conf
+  template:
+    src: ceph.conf.j2
+    dest: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf"
+    mode: 0644
+
+- include: check_for_existing_cluster.yml
+  when: inventory_hostname in groups['ceph-mon']
+
+- include: configs_sync.yml
+
+- include: start_mon.yml
+  when: inventory_hostname in groups['ceph-mon']
+
+- include: bootstrap_osd.yml
+
+- include: start_osd.yml
+  when: inventory_hostname in groups['ceph-osd']

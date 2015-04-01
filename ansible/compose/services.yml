@@ -1,0 +1,57 @@
+libvirt:
+  image: "{{ docker_registry }}/yaodu/libvirt"
+  privileged: true
+  net: "host"
+  volumes:
+    - /opt/yaodu/libvirt/:/etc/libvirt/
+    - /opt/yaodu/libvirt/ceph.conf:/etc/ceph/ceph.conf:ro
+    - /lib/modules/:/lib/modules/:ro
+    - /run/:/run/
+    - /var/lib/nova/instances/
+  entrypoint: /entrypoint.sh
+
+novacompute:
+  image: "{{ docker_registry }}/yaodu/nova"
+  privileged: true
+  net: "host"
+  environment:
+    SERVICE: compute
+  volumes:
+    - /run/:/run/
+    - /opt/yaodu/nova/:/etc/nova/:ro
+    - /opt/yaodu/nova/ceph.client.cinder.keyring:/etc/ceph/ceph.client.cinder.keyring:ro
+  entrypoint: /entrypoint.sh
+
+neutronopenvswitchagent:
+  image: "{{ docker_registry }}/yaodu/neutron"
+  privileged: true
+  net: "host"
+  environment:
+    SERVICE: openvswitch-agent
+    BRIDGE_MAPPING: br-ex
+    BRIDGE_INTERFACE: br-ext
+  volumes:
+    - /run/:/run/
+    - /opt/yaodu/neutron/:/etc/neutron/:ro
+  entrypoint: /entrypoint.sh
+
+openvswitchdb:
+  image: "{{ docker_registry }}/yaodu/neutron"
+  environment:
+    SERVICE: db
+  volumes:
+    - /run/:/run/
+  entrypoint: /entrypoint.sh
+
+openvswitchswitch:
+  image: "{{ docker_registry }}/yaodu/neutron"
+  privileged: true
+  net: "host"
+  environment:
+    SERVICE: switch
+  volumes_from:
+    - db
+  volumes:
+    - /run/:/run/
+    - /lib/modules/:/lib/modules/:ro
+  entrypoint: /entrypoint.sh

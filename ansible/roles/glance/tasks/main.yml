@@ -28,19 +28,6 @@
   with_items:
     - { src: "glance-api.conf.j2" , dest: "/opt/yaodu/glance/glance-api.conf" }
     - { src: "glance-registry.conf.j2" , dest: "/opt/yaodu/glance/glance-registry.conf" }
-    - { src: "ceph.conf.j2" , dest: "/opt/yaodu/glance/ceph.conf" }
-
-- name: Getting Cephx Glance key
-  shell: ceph auth get-or-create client.glance
-  register: cephx_key
-  run_once: True
-
-- name: Setting Cephx Glance key
-  copy:
-    content: "{{ cephx_key.stdout }}\n\r"
-    dest: "/opt/yaodu/glance/ceph.client.glance.keyring"
-    group: yaodu
-    owner: yaodu
 
 - name: Creating keystone user glance
   keystone:

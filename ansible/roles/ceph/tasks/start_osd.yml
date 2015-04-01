@@ -25,7 +25,7 @@
     privileged: "True"
     pid: "host"
     net: "host"
-    volumes: "/var/lib/ceph/osd/{{ item.1.fs_uuid }}:/var/lib/ceph/osd/{{ ceph_cluster_name }}-{{ item.0.stdout }},/etc/ceph:/etc/ceph,/dev:/dev"
+    volumes: "/var/lib/ceph/osd/{{ item.1.fs_uuid }}:/var/lib/ceph/osd/{{ ceph_cluster_name }}-{{ item.0.stdout }},/opt/yaodu/ceph/:/etc/ceph/,/dev/:/dev/"
     env: "SERVICE=osd,CEPH_CLUSTER_NAME={{ ceph_cluster_name }},OSD_ID={{ item.0.stdout }}"
     command: "/entrypoint.sh"
   with_together:

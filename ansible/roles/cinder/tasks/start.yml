@@ -25,7 +25,7 @@
     name: "cinder-volume"
     image: "{{ docker_registry }}/yaodu/cinder"
     state: "running"
-    volumes: "/opt/yaodu/cinder/:/etc/cinder/,/opt/yaodu/cinder/ceph.conf:/etc/ceph/ceph.conf,/opt/yaodu/cinder/ceph.client.cinder.keyring:/etc/ceph/ceph.client.cinder.keyring"
+    volumes: "/opt/yaodu/cinder/:/etc/cinder/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.cinder.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.cinder.keyring:ro"
     hostname: "cinder-volume"
     env: "SERVICE=volume"
     command: "/entrypoint.sh"

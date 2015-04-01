@@ -5,6 +5,6 @@
     image: "{{ docker_registry }}/yaodu/ceph"
     state: "running"
     net: "host"
-    volumes: "/etc/ceph:/etc/ceph"
+    volumes: "/opt/yaodu/ceph/:/etc/ceph/"
     env: "SERVICE=mon,CEPH_CLUSTER_NAME={{ ceph_cluster_name }},MON_NAME={{ ansible_hostname }},MON_IP={{ ansible_br_mgmt['ipv4']['address'] }}"
     command: "/entrypoint.sh"

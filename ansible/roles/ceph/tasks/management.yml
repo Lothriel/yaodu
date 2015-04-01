@@ -1,0 +1,45 @@
+---
+- include: install_packages-ubuntu.yml
+
+- name: Ensuring /etc/ceph/ exists
+  file:
+    path: /etc/ceph/
+    state: directory
+
+- name: Copying Ceph cluster conf
+  template:
+    src: ceph.conf.j2
+    dest: "/etc/ceph/{{ ceph_cluster_name }}.conf"
+    mode: 0644
+
+- name: Pulling admin keyring
+  bslurp:
+     src: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
+  register: file
+  delegate_to: "{{ groups['ceph-mon'][0] }}"
+  run_once: true
+
+- name: Pushing keyrings to monitors
+  bslurp:
+    src: "{{ file.content }}"
+    dest: "/etc/ceph/{{ ceph_cluster_name }}.client.admin.keyring"
+    mode: "{{ file.mode }}"
+    sha_hash: "{{ file.sha_hash }}"
+
+- name: Creating initial pools
+  command: ceph osd pool create {{ item }} 128
+  with_items:
+    - backups
+    - images
+    - volumes
+    - vms
+  run_once: true
+
+- name: Creating initial keys
+  command: ceph auth get-or-create client.{{ item.name }} mon 'allow r' osd 'allow class-read object_prefix rbd_children, {{ item.perms }}'
+  with_items:
+      - { name: cinder-backups, perms: "allow rwx pool=backups" }
+      - { name: glance, perms: "allow rwx pool=images" }
+      - { name: cinder, perms: "allow rwx pool=volumes, allow rwx pool=vms, allow rx pool=images" }
+      - { name: nova, perms: "allow rwx pool=volumes, allow rwx pool=vms, allow rx pool=images" }
+  run_once: true
