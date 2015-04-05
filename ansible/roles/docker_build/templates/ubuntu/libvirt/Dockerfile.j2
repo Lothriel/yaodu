@@ -6,6 +6,9 @@ RUN		apt-get install -y --no-install-recommends ceph-common libvirt-bin dmidecod
 
 ADD             sudoers /etc/sudoers.d/sudoers
 
+ADD		kvm_bootstrap /opt/yaodu/kvm_bootstrap
+RUN		chmod +x /opt/yaodu/kvm_bootstrap
+
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
 

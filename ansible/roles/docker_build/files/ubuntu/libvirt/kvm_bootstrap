@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ $(cat /proc/cpuinfo | grep vmx) ]]; then
+    modprobe kvm_intel
+elif [[ $(cat /proc/cpuinfo | grep svm) ]]; then
+    modprobe kvm_amd
+else
+    echo "ERROR: Unable to find an approriate KVM module to load"
+    exit 101
+fi
+
+chown libvirt:libvirt /dev/kvm
+chmod 777 /dev/kvm

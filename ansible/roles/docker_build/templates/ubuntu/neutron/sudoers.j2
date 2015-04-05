@@ -1,2 +1,2 @@
 Defaults:{{ container }} !requiretty
-{{ container }} ALL = (root) NOPASSWD: /usr/local/bin/{{ container }}-rootwrap /etc/{{ container }}/rootwrap.conf *, /usr/sbin/ovs-vswitchd, /sbin/modprobe openvswitch
+{{ container }} ALL = (root) NOPASSWD: /usr/local/bin/{{ container }}-rootwrap /etc/{{ container }}/rootwrap.conf *, /usr/sbin/ovs-vswitchd, /usr/sbin/ovsdb-server, /usr/bin/ovs-vsctl, /sbin/modprobe openvswitch, /bin/mkdir /run/openvswitch/

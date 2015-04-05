@@ -75,7 +75,7 @@
     state: "running"
     privileged: true
     net: host
-    volumes: "/opt/yaodu/nova/:/etc/nova/,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.nova.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.nova.keyring:ro"
+    volumes: "/opt/yaodu/nova/:/etc/nova/,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.nova.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.nova.keyring:ro,/run/:/run/"
     hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=compute"
     command: "/entrypoint.sh"

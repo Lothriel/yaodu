@@ -22,12 +22,12 @@
     path: "/opt/yaodu/libvirt/secrets/"
     state: directory
 
-- name: Getting Cephx Cinder key
-  shell: ceph auth get-key client.cinder
+- name: Getting Cephx Nova key
+  shell: ceph auth get-key client.nova
   register: cephx_key
   run_once: True
 
-- name: Setting Cephx Cinder key
+- name: Setting Cephx Nova key
   copy:
     content: "{{ cephx_key.stdout }}"
     dest: "/opt/yaodu/libvirt/secrets/{{ libvirt_secret_uuid }}.base64"
@@ -41,12 +41,9 @@
 
 - name: Copying libvirt configs
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: "libvirtd.conf.j2"
+    dest: "/opt/yaodu/libvirt/libvirtd.conf"
     group: yaodu
     owner: yaodu
-  with_items:
-    - { src: "ceph.conf.j2", dest: "/opt/yaodu/libvirt/ceph.conf" }
-    - { src: "libvirtd.conf.j2", dest: "/opt/yaodu/libvirt/libvirtd.conf" }
 
 - include: start.yml

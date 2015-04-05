@@ -22,7 +22,7 @@
     name: "ceph_osd_{{ item.0.stdout }}"
     image: "{{ docker_registry }}/yaodu/ceph"
     state: "running"
-    privileged: "True"
+    privileged: true
     pid: "host"
     net: "host"
     volumes: "/var/lib/ceph/osd/{{ item.1.fs_uuid }}:/var/lib/ceph/osd/{{ ceph_cluster_name }}-{{ item.0.stdout }},/opt/yaodu/ceph/:/etc/ceph/,/dev/:/dev/"

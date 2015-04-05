@@ -19,14 +19,18 @@ main() {
             ovsdb-tool create
         fi
 
-        exec /usr/bin/env ovsdb-server /etc/openvswitch/conf.db --remote=punix:/var/run/openvswitch/db.sock -vfile:dbg --log-file=/var/log/openvswitch/ovsdb-server.log
+        if [[ ! -e "/run/openvswitch/" ]]; then
+            /usr/bin/env sudo mkdir /run/openvswitch/
+        fi
+
+        exec /usr/bin/env sudo ovsdb-server /etc/openvswitch/conf.db --remote=punix:/run/openvswitch/db.sock -vfile:dbg --log-file=/var/log/openvswitch/ovsdb-server.log
         execution_should_never_reach_here
     fi
 
     if [[ "${SERVICE}" == "switch" ]]; then
         sudo modprobe openvswitch
 
-        exec /usr/bin/env sudo ovs-vswitchd unix:/var/run/openvswitch/db.sock -vfile:dbg --mlockall --log-file=/var/log/openvswitch/ovs-vswitchd.log
+        exec /usr/bin/env sudo ovs-vswitchd unix:/run/openvswitch/db.sock -vfile:dbg --mlockall --log-file=/var/log/openvswitch/ovs-vswitchd.log
         execution_should_never_reach_here
     fi
 

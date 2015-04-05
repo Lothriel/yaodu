@@ -17,7 +17,7 @@ ADD		sources.list /etc/apt/sources.list
 ADD		apt.conf /etc/apt/apt.conf
 
 RUN		apt-get update && apt-get dist-upgrade -y && \
-		apt-get install -y --no-install-recommends curl ca-certificates && \
+		apt-get install -y --no-install-recommends curl ca-certificates python && \
                 apt-get clean -y
 
 ADD             common.sh /opt/yaodu/common.sh

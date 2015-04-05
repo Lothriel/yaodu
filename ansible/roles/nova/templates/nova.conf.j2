@@ -15,10 +15,15 @@ rabbit_ha_queues = true
 
 notification_driver = nova.openstack.common.notifier.rpc_notifier
 
+virt_type = qemu
 security_group_api = neutron
 network_api_class = nova.network.neutronv2.api.API
 firewall_driver = nova.virt.firewall.NoopFirewallDriver
 linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+
+vif_plugging_is_fatal = False
+vif_plugging_timeout = 2
+
 
 compute_driver = libvirt.LibvirtDriver
 allow_resize_to_same_host = true
@@ -45,7 +50,7 @@ enabled = True
 [neutron]
 url = http://{{ yaodu_api_vip }}:9696
 auth_strategy = keystone
-admin_auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
+admin_auth_url = http://{{ yaodu_api_vip }}:35357/v2.0
 admin_tenant_name = service
 admin_username = neutron
 admin_password = {{ keystone_neutron_password }}
@@ -66,7 +71,7 @@ admin_password = {{ keystone_nova_password }}
 images_type = rbd
 images_rbd_pool = vms
 images_rbd_ceph_conf = /etc/ceph/ceph.conf
-rbd_user = cinder
+rbd_user = nova
 rbd_secret_uuid = {{ libvirt_secret_uuid }}
 
 inject_password = false

@@ -5,6 +5,6 @@
     image: "{{ docker_registry }}/yaodu/libvirt"
     state: "running"
     privileged: true
-    net: host
-    volumes: "/opt/yaodu/libvirt/:/etc/libvirt/,/opt/yaodu/libvirt/ceph.conf:/etc/ceph/ceph.conf,/lib/modules/:/lib/modules/,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/"
+    net: "host"
+    volumes: "/opt/yaodu/libvirt/:/etc/libvirt/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/lib/modules/:/lib/modules/:ro,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/,/run/:/run/"
     command: "/entrypoint.sh"

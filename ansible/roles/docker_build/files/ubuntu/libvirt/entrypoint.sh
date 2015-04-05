@@ -7,13 +7,7 @@ source /opt/yaodu/common.sh
 main() {
     initial_setup
 
-    if [[ $(cat /proc/cpuinfo | grep vmx) ]]; then
-         sudo modprobe kvm_intel
-    elif [[ $(cat /proc/cpuinfo | grep svm) ]]; then
-        sudo modprobe kvm_amd
-    else
-        echo "WARNING: Unable to find an approriate KVM module to load"
-    fi
+    sudo /opt/yaodu/kvm_bootstrap
 }
 
 initial_setup() {

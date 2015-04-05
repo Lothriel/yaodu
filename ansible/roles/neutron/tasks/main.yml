@@ -3,6 +3,22 @@
   vars:
     container: neutron
 
+- name: Fetching keystone tenant id for service tenant
+  keystone:
+    command: "get_tenant"
+    region_name: "regionOne"
+    tenant_name: "service"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+  register: service_tenant
+
+- name: Setting ansible fact for service tenant
+  set_fact:
+    keystone_nova_tenant_id: "{{ keystone_facts.id }}"
+
 - name: Ensuring directories exist
   file:
     path: "{{ item }}"
@@ -12,7 +28,7 @@
   with_items:
     - "/opt/yaodu/neutron/"
     - "/opt/yaodu/openvswitch/"
-    - "/opt/yaodu/openvswitch/run/"
+    - "/run/openvswitch/"
 
 - name: Creating default neutron files
   copy:

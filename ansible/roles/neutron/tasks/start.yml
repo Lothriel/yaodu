@@ -1,4 +1,30 @@
 ---
+- name: Starting openvswitch-db
+  docker:
+    name: "openvswitch-db"
+    image: "{{ docker_registry }}/yaodu/neutron"
+    state: "running"
+    privileged: true
+    net: "host"
+    volumes: "/opt/yaodu/openvswitch/:/etc/openvswitch/,/run/:/run/"
+    env: "SERVICE=db"
+    command: "/entrypoint.sh"
+  when: inventory_hostname in groups['neutron-agent'] or
+        inventory_hostname in groups['nova-compute']
+
+- name: Starting openvswitch-switch
+  docker:
+    name: "openvswitch-switch"
+    image: "{{ docker_registry }}/yaodu/neutron"
+    state: "running"
+    privileged: true
+    net: "host"
+    volumes: "/lib/modules/:/lib/modules/:ro,/run/:/run/"
+    env: "SERVICE=switch,REMOTE_IP={{ ansible_br_mgmt['ipv4']['address'] }}"
+    command: "/entrypoint.sh"
+  when: inventory_hostname in groups['neutron-agent'] or
+        inventory_hostname in groups['nova-compute']
+
 - name: Starting neutron-server
   docker:
     name: "neutron-server"
@@ -17,11 +43,12 @@
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     privileged: true
-    net: host
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/,/lib/modules/:/lib/modules/"
+    net: "host"
+    pid: "host"
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/lib/modules/:/lib/modules/:ro,/run/:/run/"
     env: "SERVICE=l3-agent"
     command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents']
+  when: inventory_hostname in groups['neutron-agent']
 
 - name: Starting neutron-dhcp-agent
   docker:
@@ -29,41 +56,21 @@
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     privileged: true
-    net: host
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/"
+    net: "host"
+    pid: "host"
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/run/:/run/"
     env: "SERVICE=dhcp-agent"
     command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents']
-
-- name: Starting openvswitch-db
-  docker:
-    name: "openvswitch-db"
-    image: "{{ docker_registry }}/yaodu/neutron"
-    state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:6633:6633"
-    expose: "6633"
-    volumes: "/opt/yaodu/openvswitch/:/etc/openvswitch/"
-    env: "SERVICE=db"
-    command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents'] or
-        inventory_hostname in groups['nova-compute']
-
-- name: Starting openvswitch-switch
-  docker:
-    name: "openvswitch-switch"
-    image: "{{ docker_registry }}/yaodu/neutron"
-    state: "running"
-    privileged: true
-    net: host
-    volumes: "/lib/modules/:/lib/modules/,/opt/yaodu/openvswitch/run/:/var/run/openvswitch/"
-    env: "SERVICE=switch,REMOTE_IP={{ ansible_br_mgmt['ipv4']['address'] }}"
-    command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents'] or
-        inventory_hostname in groups['nova-compute']
+  when: inventory_hostname in groups['neutron-agent']
 
 - name: setup bridge
-  shell: sleep 5; docker run -i -t --rm 172.16.0.1:5000/yaodu/neutron ovs-vsctl --db tcp:{{ ansible_br_mgmt['ipv4']['address'] }}:6633 add-br br-ex; ovs-vsctl --db tcp:{{ ansible_br_mgmt['ipv4']['address'] }}:6633 add-port br-ex br-data || true
-  when: inventory_hostname in groups['neutron-agents'] or
+  shell: docker exec -i -t openvswitch-switch sudo ovs-vsctl add-br br-ex || true
+  when: inventory_hostname in groups['neutron-agent'] or
+        inventory_hostname in groups['nova-compute']
+
+- name: setup port
+  shell: docker exec -i -t openvswitch-switch sudo ovs-vsctl add-port br-ex br-data || true
+  when: inventory_hostname in groups['neutron-agent'] or
         inventory_hostname in groups['nova-compute']
 
 - name: Starting neutron-openvswitch-agent
@@ -72,9 +79,9 @@
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     privileged: true
-    net: host
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/var/run/netns/:/var/run/netns/,/opt/yaodu/openvswitch/run/:/var/run/openvswitch/"
+    net: "host"
+    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/run/:/run/"
     env: "SERVICE=openvswitch-agent"
     command: "/entrypoint.sh"
-  when: inventory_hostname in groups['neutron-agents'] or
+  when: inventory_hostname in groups['neutron-agent'] or
         inventory_hostname in groups['nova-compute']

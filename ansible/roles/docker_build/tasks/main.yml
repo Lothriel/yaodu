@@ -15,15 +15,6 @@
     - neutron
     - cinder
 
-- include: openstack_common.yml
-  tags:
-    - openstack_common
-    - keystone
-    - glance
-    - nova
-    - neutron
-    - cinder
-
 - include: ceph.yml
   tags: ceph
 
@@ -41,6 +32,15 @@
 
 - include: libvirt.yml
   tags: libvirt
+
+- include: openstack_common.yml
+  tags:
+    - openstack_common
+    - keystone
+    - glance
+    - nova
+    - neutron
+    - cinder
 
 - include: keystone.yml
   tags: keystone

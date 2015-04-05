@@ -19,3 +19,5 @@
       - { src: "{{ yaodu_distro }}/common/percona.list.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/percona.list" }
     files:
       - { src: "errors.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/errors.sh" }
+      - { src: "common.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/common.sh" }
+      - { src: "env_parser.py", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/env_parser.py" }

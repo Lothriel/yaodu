@@ -3,6 +3,10 @@
   apt_key:
     keyserver: keyserver.ubuntu.com
     id: 36A1D7869245C8950F966E92D8576A8BA88D21E9
+  register: tempvar
+  until: tempvar|success
+  retries: 5
+  delay: 60
 
 - name: Adding Docker repository to apt sources
   apt_repository:

@@ -20,21 +20,22 @@ allow_overlapping_ips = true
 core_plugin = ml2
 service_plugins = router
 
+use_namespaces = False
+
 # DHCP Agent
 enable_isolated_metadata = true
 enable_metadata_network = true
 dnsmasq_config_file = /etc/neutron/dnsmasq.conf
-dhcp_delete_namespace = true
 
 # L3 Agent
 enable_metadata_proxy = true
 agent_mode = legacy
 external_network_bridge = br-ex
-router_delete_namespaces = true
 ha_vrrp_auth_password = {{ neutron_l3ha_secret }}
 
 # Metadata Agent
 auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
+auth_region = regionOne
 nova_metadata_ip = {{ yaodu_api_vip }}
 metadata_proxy_shared_secret = {{ metadata_shared_secret }}
 admin_tenant_name = service
@@ -43,9 +44,12 @@ admin_password = {{ keystone_neutron_password }}
 
 nova_url = http://{{ yaodu_api_vip }}:8774/v2
 nova_admin_username = nova
-nova_admin_tenant_id = ##KEYSTONE_NOVA_TENANT_ID##
+nova_region_name = regionOne
+nova_admin_tenant_id = {{ keystone_nova_tenant_id }}
 nova_admin_password = {{ keystone_nova_password }}
-nova_admin_auth_url = http://{{ yaodu_api_vip }}:5000/v2.0
+nova_admin_auth_url = http://{{ yaodu_api_vip }}:35357/v2.0
+notify_nova_on_port_data_changes = True
+notify_nova_on_port_status_change = True
 
 [agent]
 root_helper = sudo neutron-rootwrap /etc/neutron/rootwrap.conf

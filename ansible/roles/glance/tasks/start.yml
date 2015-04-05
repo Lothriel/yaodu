@@ -17,6 +17,6 @@
     state: "running"
     ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9292:9292"
     expose: "9292"
-    volumes: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.glance.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.glance.keyring:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf,/etc/ceph/{{ ceph_cluster_name }}.conf,/opt/yaodu/glance/:/etc/glance/"
+    volumes: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.glance.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.glance.keyring:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/glance/:/etc/glance/"
     env: "SERVICE=api"
     command: "/entrypoint.sh"

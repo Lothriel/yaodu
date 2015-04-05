@@ -7,3 +7,4 @@
       - { src: "{{ yaodu_distro }}/{{ container }}/sudoers.j2", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/sudoers" }
     files:
       - { src: "{{ yaodu_distro }}/{{ container }}/entrypoint.sh", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/entrypoint.sh" }
+      - { src: "{{ yaodu_distro }}/{{ container }}/kvm_bootstrap", dest: "{{ yaodu_directory }}/{{ yaodu_distro }}/{{ container }}/kvm_bootstrap" }
