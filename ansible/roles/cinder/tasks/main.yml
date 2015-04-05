@@ -20,24 +20,9 @@
 
 - name: Copying Cinder configs
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: "cinder.conf.j2"
+    dest: "/opt/yaodu/cinder/cinder.conf"
     mode: 0644
-    group: yaodu
-    owner: yaodu
-  with_items:
-    - { src: "cinder.conf.j2" , dest: "/opt/yaodu/cinder/cinder.conf" }
-    - { src: "ceph.conf.j2" , dest: "/opt/yaodu/cinder/ceph.conf" }
-
-- name: Getting Cephx Cinder key
-  shell: ceph auth get-or-create client.cinder
-  register: cephx_key
-  run_once: True
-
-- name: Setting Cephx Cinder key
-  copy:
-    content: "{{ cephx_key.stdout }}\n\r"
-    dest: "/opt/yaodu/cinder/ceph.client.cinder.keyring"
     group: yaodu
     owner: yaodu
 

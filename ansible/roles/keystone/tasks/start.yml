@@ -4,8 +4,7 @@
     name: "keystone"
     image: "{{ docker_registry }}/yaodu/keystone"
     state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:5000:5000,{{ ansible_br_mgmt['ipv4']['address'] }}:35357:35357"
-    expose: "5000,35357"
+    net: "host"
     volumes: "/opt/yaodu/keystone/:/etc/keystone/"
     command: "/entrypoint.sh"
 

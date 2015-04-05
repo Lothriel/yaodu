@@ -3,8 +3,7 @@
   docker:
     name: "mariadb"
     image: "{{ docker_registry }}/yaodu/mariadb"
-    state: running
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:3306:3306,{{ ansible_br_mgmt['ipv4']['address'] }}:4444:4444,{{ ansible_br_mgmt['ipv4']['address'] }}:4567:4567,{{ ansible_br_mgmt['ipv4']['address'] }}:4568:4568"
-    expose: "3306,4444,4567,4568"
+    state: "running"
+    net: "host"
     volumes: "/opt/yaodu/mariadb/galera.cnf:/etc/mysql/conf.d/galera.cnf,/opt/yaodu/mariadb/data/:/var/lib/mysql/"
     command: "/entrypoint.sh"

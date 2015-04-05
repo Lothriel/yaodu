@@ -10,6 +10,13 @@
     group: yaodu
     owner: yaodu
 
+- name: Copying over rabbitmq configs
+  template:
+    src: "rabbitmq-env.conf"
+    dest: "/opt/yaodu/rabbitmq/rabbitmq-env.conf"
+    group: yaodu
+    owner: yaodu
+
 - include: check_for_existing_cluster.yml
 
 - include: start.yml

@@ -2,6 +2,8 @@
 verbose = True
 debug = True
 
+osapi_volume_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
+
 auth_strategy = keystone
 
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}

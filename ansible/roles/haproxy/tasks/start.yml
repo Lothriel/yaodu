@@ -4,7 +4,6 @@
     name: "haproxy"
     image: "{{ docker_registry }}/yaodu/haproxy"
     state: "running"
-    ports: "{{ yaodu_api_vip }}:3306:3306,{{ yaodu_api_vip }}:5000:5000,{{ yaodu_api_vip }}:35357:35357,{{ yaodu_api_vip }}:9191:9191,{{ yaodu_api_vip }}:9292:9292,{{ yaodu_api_vip }}:9696:9696,{{ yaodu_api_vip }}:8774:8774,{{ yaodu_api_vip }}:8776:8776"
-    expose: "3306,5000,35357,9191,9292,9696,8774,8776"
+    net: "host"
     volumes: "/opt/yaodu/haproxy/haproxy.cfg:/etc/haproxy/haproxy.cfg"
     command: "/entrypoint.sh"

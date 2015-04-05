@@ -30,8 +30,7 @@
     name: "neutron-server"
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:9696:9696"
-    expose: "9696"
+    net: "host"
     volumes: "/opt/yaodu/neutron/:/etc/neutron/"
     env: "SERVICE=server"
     command: "/entrypoint.sh"
@@ -44,7 +43,6 @@
     state: "running"
     privileged: true
     net: "host"
-    pid: "host"
     volumes: "/opt/yaodu/neutron/:/etc/neutron/,/lib/modules/:/lib/modules/:ro,/run/:/run/"
     env: "SERVICE=l3-agent"
     command: "/entrypoint.sh"
@@ -57,7 +55,6 @@
     state: "running"
     privileged: true
     net: "host"
-    pid: "host"
     volumes: "/opt/yaodu/neutron/:/etc/neutron/,/run/:/run/"
     env: "SERVICE=dhcp-agent"
     command: "/entrypoint.sh"

@@ -6,6 +6,9 @@ state_path = /var/lib/nova
 lock_path = /var/lock/nova
 api_paste_config = /etc/nova/api-paste.ini
 
+osapi_compute_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
+ec2_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
+
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
 
 rabbit_virtual_host = {{ rabbitmq_nova_vhost }}

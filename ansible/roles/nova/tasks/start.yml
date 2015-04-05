@@ -5,8 +5,7 @@
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
     privileged: true
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:8773:8773,{{ ansible_br_mgmt['ipv4']['address'] }}:8774:8774,{{ ansible_br_mgmt['ipv4']['address'] }}:8775:8775"
-    expose: "8773,8774,8775"
+    net: "host"
     volumes: "/opt/yaodu/nova/:/etc/nova/"
     env: "SERVICE=api"
     command: "/entrypoint.sh"
@@ -17,8 +16,8 @@
     name: "nova-scheduler"
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
+    net: "host"
     volumes: "/opt/yaodu/nova/:/etc/nova/"
-    hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=scheduler"
     command: "/entrypoint.sh"
   when: inventory_hostname in groups['nova']
@@ -28,8 +27,8 @@
     name: "nova-conductor"
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
+    net: "host"
     volumes: "/opt/yaodu/nova/:/etc/nova/"
-    hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=conductor"
     command: "/entrypoint.sh"
   when: inventory_hostname in groups['nova']
@@ -39,8 +38,8 @@
     name: "nova-console"
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
+    net: "host"
     volumes: "/opt/yaodu/nova/:/etc/nova/"
-    hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=console"
     command: "/entrypoint.sh"
   when: inventory_hostname in groups['nova']
@@ -50,8 +49,8 @@
     name: "nova-consoleauth"
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
+    net: "host"
     volumes: "/opt/yaodu/nova/:/etc/nova/"
-    hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=consoleauth"
     command: "/entrypoint.sh"
   when: inventory_hostname in groups['nova']
@@ -61,8 +60,7 @@
     name: "nova-spicehtml5proxy"
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
-    ports: "{{ ansible_br_mgmt['ipv4']['address'] }}:6082:6082"
-    expose: "6082"
+    net: "host"
     volumes: "/opt/yaodu/nova/:/etc/nova/"
     env: "SERVICE=spicehtml5proxy"
     command: "/entrypoint.sh"
@@ -74,9 +72,8 @@
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
     privileged: true
-    net: host
+    net: "host"
     volumes: "/opt/yaodu/nova/:/etc/nova/,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.nova.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.nova.keyring:ro,/run/:/run/"
-    hostname: "{{ ansible_hostname }}-nova"
     env: "SERVICE=compute"
     command: "/entrypoint.sh"
   when: inventory_hostname in groups['nova-compute']

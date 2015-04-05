@@ -2,6 +2,8 @@
 verbose = true
 debug = true
 
+bind_host = {{ ansible_br_mgmt['ipv4']['address'] }}
+
 lock_path = /var/lock/neutron
 
 rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
@@ -19,8 +21,6 @@ network_device_mtu = 1450
 allow_overlapping_ips = true
 core_plugin = ml2
 service_plugins = router
-
-use_namespaces = False
 
 # DHCP Agent
 enable_isolated_metadata = true
