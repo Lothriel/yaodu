@@ -24,9 +24,8 @@ network_api_class = nova.network.neutronv2.api.API
 firewall_driver = nova.virt.firewall.NoopFirewallDriver
 linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
 
-vif_plugging_is_fatal = False
-vif_plugging_timeout = 2
-
+#vif_plugging_is_fatal = False
+#vif_plugging_timeout = 2
 
 compute_driver = libvirt.LibvirtDriver
 allow_resize_to_same_host = true
