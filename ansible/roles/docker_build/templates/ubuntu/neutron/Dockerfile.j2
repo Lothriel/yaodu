@@ -6,6 +6,11 @@ RUN             ln -s /opt/yaodu/{{ container }}-*/ /opt/yaodu/{{ container }}
 
 RUN             apt-get install -y --no-install-recommends iptables dnsmasq uuid-runtime ipset openvswitch-switch
 
+# This will allow the network namespaces to be propogated from the host once mount propogation is working
+#RUN             pip install nsenter
+#RUN             mv /bin/ip /opt/yaodu/ip
+#ADD             ip_wrapper.py /bin/ip
+
 RUN             cd /opt/yaodu/requirements/ && python update.py /opt/yaodu/{{ container }}/
 RUN             cd /opt/yaodu/{{ container }}/ && pip install .
 
