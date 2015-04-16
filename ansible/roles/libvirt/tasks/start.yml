@@ -7,4 +7,3 @@
     privileged: true
     net: "host"
     volumes: "/opt/yaodu/libvirt/:/etc/libvirt/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/lib/modules/:/lib/modules/:ro,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/,/run/:/run/"
-    command: "/entrypoint.sh"

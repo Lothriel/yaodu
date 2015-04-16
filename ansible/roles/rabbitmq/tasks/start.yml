@@ -7,4 +7,3 @@
     net: "host"
     volumes: "/opt/yaodu/rabbitmq/:/var/lib/rabbitmq/,/opt/yaodu/rabbitmq/rabbitmq-env.conf:/etc/rabbitmq/rabbitmq-env.conf"
     hostname: "{{ ansible_hostname }}"
-    command: "/entrypoint.sh"

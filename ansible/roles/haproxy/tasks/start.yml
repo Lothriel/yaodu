@@ -6,4 +6,3 @@
     state: "running"
     net: "host"
     volumes: "/opt/yaodu/haproxy/haproxy.cfg:/etc/haproxy/haproxy.cfg"
-    command: "/entrypoint.sh"

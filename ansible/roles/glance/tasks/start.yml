@@ -7,7 +7,6 @@
     net: "host"
     volumes: "/opt/yaodu/glance/:/etc/glance/:ro"
     env: "SERVICE=registry"
-    command: "/entrypoint.sh"
 
 - name: Starting Glance Api
   docker:
@@ -17,4 +16,3 @@
     net: "host"
     volumes: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.glance.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.glance.keyring:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/glance/:/etc/glance/"
     env: "SERVICE=api"
-    command: "/entrypoint.sh"

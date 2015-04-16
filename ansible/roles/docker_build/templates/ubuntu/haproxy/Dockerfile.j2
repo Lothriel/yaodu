@@ -14,3 +14,4 @@ RUN             chown -R haproxy: /etc/haproxy/ /var/lib/haproxy/
 
 USER            haproxy
 WORKDIR         /var/lib/haproxy/
+ENTRYPOINT      ["/entrypoint.sh"]

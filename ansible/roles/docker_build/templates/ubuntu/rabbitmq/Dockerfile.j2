@@ -12,3 +12,4 @@ RUN             chown -R rabbitmq: /var/log/rabbitmq/ /etc/rabbitmq/
 
 USER            rabbitmq
 WORKDIR         /var/lib/rabbitmq/
+ENTRYPOINT      ["/entrypoint.sh"]

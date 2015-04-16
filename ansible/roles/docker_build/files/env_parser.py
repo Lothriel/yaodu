@@ -3,42 +3,58 @@
 import os
 import ConfigParser
 
+ESCAPE = '_'
+EOL = '9' + ESCAPE
+
 MAPPING = {
-    '0': '/',
-    '1': '-',
-    '2': '_',
-    '3': '.',
+    '/': '0',
+    '-': '1',
+    '_': '2',
+    '.': '3',
+    ' ': '4',
 }
+
+REV_MAPPING = {v: k for k, v in MAPPING.items()}
 
 def parser(name, pos):
     """ Parse sections of an ENV variable name. An example ENV variable would
-        be "YAODU_0_root_0_example_3_cnf_9_DEFAULT_9_setting_1_name"
+        be "YAODU_root_0_example_3_cnf_9_DEFAULT_9_setting_1_name"
         Using the mapping above, this name translates to:
         FILE: /root/example.cnf
               [DEFAULT]
               setting-name=${ENV_var_value}
     """
-    var = str()
+
+    new_name = str()
 
     for c, l in enumerate(name[pos:], start=pos):
-        if l == '9':
+        if l == EOL[0] or l == '':
             break
-        elif l in MAPPING:
-            var += MAPPING[l]
         else:
-            var += l
+            if l[0] in REV_MAPPING:
+                new_name += REV_MAPPING[l[0]]
+                new_name += l[1:]
+            else:
+                new_name += l
 
-    return var, c + 1
+    return new_name, c + 1
 
 def main():
     configs = dict()
 
+    prefix = os.getenv('PREFIX', 'YAODU')
+
     for k, v in os.environ.items():
-        name = k.split('_')
-        if name[0] != os.getenv('PREFIX', 'YAODU'):
+        name = k.split(ESCAPE)
+
+        if name[0] != prefix:
             continue
 
-        filename, pos = parser(name, 1)
+        filename = None
+        pos = 2
+        while not filename:
+            filename, pos = parser(name, pos)
+
         section, pos = parser(name, pos)
         key, pos = parser(name, pos)
 

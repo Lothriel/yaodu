@@ -18,3 +18,4 @@ RUN             mkdir -p /var/log/{{ container }}/ /etc/{{ container }}/ /var/li
 
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}/
+ENTRYPOINT      ["/entrypoint.sh"]

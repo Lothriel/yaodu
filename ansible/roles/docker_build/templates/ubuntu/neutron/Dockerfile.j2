@@ -25,3 +25,4 @@ RUN             mkdir -p /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvs
 
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}
+ENTRYPOINT      ["/entrypoint.sh"]

@@ -6,7 +6,6 @@
     state: "running"
     net: "host"
     volumes: "/opt/yaodu/keystone/:/etc/keystone/"
-    command: "/entrypoint.sh"
 
 - name: Waiting for service to be available
   local_action: command sleep 5

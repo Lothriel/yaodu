@@ -7,7 +7,6 @@
     net: "host"
     volumes: "/opt/yaodu/cinder/:/etc/cinder/"
     env: "SERVICE=api"
-    command: "/entrypoint.sh"
 
 - name: Starting Cinder Scheduler
   docker:
@@ -17,7 +16,6 @@
     net: "host"
     volumes: "/opt/yaodu/cinder/:/etc/cinder/"
     env: "SERVICE=scheduler"
-    command: "/entrypoint.sh"
 
 - name: Starting Cinder Volume
   docker:
@@ -28,5 +26,3 @@
     volumes: "/opt/yaodu/cinder/:/etc/cinder/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.cinder.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.cinder.keyring:ro"
     hostname: "cinder-volume"
     env: "SERVICE=volume"
-    command: "/entrypoint.sh"
-

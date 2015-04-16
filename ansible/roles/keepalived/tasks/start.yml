@@ -7,4 +7,3 @@
     privileged: "True"
     net: "host"
     volumes: "/opt/yaodu/keepalived/keepalived.conf:/etc/keepalived/keepalived.conf,/lib/modules/:/lib/modules/"
-    command: "/entrypoint.sh"

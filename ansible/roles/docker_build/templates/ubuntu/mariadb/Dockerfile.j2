@@ -12,3 +12,4 @@ RUN             chown -R mysql: /var/log/mysql/ /etc/mysql/ /var/run/mysqld/
 
 USER            mysql
 WORKDIR         /var/lib/mysql/
+ENTRYPOINT      ["/entrypoint.sh"]

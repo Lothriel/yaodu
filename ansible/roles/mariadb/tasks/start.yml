@@ -6,4 +6,3 @@
     state: "running"
     net: "host"
     volumes: "/opt/yaodu/mariadb/galera.cnf:/etc/mysql/conf.d/galera.cnf,/opt/yaodu/mariadb/data/:/var/lib/mysql/"
-    command: "/entrypoint.sh"

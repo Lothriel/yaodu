@@ -26,3 +26,4 @@ RUN             mkdir -p /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ contai
 
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}
+ENTRYPOINT      ["/entrypoint.sh"]

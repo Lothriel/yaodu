@@ -6,3 +6,4 @@ RUN             apt-get install -y --no-install-recommends ceph parted hdparm &&
 
 ADD		entrypoint.sh /entrypoint.sh
 RUN		chmod +x /entrypoint.sh
+ENTRYPOINT      ["/entrypoint.sh"]
