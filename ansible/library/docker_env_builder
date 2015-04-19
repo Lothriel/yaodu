@@ -24,19 +24,24 @@
 
 DOCUMENTATION = '''
 ---
-module: ceph_osd_list
-version_added: 1.8.2
-short_description: Very hacked, very targeted module
+module: docker_env_builder
+version_added: 1.9.0
+short_description: Convert ini-style configs to environment variables
 description:
-     - This will return a list of all devices with a GPT name of 'CEPH_OSD' and
-       a filesystem uuid. This is targeted until a more generic module is
-       written.
+  - Accepts ini style configs and runs them through configparser. Returns a
+    comma seperated string of values that can be read as environment variables
+    in the form of PREFIX_FILENAME_SECTION_KEY=VALUE
 options:
-  partition_name:
+  config_files:
     description:
-      - Partition name
-    default: 'CEPH_OSD'
-    type: bool
+      - A list of dicts of config files with { src: src, dest: dest}
+    required: True
+    type: list
+  prefix:
+    description:
+      - The prefix to start the environment variables with
+    default: 'YAODU'
+    type: str
 author: Sam Yaple
 '''
 
@@ -50,7 +55,6 @@ EXAMPLES = '''
 
 import sys
 import os
-import re
 from ConfigParser import ConfigParser
 
 ESCAPE = '_'
@@ -74,9 +78,6 @@ def sanatize(name):
             continue
 
         name = name.replace(k, ESCAPE + MAPPING[k])
-
-#    for match in re.findall(DELIM + '[0-9]' + DELIM, name):
-#        name = name.replace(MAPPING[match.split(DELIM)], match)
 
     return name
 
@@ -106,7 +107,7 @@ def main():
         env = 'dummy=variable'
 
         for config_file in config_files:
-            with open(config_file, 'rb') as f:
+            with open(os.path.expanduser(config_file['src']), 'rb') as f:
                 config = ConfigParser()
                 config.readfp(f)
                 sections = ["DEFAULT"] + config.sections()
@@ -114,7 +115,7 @@ def main():
                 for section in sections:
                     for item in config.items(section):
                         env += ','
-                        env += convert_name(prefix, config_file, section, item[0])
+                        env += convert_name(prefix, config_file['dest'], section, item[0])
                         env += '='
                         env += item[1]
 
