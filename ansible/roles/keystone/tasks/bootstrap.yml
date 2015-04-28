@@ -21,9 +21,12 @@
   run_once: True
 
 - name: Initializing Keystone database
-  command: /usr/bin/env docker run --rm=true \
-                        -v /opt/yaodu/keystone/:/etc/keystone/ \
-                        -t "{{ docker_registry }}/yaodu/keystone" \
-                        /usr/bin/env keystone-manage db_sync
+  docker:
+    name: "keystone"
+    image: "{{ docker_registry }}/yaodu/keystone"
+    state: "running"
+    net: "host"
+    env: "{{ docker_vars.env }},BOOTSTRAP=true"
+    detach: False
   when: database|changed
   run_once: True

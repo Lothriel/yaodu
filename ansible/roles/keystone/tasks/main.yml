@@ -10,17 +10,23 @@
     group: yaodu
     owner: yaodu
 
-- name: Creating default keystone files
-  copy:
-    directory_mode: yes
-    src: etc/keystone/
-    dest: "/opt/yaodu/keystone/"
+#- name: Creating default keystone files
+#  copy:
+#    directory_mode: yes
+#    src: etc/keystone/
+#    dest: "/opt/yaodu/keystone/"
 
 - name: Copying keystone.conf
   template:
     src: keystone.conf.j2
     dest: "/opt/yaodu/keystone/keystone.conf"
     mode: 0644
+
+- name: Generating environment string
+  docker_env_builder:
+    config_files:
+      - { src: '/opt/yaodu/keystone/keystone.conf', dest: '/etc/keystone/keystone.conf' }
+  register: docker_vars
 
 - include: bootstrap.yml
 

@@ -5,7 +5,7 @@
     image: "{{ docker_registry }}/yaodu/keystone"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/keystone/:/etc/keystone/"
+    env: "{{ docker_vars.env }}"
 
 - name: Waiting for service to be available
   local_action: command sleep 5
