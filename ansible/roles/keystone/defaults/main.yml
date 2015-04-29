@@ -1,0 +1,3 @@
+---
+container: "keystone"
+database_password: "{{ database_keystone_password }}"

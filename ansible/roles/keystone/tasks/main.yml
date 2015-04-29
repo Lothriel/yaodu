@@ -1,7 +1,5 @@
 ---
 - include: container_pull.yml
-  vars:
-    container: keystone
 
 - name: Ensuring /opt/yaodu/keystone/ exists
   file:
@@ -9,12 +7,6 @@
     state: directory
     group: yaodu
     owner: yaodu
-
-#- name: Creating default keystone files
-#  copy:
-#    directory_mode: yes
-#    src: etc/keystone/
-#    dest: "/opt/yaodu/keystone/"
 
 - name: Copying keystone.conf
   template:

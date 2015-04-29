@@ -1,5 +1,5 @@
 ---
-- name: Ensuring Docker image yaodu/{{ container }} exists locally
+- name: Ensuring Docker repository exists locally
   docker_image_check:
     image: "yaodu/{{ container }}"
     registry: "{{ docker_registry }}"
@@ -8,7 +8,7 @@
     compare: True
   register: docker_image_info
 
-- name: Pulling latest image
+- name: Pulling latest repository
   command: docker pull "{{ docker_registry }}/yaodu/{{ container }}"
   async: 600
   poll: 5
