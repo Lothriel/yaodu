@@ -5,8 +5,7 @@
     image: "{{ docker_registry }}/yaodu/glance"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/glance/:/etc/glance/:ro"
-    env: "SERVICE=registry"
+    env: "{{ glance_registry.env }},SERVICE=registry"
 
 - name: Starting Glance Api
   docker:
@@ -14,5 +13,5 @@
     image: "{{ docker_registry }}/yaodu/glance"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.glance.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.glance.keyring:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/glance/:/etc/glance/"
-    env: "SERVICE=api"
+    volumes: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.glance.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.glance.keyring:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro"
+    env: "{{ glance_api.env }},SERVICE=api"

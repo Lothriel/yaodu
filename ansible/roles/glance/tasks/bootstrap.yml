@@ -1,29 +1,32 @@
 ---
-- name: Creating glance database
+- name: Creating database
   mysql_db:
     login_host: "{{ yaodu_api_vip }}"
     login_user: "root"
     login_password: "{{ database_root_password }}"
-    name: "glance"
+    name: "{{ container }}"
   register: database
   run_once: True
 
-- name: Creating keystone database user and setting permissions
+- name: Creating database user and setting permissions
   mysql_user:
     login_host: "{{ yaodu_api_vip }}"
     login_user: "root"
     login_password: "{{ database_root_password }}"
-    name: "glance"
-    password: "{{ database_glance_password }}"
+    name: "{{ container }}"
+    password: "{{ database_password }}"
     host: "%"
-    priv: "glance.*:ALL"
+    priv: "{{ container }}.*:ALL"
     append_privs: "yes"
   run_once: True
 
-- name: Initializing Glance database
-  command: /usr/bin/env docker run --rm=true \
-                        -v /opt/yaodu/glance/:/etc/glance/ \
-                        -t "{{ docker_registry }}/yaodu/glance" \
-                        /usr/bin/env glance-manage db_sync
+- name: Initializing database
+  docker:
+    name: "{{ container }}"
+    image: "{{ docker_registry }}/yaodu/{{ container }}"
+    state: "running"
+    net: "host"
+    env: "{{ docker_vars.env }},BOOTSTRAP=true"
+    detach: False
   when: database|changed
   run_once: True

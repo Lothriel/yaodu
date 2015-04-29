@@ -1,20 +1,10 @@
 ---
 - include: container_pull.yml
-  vars:
-    container: glance
 
 - name: Ensuring /opt/yaodu/glance/ exists
   file:
     path: /opt/yaodu/glance/
     state: directory
-    group: yaodu
-    owner: yaodu
-
-- name: Creating default glance files
-  copy:
-    directory_mode: yes
-    src: "etc/glance/"
-    dest: "/opt/yaodu/glance/"
     group: yaodu
     owner: yaodu
 
@@ -28,6 +18,18 @@
   with_items:
     - { src: "glance-api.conf.j2" , dest: "/opt/yaodu/glance/glance-api.conf" }
     - { src: "glance-registry.conf.j2" , dest: "/opt/yaodu/glance/glance-registry.conf" }
+
+- name: Generating environment string
+  docker_env_builder:
+    config_files:
+      - { src: '/opt/yaodu/glance/glance-api.conf', dest: '/etc/glance/glance-api.conf' }
+  register: glance_api
+
+- name: Generating environment string
+  docker_env_builder:
+    config_files:
+      - { src: '/opt/yaodu/glance/glance-registry.conf', dest: '/etc/glance/glance-registry.conf' }
+  register: glance_registry
 
 - name: Creating keystone user glance
   keystone:
@@ -80,6 +82,13 @@
     login_password: "{{ keystone_admin_password }}"
     login_tenant_name: "admin"
   run_once: True
+
+- name: Generating environment string
+  docker_env_builder:
+    config_files:
+      - { src: '/opt/yaodu/glance/glance-api.conf', dest: '/etc/glance/glance-api.conf' }
+      - { src: '/opt/yaodu/glance/glance-registry.conf', dest: '/etc/glance/glance-registry.conf' }
+  register: docker_vars
 
 - include: bootstrap.yml
 
