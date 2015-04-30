@@ -6,8 +6,7 @@ osapi_volume_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
 
 auth_strategy = keystone
 
-rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
-
+rabbit_host = {{ yaodu_api_vip }}
 rabbit_virtual_host = {{ rabbitmq_cinder_vhost }}
 rabbit_userid = {{ rabbitmq_cinder_user }}
 rabbit_password = {{ rabbitmq_cinder_password }}

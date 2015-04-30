@@ -5,6 +5,11 @@ set -o errexit
 source /opt/yaodu/common.sh
 
 main() {
+    if [[ -n "${BOOTSTRAP}" ]]; then
+        cinder-manage db sync
+        exit
+    fi
+
     initial_setup
 }
 

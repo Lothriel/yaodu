@@ -1,20 +1,10 @@
 ---
 - include: container_pull.yml
-  vars:
-    container: cinder
 
 - name: Ensuring /opt/yaodu/cinder/ exists
   file:
     path: /opt/yaodu/cinder/
     state: directory
-    group: yaodu
-    owner: yaodu
-
-- name: Creating default cinder files
-  copy:
-    directory_mode: yes
-    src: "etc/cinder/"
-    dest: "/opt/yaodu/cinder/"
     group: yaodu
     owner: yaodu
 
@@ -77,6 +67,12 @@
     login_password: "{{ keystone_admin_password }}"
     login_tenant_name: "admin"
   run_once: True
+
+- name: Generating environment string
+  docker_env_builder:
+    config_files:
+      - { src: '/opt/yaodu/cinder/cinder.conf', dest: '/etc/cinder/cinder.conf' }
+  register: docker_vars
 
 - include: bootstrap.yml
 

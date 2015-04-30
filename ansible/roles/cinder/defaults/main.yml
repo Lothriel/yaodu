@@ -2,3 +2,6 @@
 rabbitmq_cinder_password: "{{ rabbitmq_password }}"
 rabbitmq_cinder_user: "{{ rabbitmq_user }}"
 rabbitmq_cinder_vhost: "{{ rabbitmq_vhost }}"
+
+container: "cinder"
+database_password: "{{ database_cinder_password }}"
