@@ -1,51 +1,18 @@
 ---
 - include: container_pull.yml
-  vars:
-    container: nova
 
 - name: Ensuring /opt/yaodu/nova/ exists
   file:
     path: /opt/yaodu/nova/
     state: directory
 
-- name: Creating default nova files
-  copy:
-    directory_mode: yes
-    src: "etc/nova/"
-    dest: "/opt/yaodu/nova/"
-
 - name: Copying Nova configs
   template:
     src: "nova.conf.j2"
     dest: "/opt/yaodu/nova/nova.conf"
-
-- name: Setting recursive owner for conf files
-  file:
-    path: "/opt/yaodu/nova/"
-    state: "directory"
     group: yaodu
     owner: yaodu
-    recurse: "yes"
-
-- name: Setting permissions for conf files and directories
-  file:
-    path: "{{ item.src }}"
-    state: "{{ item.state }}"
-    group: root
-    owner: root
-    recurse: "{{ item.recurse }}"
-  with_items:
-    - { src: "/opt/yaodu/nova/rootwrap.conf", state: "file", recurse: "no" }
-    - { src: "/opt/yaodu/nova/rootwrap.d/", state: "directory", recurse: "yes" }
-
-- name: Setting folder permissions
-  file:
-    path: "{{ item }}"
-    state: "directory"
-    mode: 0755
-  with_items:
-    - "/opt/yaodu/nova/"
-    - "/opt/yaodu/nova/rootwrap.d/"
+    mode: 0644
 
 - name: Creating keystone user nova
   keystone:
@@ -125,6 +92,12 @@
     login_password: "{{ keystone_admin_password }}"
     login_tenant_name: "admin"
   run_once: True
+
+- name: Generating environment string
+  docker_env_builder:
+    config_files:
+      - { src: '/opt/yaodu/nova/nova.conf', dest: '/etc/nova/nova.conf' }
+  register: docker_vars
 
 - include: bootstrap.yml
 

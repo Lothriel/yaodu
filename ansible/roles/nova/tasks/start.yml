@@ -6,8 +6,7 @@
     state: "running"
     privileged: true
     net: "host"
-    volumes: "/opt/yaodu/nova/:/etc/nova/"
-    env: "SERVICE=api"
+    env: "{{ docker_vars.env }},SERVICE=api"
   when: inventory_hostname in groups['nova']
 
 - name: Starting nova-scheduler
@@ -16,8 +15,7 @@
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/nova/:/etc/nova/"
-    env: "SERVICE=scheduler"
+    env: "{{ docker_vars.env }},SERVICE=scheduler"
   when: inventory_hostname in groups['nova']
 
 - name: Starting nova-conductor
@@ -26,8 +24,7 @@
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/nova/:/etc/nova/"
-    env: "SERVICE=conductor"
+    env: "{{ docker_vars.env }},SERVICE=conductor"
   when: inventory_hostname in groups['nova']
 
 - name: Starting nova-console
@@ -36,8 +33,7 @@
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/nova/:/etc/nova/"
-    env: "SERVICE=console"
+    env: "{{ docker_vars.env }},SERVICE=console"
   when: inventory_hostname in groups['nova']
 
 - name: Starting nova-consoleauth
@@ -46,8 +42,7 @@
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/nova/:/etc/nova/"
-    env: "SERVICE=consoleauth"
+    env: "{{ docker_vars.env }},SERVICE=consoleauth"
   when: inventory_hostname in groups['nova']
 
 - name: Starting nova-spicehtml5proxy
@@ -56,8 +51,7 @@
     image: "{{ docker_registry }}/yaodu/nova"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/nova/:/etc/nova/"
-    env: "SERVICE=spicehtml5proxy"
+    env: "{{ docker_vars.env }},SERVICE=spicehtml5proxy"
   when: inventory_hostname in groups['nova']
 
 - name: Starting nova-compute
@@ -67,6 +61,6 @@
     state: "running"
     privileged: true
     net: "host"
-    volumes: "/opt/yaodu/nova/:/etc/nova/,/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.nova.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.nova.keyring:ro,/run/:/run/"
-    env: "SERVICE=compute"
+    volumes: "/opt/yaodu/libvirt/instances/:/var/lib/nova/instances/,/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.nova.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.nova.keyring:ro,/run/:/run/"
+    env: "{{ docker_vars.env }},SERVICE=compute"
   when: inventory_hostname in groups['nova-compute']

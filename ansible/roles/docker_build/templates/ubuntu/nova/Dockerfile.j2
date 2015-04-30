@@ -21,8 +21,9 @@ ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh
 
 RUN             groupadd -g 42424 {{ container }} && useradd -u 42424 -g {{ container }} -s /sbin/nologin -c "{{ container }} user" {{ container }}
-RUN             mkdir -p /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ container }}/ && \
-                chown -R {{ container }}: /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ container }}/
+RUN             mkdir -p /etc/ceph/ /etc/{{ container }}/ /var/log/{{ container }}/ /var/lib/{{ container }}/
+RUN             cp -a /opt/yaodu/nova/etc/nova/*.json /opt/yaodu/nova/etc/nova/*.ini /opt/yaodu/nova/etc/nova/rootwrap.* /etc/nova/
+RUN             chown -R {{ container }}: /etc/ceph/ /var/log/{{ container }}/ /var/lib/{{ container }}/ /etc/{{ container }}/
 
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}

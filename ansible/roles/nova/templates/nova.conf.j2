@@ -9,8 +9,7 @@ api_paste_config = /etc/nova/api-paste.ini
 osapi_compute_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
 ec2_listen = {{ ansible_br_mgmt['ipv4']['address'] }}
 
-rabbit_hosts = {% for host in groups['message-broker'] %}{{ hostvars[host]['ansible_hostname'] }}:5672{% if not loop.last %},{% endif %}{% endfor %}
-
+rabbit_host = {{ yaodu_api_vip }}
 rabbit_virtual_host = {{ rabbitmq_nova_vhost }}
 rabbit_userid = {{ rabbitmq_nova_user }}
 rabbit_password = {{ rabbitmq_nova_password }}
@@ -82,4 +81,4 @@ inject_partition = -2
 
 connection_uri = qemu+tcp://{{ ansible_br_mgmt['ipv4']['address'] }}/system
 #live_migration_uri = qemu+tcp://{{ ansible_br_mgmt['ipv4']['address'] }}/default
-live_migration_flag="VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST"
+#live_migration_flag="VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE,VIR_MIGRATE_PERSIST_DEST"

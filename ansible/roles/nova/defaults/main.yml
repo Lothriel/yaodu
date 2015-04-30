@@ -2,3 +2,6 @@
 rabbitmq_nova_password: "{{ rabbitmq_password }}"
 rabbitmq_nova_user: "{{ rabbitmq_user }}"
 rabbitmq_nova_vhost: "{{ rabbitmq_vhost }}"
+
+container: "nova"
+database_password: "{{ database_nova_password }}"
