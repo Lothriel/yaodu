@@ -22,7 +22,7 @@
 
 - name: Initializing database
   docker:
-    name: "{{ container }}"
+    name: "bootstrap_{{ container }}"
     image: "{{ docker_registry }}/yaodu/{{ container }}"
     state: "running"
     net: "host"
@@ -30,3 +30,12 @@
     detach: False
   when: database|changed
   run_once: True
+
+- name: Cleaning up boostrap container
+  docker:
+    name: "bootstrap_{{ container }}"
+    image: "{{ docker_registry }}/yaodu/{{ container }}"
+    state: "absent"
+  when: database|changed
+  run_once: True
+
