@@ -91,6 +91,27 @@ def convert_name(prefix, filename, section, key):
 
     return name
 
+def item_parser(prefix, dest, section, item):
+    env_var = convert_name(prefix, dest, section, item[0])
+    env_var += '='
+    env_var += item[1]
+
+    return env_var
+
+def section_parser(prefix, config, config_file, section):
+    for item in config.items(section):
+        try:
+            env += ','
+        except NameError:
+            env = str()
+
+        env += item_parser(prefix, config_file['dest'], section, item)
+
+    if env:
+        return env
+    else:
+        return str()
+
 def main():
     module = AnsibleModule(
         argument_spec = dict(
@@ -104,20 +125,19 @@ def main():
     prefix = module.params.get('prefix')
 
     try:
-        env = 'dummy=variable'
-
         for config_file in config_files:
             with open(os.path.expanduser(config_file['src']), 'rb') as f:
                 config = ConfigParser()
                 config.readfp(f)
-                sections = ["DEFAULT"] + config.sections()
 
-                for section in sections:
-                    for item in config.items(section):
+                env = section_parser(prefix, config, config_file, 'DEFAULT')
+                config._defaults = {}
+
+                for section in config.sections():
+                    if env is not '':
                         env += ','
-                        env += convert_name(prefix, config_file['dest'], section, item[0])
-                        env += '='
-                        env += item[1]
+
+                    env += section_parser(prefix, config, config_file, section)
 
         module.exit_json(env=env)
 

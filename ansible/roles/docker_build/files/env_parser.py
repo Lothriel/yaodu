@@ -18,7 +18,7 @@ REV_MAPPING = {v: k for k, v in MAPPING.items()}
 
 def parser(name, pos):
     """ Parse sections of an ENV variable name. An example ENV variable would
-        be "YAODU_root_0_example_3_cnf_9_DEFAULT_9_setting_1_name"
+        be "YAODU_9__0root_0example_3conf_9_DEFAULT_9_setting_1name"
         Using the mapping above, this name translates to:
         FILE: /root/example.cnf
               [DEFAULT]
