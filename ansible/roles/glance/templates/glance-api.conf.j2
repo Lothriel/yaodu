@@ -12,12 +12,12 @@ rabbit_ha_queues = true
 
 notification_driver = nova.openstack.common.notifier.rpc_notifier
 
-default_store = rbd
 show_image_direct_url = True
 
 registry_host = {{ yaodu_api_vip }}
 
 [glance_store]
+default_store = rbd
 stores = rbd
 rbd_store_pool = images
 rbd_store_user = glance

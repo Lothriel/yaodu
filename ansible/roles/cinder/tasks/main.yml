@@ -45,7 +45,7 @@
   keystone:
     command: "ensure_service"
     service_name: "cinder"
-    service_type: "volumev2"
+    service_type: "volume"
     description: "Block Storage Service"
     endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
     login_user: "admin"
@@ -58,6 +58,33 @@
     command: "ensure_endpoint"
     region_name: "regionOne"
     service_name: "cinder"
+    service_type: "volume"
+    publicurl: "http://{{ yaodu_api_vip }}:8776/v2/%(tenant_id)s"
+    adminurl: "http://{{ yaodu_api_vip }}:8776/v2/%(tenant_id)s"
+    internalurl: "http://{{ yaodu_api_vip }}:8776/v2/%(tenant_id)s"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
+- name: Creating keystone service cinderv2
+  keystone:
+    command: "ensure_service"
+    service_name: "cinderv2"
+    service_type: "volumev2"
+    description: "Block Storage Service"
+    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
+    login_user: "admin"
+    login_password: "{{ keystone_admin_password }}"
+    login_tenant_name: "admin"
+  run_once: True
+
+- name: Creating keystone endpoint cinderv2
+  keystone:
+    command: "ensure_endpoint"
+    region_name: "regionOne"
+    service_name: "cinderv2"
     service_type: "volumev2"
     publicurl: "http://{{ yaodu_api_vip }}:8776/v2/%(tenant_id)s"
     adminurl: "http://{{ yaodu_api_vip }}:8776/v2/%(tenant_id)s"
