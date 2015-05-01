@@ -16,8 +16,6 @@ ADD		sources.list /etc/apt/sources.list
 # Recommend apt-cacher-ng for bandwidth savings. Not required.
 ADD		apt.conf /etc/apt/apt.conf
 
-RUN             echo 'Package: libmysqlclient18\nPin: release o=MariaDB\nPin-Priority: 1001' > /etc/apt/preferences.d/mysqlclient.pref
-
 RUN		apt-get update && apt-get dist-upgrade -y && \
 		apt-get install -y --no-install-recommends curl ca-certificates python && \
                 apt-get clean -y
