@@ -3,22 +3,6 @@
   vars:
     container: neutron
 
-- name: Fetching keystone tenant id for service tenant
-  keystone:
-    command: "get_tenant"
-    region_name: "regionOne"
-    tenant_name: "service"
-    endpoint: "http://{{ yaodu_api_vip }}:35357/v2.0"
-    login_user: "admin"
-    login_password: "{{ keystone_admin_password }}"
-    login_tenant_name: "admin"
-  run_once: True
-  register: service_tenant
-
-- name: Setting ansible fact for service tenant
-  set_fact:
-    keystone_nova_tenant_id: "{{ keystone_facts.id }}"
-
 - name: Ensuring directories exist
   file:
     path: "{{ item }}"
@@ -30,49 +14,16 @@
     - "/opt/yaodu/openvswitch/"
     - "/run/openvswitch/"
 
-- name: Creating default neutron files
-  copy:
-    directory_mode: yes
-    src: "etc/neutron/"
-    dest: "/opt/yaodu/neutron/"
-
 - name: Copying Neutron configs
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-  with_items:
-    - { src: "neutron.conf.j2" , dest: "/opt/yaodu/neutron/neutron.conf" }
-    - { src: "ml2_conf.ini.j2" , dest: "/opt/yaodu/neutron/plugins/ml2/ml2_conf.ini" }
-
-- name: Setting recursive owner for conf files
-  file:
-    path: "/opt/yaodu/neutron/"
-    state: "directory"
     group: yaodu
     owner: yaodu
-    recurse: "yes"
-
-- name: Setting permissions for conf files and directories
-  file:
-    path: "{{ item.src }}"
-    state: "{{ item.state }}"
-    group: root
-    owner: root
-    recurse: "{{ item.recurse }}"
+    mode: 0644
   with_items:
-    - { src: "/opt/yaodu/neutron/rootwrap.conf", state: "file", recurse: "no" }
-    - { src: "/opt/yaodu/neutron/rootwrap.d/", state: "directory", recurse: "yes"}
-
-- name: Setting folder permissions
-  file:
-    path: "{{ item }}"
-    state: "directory"
-    mode: 0755
-  with_items:
-    - "/opt/yaodu/neutron/"
-    - "/opt/yaodu/neutron/plugins/"
-    - "/opt/yaodu/neutron/plugins/ml2/"
-    - "/opt/yaodu/neutron/rootwrap.d/"
+    - { src: "neutron.conf.j2" , dest: "/opt/yaodu/neutron/neutron.conf" }
+    - { src: "ml2_conf.ini.j2" , dest: "/opt/yaodu/neutron/ml2_conf.ini" }
 
 - name: Creating keystone user neutron
   keystone:
@@ -125,6 +76,13 @@
     login_password: "{{ keystone_admin_password }}"
     login_tenant_name: "admin"
   run_once: True
+
+- name: Generating environment string
+  docker_env_builder:
+    config_files:
+      - { src: "/opt/yaodu/neutron/neutron.conf", dest: "/etc/neutron/neutron.conf" }
+      - { src: "/opt/yaodu/neutron/ml2_conf.ini", dest: "/etc/neutron/plugins/ml2/ml2_conf.ini" }
+  register: docker_vars
 
 - include: bootstrap.yml
 

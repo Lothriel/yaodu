@@ -29,8 +29,7 @@
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     net: "host"
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/"
-    env: "SERVICE=server"
+    env: "{{ docker_vars.env }},SERVICE=server"
   when: inventory_hostname in groups['neutron-server']
 
 - name: Starting neutron-l3-agent
@@ -40,8 +39,8 @@
     state: "running"
     privileged: true
     net: "host"
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/lib/modules/:/lib/modules/:ro,/run/:/run/,/proc/1/ns/:/opt/yaodu/host_proc/1/ns/:ro"
-    env: "SERVICE=l3-agent"
+    volumes: "/lib/modules/:/lib/modules/:ro,/run/:/run/,/proc/1/ns/:/opt/yaodu/host_proc/1/ns/:ro"
+    env: "{{ docker_vars.env }},SERVICE=l3-agent"
   when: inventory_hostname in groups['neutron-agent']
 
 - name: Starting neutron-dhcp-agent
@@ -51,8 +50,8 @@
     state: "running"
     privileged: true
     net: "host"
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/run/:/run/,/proc/1/ns/:/opt/yaodu/host_proc/1/ns/:ro"
-    env: "SERVICE=dhcp-agent"
+    volumes: "/run/:/run/,/proc/1/ns/:/opt/yaodu/host_proc/1/ns/:ro"
+    env: "{{ docker_vars.env }},SERVICE=dhcp-agent"
   when: inventory_hostname in groups['neutron-agent']
 
 - name: setup bridge
@@ -72,7 +71,7 @@
     state: "running"
     privileged: true
     net: "host"
-    volumes: "/opt/yaodu/neutron/:/etc/neutron/,/run/:/run/"
-    env: "SERVICE=openvswitch-agent"
+    volumes: "/run/:/run/"
+    env: "{{ docker_vars.env }},SERVICE=openvswitch-agent"
   when: inventory_hostname in groups['neutron-agent'] or
         inventory_hostname in groups['nova-compute']

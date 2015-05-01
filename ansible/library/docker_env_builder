@@ -107,9 +107,9 @@ def section_parser(prefix, config, config_file, section):
 
         env += item_parser(prefix, config_file['dest'], section, item)
 
-    if env:
+    try:
         return env
-    else:
+    except NameError:
         return str()
 
 def main():

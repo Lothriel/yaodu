@@ -2,3 +2,6 @@
 rabbitmq_neutron_password: "{{ rabbitmq_password }}"
 rabbitmq_neutron_user: "{{ rabbitmq_user }}"
 rabbitmq_neutron_vhost: "{{ rabbitmq_vhost }}"
+
+container: "neutron"
+database_password: "{{ database_neutron_password }}"
