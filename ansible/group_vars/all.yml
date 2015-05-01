@@ -3,14 +3,14 @@ update_conf: false
 yaodu_directory: "/opt/yaodu"
 yaodu_distro: "ubuntu"
 yaodu_distro_tag: "14.04.2"
-ceph_release: giant
-ceph_cluster_name: ceph
+ceph_release: "hammer"
+ceph_cluster_name: "ceph"
 ceph_cluster_fsid: "3cc8d825-cfbf-4a14-836a-186bcf333b06"
 docker_registry: "172.16.0.1:5000"
 yaodu_api_vip: 172.16.1.20
 
-openstack_version: "juno"
-openstack_revision: "2014.2.2"
+openstack_version: "kilo"
+openstack_revision: "2015.1.0"
 
 libvirt_secret_uuid: "6f88a95b-8aa5-459a-be3c-e8db2ecadd7a"
 metadata_shared_secret: "11d48ecab3d44d65bf31d777d94dc8d3"
@@ -18,18 +18,18 @@ neutron_l3ha_secret: "6e561456d6134ad78dbc4df6d0fa2be0"
 
 rabbitmq_vhost: "openstack"
 rabbitmq_user: "openstack"
-rabbitmq_password: password
+rabbitmq_password: "password"
 
-database_root_password: password
-database_keystone_password: password
-database_glance_password: password
-database_nova_password: password
-database_neutron_password: password
-database_cinder_password: password
+database_root_password: "password"
+database_keystone_password: "password"
+database_glance_password: "password"
+database_nova_password: "password"
+database_neutron_password: "password"
+database_cinder_password: "password"
 
-keystone_admin_token: password
-keystone_admin_password: password
-keystone_glance_password: password
-keystone_nova_password: password
-keystone_neutron_password: password
-keystone_cinder_password: password
+keystone_admin_token: "password"
+keystone_admin_password: "password"
+keystone_glance_password: "password"
+keystone_nova_password: "password"
+keystone_neutron_password: "password"
+keystone_cinder_password: "password"
