@@ -1,12 +1,12 @@
 ---
-- name: Ensuring Docker image yaodu/{{ container }} exists
-  docker_image_check:
-    image: "yaodu/{{ container }}"
-    registry: "{{ docker_registry }}"
-    protocol: "http"
-    insecure_registry: True
-  register: docker_image_info
-  run_once: True
+#- name: Ensuring Docker image yaodu/{{ container }} exists
+#  docker_image_check:
+#    image: "yaodu/{{ container }}"
+#    registry: "{{ docker_registry }}"
+#    protocol: "http"
+#    insecure_registry: True
+#  register: docker_image_info
+#  run_once: True
 
 - include: build.yml
-  when: forced or not docker_image_info.image.image_exists
+#  when: forced or not docker_image_info.image.image_exists

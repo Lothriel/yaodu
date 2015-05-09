@@ -1,19 +1,6 @@
 ---
 - include: common.yml
-  tags:
-    - common
-    - openstack_common
-    - ceph
-    - mariadb
-    - rabbitmq
-    - haproxy
-    - keepalived
-    - libvirt
-    - keystone
-    - glance
-    - nova
-    - neutron
-    - cinder
+  tags: common
 
 - include: ceph.yml
   tags: ceph
@@ -34,13 +21,7 @@
   tags: libvirt
 
 - include: openstack_common.yml
-  tags:
-    - openstack_common
-    - keystone
-    - glance
-    - nova
-    - neutron
-    - cinder
+  tags: openstack_common
 
 - include: keystone.yml
   tags: keystone

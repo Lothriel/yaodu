@@ -1,6 +1,7 @@
 ---
 - name: Starting libvirt
   docker:
+    docker_api_version: '1.18'
     name: "libvirt"
     image: "{{ docker_registry }}/yaodu/libvirt"
     state: "running"

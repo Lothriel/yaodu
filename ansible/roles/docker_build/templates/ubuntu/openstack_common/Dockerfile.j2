@@ -1,12 +1,14 @@
 FROM		{{ docker_registry }}/yaodu/common
 MAINTAINER	Sam Yaple <sam@yaple.net>
 
-RUN		apt-get install -y python-pip python-dev python-mysqldb libmariadbclient-dev libxslt1-dev libpq-dev libffi-dev libyaml-dev pkg-config && \
+RUN		apt-get install -y python-dev python-mysqldb libmariadbclient-dev libxslt1-dev libpq-dev libffi-dev libyaml-dev pkg-config && \
                 apt-get clean
 
-RUN             pip install --upgrade wheel cython
+RUN             curl https://bootstrap.pypa.io/get-pip.py | python
+
+#RUN             pip install --upgrade wheel cython
 
 ADD             openstack-requirements.tar /opt/yaodu/
 RUN             ln -s /opt/yaodu/openstack-requirements-*/ /opt/yaodu/requirements
 
-RUN             awk '/^python-.*client/ {print $1}' /opt/yaodu/requirements/global-requirements.txt | xargs pip install --upgrade
+RUN             awk '/^python-.*client/ {print $1}' /opt/yaodu/requirements/global-requirements.txt | xargs pip install --upgrade python-memcached

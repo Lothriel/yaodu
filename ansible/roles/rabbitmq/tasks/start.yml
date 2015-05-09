@@ -1,6 +1,7 @@
 ---
 - name: Starting RabbitMQ
   docker:
+    docker_api_version: '1.18'
     name: "rabbitmq"
     image: "{{ docker_registry }}/yaodu/rabbitmq"
     state: "running"

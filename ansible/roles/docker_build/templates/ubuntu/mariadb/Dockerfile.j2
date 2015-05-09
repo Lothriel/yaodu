@@ -9,6 +9,7 @@ RUN		chmod +x /entrypoint.sh
 
 RUN             groupmod -g 42424 mysql && usermod -u 42424 mysql
 RUN             chown -R mysql: /var/log/mysql/ /etc/mysql/ /var/run/mysqld/
+RUN             rm -rf /var/log/mysql/* /var/lib/mysql/*
 
 USER            mysql
 WORKDIR         /var/lib/mysql/

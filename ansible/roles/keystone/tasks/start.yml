@@ -1,6 +1,7 @@
 ---
 - name: Starting Keystone
   docker:
+    docker_api_version: '1.18'
     name: "keystone"
     image: "{{ docker_registry }}/yaodu/keystone"
     state: "running"

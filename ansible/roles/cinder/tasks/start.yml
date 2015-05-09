@@ -1,26 +1,50 @@
 ---
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+      SERVICE: 'api'
+  register: env
+
 - name: Starting Cinder Api
   docker:
+    docker_api_version: '1.18'
     name: "cinder-api"
     image: "{{ docker_registry }}/yaodu/cinder"
     state: "running"
     net: "host"
-    env: "{{ docker_vars.env}},SERVICE=api"
+    env: "{{ env.out }}"
+
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+      SERVICE: 'scheduler'
+  register: env
 
 - name: Starting Cinder Scheduler
   docker:
+    docker_api_version: '1.18'
     name: "cinder-scheduler"
     image: "{{ docker_registry }}/yaodu/cinder"
     state: "running"
     net: "host"
-    env: "{{ docker_vars.env}},SERVICE=scheduler"
+    env: "{{ env.out }}"
+
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+      SERVICE: 'volume'
+  register: env
 
 - name: Starting Cinder Volume
   docker:
+    docker_api_version: '1.18'
     name: "cinder-volume"
     image: "{{ docker_registry }}/yaodu/cinder"
     state: "running"
     net: "host"
     volumes: "/opt/yaodu/ceph/{{ ceph_cluster_name }}.conf:/etc/ceph/{{ ceph_cluster_name }}.conf:ro,/opt/yaodu/ceph/{{ ceph_cluster_name }}.client.cinder.keyring:/etc/ceph/{{ ceph_cluster_name }}.client.cinder.keyring:ro"
     hostname: "cinder-volume"
-    env: "{{ docker_vars.env}},SERVICE=volume"
+    env: "{{ env.out }}"

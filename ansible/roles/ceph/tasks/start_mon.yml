@@ -1,6 +1,7 @@
 ---
 - name: Starting Ceph mon
   docker:
+    docker_api_version: '1.18'
     name: "ceph_mon"
     image: "{{ docker_registry }}/yaodu/ceph"
     state: "running"

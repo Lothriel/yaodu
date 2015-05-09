@@ -7,6 +7,11 @@ source /opt/yaodu/common.sh
 main() {
     initial_setup
 
+    if [[ -n "${BOOTSTRAP}" ]]; then
+        nova-manage db sync
+        exit
+    fi
+
     if [[ "${SERVICE}" == "db" ]]; then
         openvswitch_dir="/etc/openvswitch/"
 

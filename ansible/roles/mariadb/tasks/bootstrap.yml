@@ -1,6 +1,7 @@
 ---
 - name: Starting Mariadb
   docker:
+    docker_api_version: '1.18'
     name: "mariadb"
     image: "{{ docker_registry }}/yaodu/mariadb"
     state: "running"

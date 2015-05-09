@@ -1,5 +1,0 @@
-openvswitchdb:
-    extents:
-        file: /opt/yaodu/compose/openvswitch.yml
-        service: db
-

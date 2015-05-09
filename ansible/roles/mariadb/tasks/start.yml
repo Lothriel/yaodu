@@ -1,8 +1,10 @@
 ---
 - name: Starting Mariadb Database
   docker:
+    docker_api_version: '1.18'
     name: "mariadb"
     image: "{{ docker_registry }}/yaodu/mariadb"
     state: "running"
     net: "host"
     volumes: "/opt/yaodu/mariadb/galera.cnf:/etc/mysql/conf.d/galera.cnf,/opt/yaodu/mariadb/data/:/var/lib/mysql/"
+  when: delegate_host == 'None' and inventory_hostname != groups['database'][0]

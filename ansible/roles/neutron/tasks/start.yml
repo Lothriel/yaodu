@@ -1,6 +1,7 @@
 ---
 - name: Starting openvswitch-db
   docker:
+    docker_api_version: '1.18'
     name: "openvswitch-db"
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
@@ -13,6 +14,7 @@
 
 - name: Starting openvswitch-switch
   docker:
+    docker_api_version: '1.18'
     name: "openvswitch-switch"
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
@@ -23,35 +25,59 @@
   when: inventory_hostname in groups['neutron-agent'] or
         inventory_hostname in groups['nova-compute']
 
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+      SERVICE: 'server'
+  register: env
+
 - name: Starting neutron-server
   docker:
+    docker_api_version: '1.18'
     name: "neutron-server"
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     net: "host"
-    env: "{{ docker_vars.env }},SERVICE=server"
+    env: "{{ env.out }}"
   when: inventory_hostname in groups['neutron-server']
+
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+        SERVICE: 'l3-agent'
+  register: env
 
 - name: Starting neutron-l3-agent
   docker:
+    docker_api_version: '1.18'
     name: "neutron-l3-agent"
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     privileged: true
     net: "host"
     volumes: "/lib/modules/:/lib/modules/:ro,/run/:/run/,/proc/1/ns/:/opt/yaodu/host_proc/1/ns/:ro"
-    env: "{{ docker_vars.env }},SERVICE=l3-agent"
+    env: "{{ env.out }}"
   when: inventory_hostname in groups['neutron-agent']
+
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+        SERVICE: 'dhcp-agent'
+  register: env
 
 - name: Starting neutron-dhcp-agent
   docker:
+    docker_api_version: '1.18'
     name: "neutron-dhcp-agent"
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     privileged: true
     net: "host"
     volumes: "/run/:/run/,/proc/1/ns/:/opt/yaodu/host_proc/1/ns/:ro"
-    env: "{{ docker_vars.env }},SERVICE=dhcp-agent"
+    env: "{{ env.out }}"
   when: inventory_hostname in groups['neutron-agent']
 
 - name: setup bridge
@@ -64,14 +90,22 @@
   when: inventory_hostname in groups['neutron-agent'] or
         inventory_hostname in groups['nova-compute']
 
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+      SERVICE: 'openvswitch-agent'
+  register: env
+
 - name: Starting neutron-openvswitch-agent
   docker:
+    docker_api_version: '1.18'
     name: "neutron-openvswitch-agent"
     image: "{{ docker_registry }}/yaodu/neutron"
     state: "running"
     privileged: true
     net: "host"
     volumes: "/run/:/run/"
-    env: "{{ docker_vars.env }},SERVICE=openvswitch-agent"
+    env: "{{ env.out }}"
   when: inventory_hostname in groups['neutron-agent'] or
         inventory_hostname in groups['nova-compute']

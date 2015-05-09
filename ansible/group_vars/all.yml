@@ -3,11 +3,11 @@ update_conf: false
 yaodu_directory: "/opt/yaodu"
 yaodu_distro: "ubuntu"
 yaodu_distro_tag: "14.04.2"
-ceph_release: "hammer"
+ceph_release: "giant"
 ceph_cluster_name: "ceph"
 ceph_cluster_fsid: "3cc8d825-cfbf-4a14-836a-186bcf333b06"
-docker_registry: "172.16.0.1:5000"
-yaodu_api_vip: 172.16.1.20
+docker_registry: "10.10.0.1:5000"
+yaodu_api_vip: 10.10.1.20
 
 openstack_version: "kilo"
 openstack_revision: "2015.1.0"

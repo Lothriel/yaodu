@@ -8,7 +8,7 @@ main() {
     initial_setup
 
     if [[ ! -d /var/lib/mysql/mysql ]]; then
-	mysql_install_db
+        mysql_install_db --no-defaults --defaults-file=/etc/mysql/my.cnf
     fi
 
     if [[ -n "${BOOTSTRAP}" ]]; then

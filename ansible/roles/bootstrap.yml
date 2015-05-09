@@ -20,19 +20,28 @@
     append_privs: "yes"
   run_once: True
 
+- name: Merge dicts
+  merge_dict:
+    initial: "{{ docker_vars.env }}"
+    update:
+      BOOTSTRAP: 'true'
+  register: env
+
 - name: Initializing database
   docker:
+    docker_api_version: '1.18'
     name: "bootstrap_{{ container }}"
     image: "{{ docker_registry }}/yaodu/{{ container }}"
     state: "running"
     net: "host"
-    env: "{{ docker_vars.env }},BOOTSTRAP=true"
+    env: "{{ env.out }}"
     detach: False
   when: database|changed
   run_once: True
 
 - name: Cleaning up boostrap container
   docker:
+    docker_api_version: '1.18'
     name: "bootstrap_{{ container }}"
     image: "{{ docker_registry }}/yaodu/{{ container }}"
     state: "absent"

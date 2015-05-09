@@ -1,0 +1,82 @@
+#!/usr/bin/python
+
+#The MIT License (MIT)
+#
+#Copyright (c) 2015 Sam Yaple
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
+
+DOCUMENTATION = '''
+---
+module: merge_dict
+version_added: 1.9.0
+short_description: Merge two dictionarys
+description:
+  - Accepts ini style configs and runs them through configparser. Returns a
+    comma seperated string of values that can be read as environment variables
+    in the form of PREFIX_FILENAME_SECTION_KEY=VALUE
+options:
+  config_files:
+    description:
+      - A list of dicts of config files with { src: src, dest: dest}
+    required: True
+    type: list
+  prefix:
+    description:
+      - The prefix to start the environment variables with
+    default: 'YAODU'
+    type: str
+author: Sam Yaple
+'''
+
+EXAMPLES = '''
+- hosts: ceph-osd
+  tasks:
+    - name: Return all valid formated devices wit hthe name CEPH_OSD
+      ceph_osd_list:
+      register: osds
+'''
+
+import sys
+import os
+
+def main():
+    module = AnsibleModule(
+        argument_spec = dict(
+            initial = dict(required=True, type='dict'),
+            update = dict(required=True, type='dict'),
+        ),
+        supports_check_mode = True
+    )
+
+    initial = module.params.get('initial')
+    update = module.params.get('update')
+
+    try:
+        initial.update(update)
+        module.exit_json(out=initial)
+
+    except Exception as e:
+        module.exit_json(failed=True, msg=repr(e))
+
+# import module snippets
+from ansible.module_utils.basic import *
+
+if __name__ == '__main__':
+    main()

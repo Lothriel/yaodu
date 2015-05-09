@@ -20,8 +20,9 @@ ADD             entrypoint.sh /entrypoint.sh
 RUN             chmod +x /entrypoint.sh
 
 RUN             groupadd -g 42424 {{ container }} && useradd -u 42424 -g {{ container }} -s /sbin/nologin -c "{{ container }} user" {{ container }}
-RUN             mkdir -p /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/ && \
-                chown -R {{ container }}: /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/
+RUN             mkdir -p /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/ /etc/neutron/plugins/ml2/
+RUN             cp -a /opt/yaodu/neutron/etc/*.json /opt/yaodu/neutron/etc/api-paste.ini /opt/yaodu/neutron/etc/neutron/rootwrap.* /opt/yaodu/neutron/etc/rootwrap.* /etc/neutron/
+RUN             chown -R {{ container }}: /var/run/openvswitch/ /var/log/openvswitch/ /etc/openvswitch/ /var/log/{{ container }}/ /var/lib/{{ container }}/ /etc/neutron/
 
 USER            {{ container }}
 WORKDIR         /var/lib/{{ container }}
